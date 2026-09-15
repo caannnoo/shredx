@@ -3,8 +3,14 @@
 ========================= */
 
 .navbar {
-  max-width: 140rem;
-  display: flex;
+  width: 100%;
+  max-width: 160rem;
+  height: 12rem;
+
+  margin: 0 auto;
+
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
   align-items: center;
 }
 
@@ -18,18 +24,41 @@
   display: flex;
   align-items: center;
   gap: 3rem;
+
+  font-family: "Inter", sans-serif;
+  font-weight: 700;
+  font-size: 1.8rem;
 }
 
 .nav-links a {
   text-decoration: none;
   display: inline-block;
+  color: #848484;
 }
 
-.profile {
+.nav-links-auth {
+  list-style-type: none;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 3rem;
+
+  font-family: "Inter", sans-serif;
+  font-weight: 700;
+  font-size: 1.8rem;
 }
 
-.dropdown-profile {
+.nav-links-auth a {
+  text-decoration: none;
+  display: inline-block;
+  color: #848484;
 }
 
-.dropdown-menu {
+.nav-links-auth .start-tracking {
+  padding: 1rem 2rem;
+  border-radius: 1.5rem;
+  background-color: #000;
+  color: #fff;
+  text-decoration: none;
+  font-weight: 700;
 }
