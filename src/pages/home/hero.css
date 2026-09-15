@@ -1,0 +1,83 @@
+.hero {
+  width: 100%;
+  max-width: 160rem;
+  margin: 0 auto;
+}
+
+.hero-section {
+  width: 100%;
+  max-width: 160rem;
+  text-align: center;
+  margin: 0 auto;
+  /* background-color: lightgray; */
+  padding-top: 4rem;
+}
+
+.heroheadingfour {
+  text-transform: uppercase;
+  font-family: "Manrope", sans-serif;
+  font-size: 1.4rem;
+  letter-spacing: 0.15rem;
+  margin-bottom: 1.5rem;
+}
+
+.heroheadingone {
+  font-family: "Gill Sans", "Gill Sans MT", Calibri, "Trebuchet MS", sans-serif;
+  font-size: 5.2rem;
+  margin-bottom: 1.5rem;
+}
+
+.heroparagraph {
+  font-size: 1.8rem;
+  font-family: "Manrope", sans-serif;
+  margin-bottom: 3rem;
+}
+
+.hero-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 1.5rem;
+  padding-bottom: 3rem;
+}
+
+.hero-button-primary {
+  padding: 1rem 2rem;
+  border-radius: 1.5rem;
+  background-color: #000;
+  color: #fff;
+  text-decoration: none;
+  font-weight: 700;
+  font-family: "Manrope", sans-serif;
+  font-size: 1.4rem;
+  border: none;
+}
+
+.hero-button-secondary {
+  padding: 1rem 2rem;
+  border-radius: 1.5rem;
+  background-color: #fff;
+  color: #000;
+  text-decoration: none;
+  font-weight: 700;
+  font-family: "Manrope", sans-serif;
+  font-size: 1.4rem;
+}
+
+.dashboard-preview {
+  width: 90%;
+  max-width: 110rem;
+  height: 40rem;
+
+  margin: 6rem auto 0;
+
+  background-color: darkgrey;
+  border: 1px solid #e0e0e0;
+  border-radius: 2rem;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  font-size: 2rem;
+  color: #fff;
+}
