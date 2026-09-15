@@ -1,0 +1,35 @@
+/* =========================
+   Navigation
+========================= */
+
+.navbar {
+  max-width: 140rem;
+  display: flex;
+  align-items: center;
+}
+
+.logo {
+  width: 32rem;
+  height: auto;
+}
+
+.nav-links {
+  list-style-type: none;
+  display: flex;
+  align-items: center;
+  gap: 3rem;
+}
+
+.nav-links a {
+  text-decoration: none;
+  display: inline-block;
+}
+
+.profile {
+}
+
+.dropdown-profile {
+}
+
+.dropdown-menu {
+}
