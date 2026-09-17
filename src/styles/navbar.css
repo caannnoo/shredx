@@ -25,15 +25,15 @@
   align-items: center;
   gap: 3rem;
 
-  font-family: "Inter", sans-serif;
-  font-weight: 700;
+  font-family: "Manrope", sans-serif;
+  font-weight: 600;
   font-size: 1.8rem;
 }
 
 .nav-links a {
   text-decoration: none;
   display: inline-block;
-  color: #848484;
+  color: #000;
 }
 
 .nav-links-auth {
@@ -43,15 +43,15 @@
   justify-content: flex-end;
   gap: 3rem;
 
-  font-family: "Inter", sans-serif;
-  font-weight: 700;
+  font-family: "Manrope", sans-serif;
+  font-weight: 600;
   font-size: 1.8rem;
 }
 
 .nav-links-auth a {
   text-decoration: none;
   display: inline-block;
-  color: #848484;
+  color: #000;
 }
 
 .nav-links-auth .start-tracking {
@@ -60,5 +60,5 @@
   background-color: #000;
   color: #fff;
   text-decoration: none;
-  font-weight: 700;
+  font-weight: 600;
 }
