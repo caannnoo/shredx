@@ -1,0 +1,74 @@
+.benefits {
+  width: 100%;
+  max-width: 160rem;
+  margin: 0 auto;
+  background-color: #f7f9f8;
+  padding: 6rem 0;
+  /* background-color: red; */
+}
+
+.benefits-section {
+  width: 100%;
+  max-width: 160rem;
+  text-align: center;
+  margin: 0 auto;
+  padding-bottom: 3rem;
+}
+
+.benefitsheadingfour {
+  text-transform: uppercase;
+  font-family: "Manrope", sans-serif;
+  font-size: 1.4rem;
+  letter-spacing: 0.15rem;
+  margin-bottom: 1.5rem;
+}
+
+.benefitsheadingone {
+  font-family: "Manrope", sans-serif;
+  font-size: 7.2rem;
+  font-weight: 900;
+  line-height: 1.05;
+  margin-bottom: 1.5rem;
+  letter-spacing: -0.3rem;
+}
+
+.benefitsparagraph {
+  font-size: 2.2rem;
+  font-family: "Manrope", sans-serif;
+  margin-bottom: 3rem;
+}
+
+.benefits-preview {
+  width: 90%;
+  max-width: 110rem;
+  margin: 0 auto;
+
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 2rem;
+}
+
+.benefit-card {
+  min-height: 15rem;
+  padding: 2rem;
+  background-color: #fff;
+  border: 2px solid #e0e0e0;
+  border-radius: 1.5rem;
+}
+
+.benefit-icon {
+  color: gray;
+  margin-bottom: 0.8rem;
+}
+
+.benefit-heading {
+  font-family: "Manrope", sans-serif;
+  font-size: 1.6rem;
+  font-weight: 800;
+  margin-bottom: 0.4rem;
+}
+
+.benefit-paragraph {
+  font-family: "Manrope", sans-serif;
+  font-size: 1.4rem;
+}

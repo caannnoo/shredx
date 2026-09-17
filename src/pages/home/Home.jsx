@@ -1,7 +1,13 @@
 import Hero from "./Hero";
+import Benefits from "./Benefits";
 
 function Home() {
-  return <Hero />;
+  return (
+    <div>
+      <Hero />
+      <Benefits />
+    </div>
+  );
 }
 
 export default Home;
