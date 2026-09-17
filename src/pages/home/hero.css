@@ -2,6 +2,8 @@
   width: 100%;
   max-width: 160rem;
   margin: 0 auto;
+  background-color: gray;
+  padding: 6rem 0;
 }
 
 .hero-section {
@@ -9,8 +11,7 @@
   max-width: 160rem;
   text-align: center;
   margin: 0 auto;
-  /* background-color: lightgray; */
-  padding-top: 4rem;
+  padding-bottom: 6rem;
 }
 
 .heroheadingfour {
@@ -23,12 +24,12 @@
 
 .heroheadingone {
   font-family: "Gill Sans", "Gill Sans MT", Calibri, "Trebuchet MS", sans-serif;
-  font-size: 5.2rem;
+  font-size: 7.2rem;
   margin-bottom: 1.5rem;
 }
 
 .heroparagraph {
-  font-size: 1.8rem;
+  font-size: 2.2rem;
   font-family: "Manrope", sans-serif;
   margin-bottom: 3rem;
 }
@@ -36,19 +37,18 @@
 .hero-buttons {
   display: flex;
   justify-content: center;
-  gap: 1.5rem;
-  padding-bottom: 3rem;
+  gap: 1.6rem;
 }
 
 .hero-button-primary {
-  padding: 1rem 2rem;
+  padding: 1.2rem 2rem;
   border-radius: 1.5rem;
   background-color: #000;
   color: #fff;
   text-decoration: none;
   font-weight: 700;
   font-family: "Manrope", sans-serif;
-  font-size: 1.4rem;
+  font-size: 1.6rem;
   border: none;
 }
 
@@ -67,8 +67,7 @@
   width: 90%;
   max-width: 110rem;
   height: 40rem;
-
-  margin: 6rem auto 0;
+  margin: 0 auto;
 
   background-color: darkgrey;
   border: 1px solid #e0e0e0;
