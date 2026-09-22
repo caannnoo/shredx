@@ -64,3 +64,56 @@
   text-decoration: none;
   font-weight: 600;
 }
+
+/* Notebook */
+@media (max-width: 1600px) {
+  .navbar {
+    padding: 0 4rem;
+  }
+
+  .footer {
+    padding: 0 4rem;
+  }
+}
+
+/* Tablet */
+@media (max-width: 1200px) {
+  .navbar {
+    padding: 0 4rem;
+  }
+
+  .footer {
+    padding: 0 4rem;
+  }
+}
+
+/* Smartphone */
+@media (max-width: 600px) {
+  .navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 1.5rem;
+  }
+
+  .nav-links {
+    display: none;
+  }
+
+  .nav-links-auth a:not(.start-tracking) {
+    display: none;
+  }
+
+  .nav-links-auth {
+    gap: 0;
+  }
+
+  .logo {
+    width: 18rem;
+  }
+
+  .start-tracking {
+    font-size: 1.4rem;
+    padding: 1rem 2rem;
+  }
+}

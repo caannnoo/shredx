@@ -4,7 +4,6 @@
   margin: 0 auto;
   background-color: #f7f9f8;
   padding: 6rem 0;
-  /* background-color: red; */
 }
 
 .benefits-section {
@@ -71,4 +70,26 @@
 .benefit-paragraph {
   font-family: "Manrope", sans-serif;
   font-size: 1.4rem;
+}
+
+@media (max-width: 600px) {
+  .benefits {
+    padding: 3rem 0;
+  }
+  .benefitsheadingfour {
+    font-size: 1.2rem;
+  }
+
+  .benefitsheadingone {
+    font-size: 4.4rem;
+  }
+
+  .benefitsparagraph {
+    font-size: 1.4rem;
+    margin-bottom: 1rem;
+  }
+
+  .benefits-preview {
+    grid-template-columns: repeat(1, 1fr);
+  }
 }

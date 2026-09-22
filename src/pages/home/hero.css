@@ -83,3 +83,31 @@
   font-size: 2rem;
   color: #fff;
 }
+
+@media (max-width: 600px) {
+  .hero {
+    padding: 3rem 0;
+  }
+
+  .heroheadingfour {
+    font-size: 1.2rem;
+  }
+
+  .heroheadingone {
+    font-size: 4.4rem;
+  }
+
+  .heroparagraph {
+    font-size: 1.4rem;
+  }
+
+  .hero-button-primary {
+    padding: 1rem 1.8rem;
+    font-size: 1.4rem;
+  }
+
+  .hero-button-secondary {
+    padding: 1rem 1.8rem;
+    font-size: 1.4rem;
+  }
+}

@@ -19,3 +19,20 @@
   color: #777;
   text-decoration: none;
 }
+
+@media (max-width: 600px) {
+  .footer {
+    flex-direction: column;
+    gap: 2rem;
+    padding: 3rem 1.5rem;
+  }
+
+  .footer .logo {
+    width: 16rem;
+  }
+
+  .footer-links {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+}

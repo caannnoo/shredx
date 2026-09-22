@@ -40,3 +40,22 @@
   font-family: "Manrope", sans-serif;
   font-size: 1.6rem;
 }
+
+@media (max-width: 600px) {
+  .cta {
+    padding: 0;
+  }
+
+  .cta-heading {
+    font-size: 4.4rem;
+  }
+
+  .cta-paragraph {
+    font-size: 1.4rem;
+  }
+
+  .cta-button {
+    padding: 1rem 1.8rem;
+    font-size: 1.4rem;
+  }
+}

@@ -255,3 +255,17 @@
   font-size: 1.6rem;
   color: #fff;
 }
+
+@media (max-width: 600px) {
+  .features {
+    padding: 3rem 4rem;
+  }
+
+  .featureheadingone {
+    font-size: 4.4rem;
+  }
+
+  .features-grid {
+    grid-template-columns: repeat(1, 1fr);
+  }
+}

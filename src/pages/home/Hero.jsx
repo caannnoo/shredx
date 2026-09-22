@@ -10,8 +10,11 @@ function Hero() {
           made visible.
         </h1>
         <p className="heroparagraph">
-          Track food, workouts and progress in one calm, focused place
-          <br /> - so the habits that move you forward become easier to keep.
+          Track food, workouts and progress in one
+          <br />
+          calm, focused place — so the habits that
+          <br />
+          move you forward become easier to keep.
         </p>
         <div className="hero-buttons">
           <button className="hero-button-primary">Start Tracking</button>
