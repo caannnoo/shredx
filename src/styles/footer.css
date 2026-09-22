@@ -1,0 +1,21 @@
+.footer {
+  width: 100%;
+  max-width: 160rem;
+  margin: 0 auto;
+  background-color: #f7f9f8;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.footer-links {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.footer-links a {
+  font-size: 1.2rem;
+  color: #777;
+  text-decoration: none;
+}
