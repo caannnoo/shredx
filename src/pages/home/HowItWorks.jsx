@@ -4,7 +4,7 @@ function Howitworks() {
   return (
     <div className="howitworks">
       <div className="howitworks-section">
-        <h1 className="howitworks-heading">A simple practice, repeated</h1>
+        <h1 className="howitworks-heading">A simple practice, repeated.</h1>
         <div className="howitworks-grid">
           <div className="hiw-cards">
             <span className="hiw-card-nums">01</span>
