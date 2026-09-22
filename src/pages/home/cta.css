@@ -1,0 +1,37 @@
+.cta {
+  width: 100%;
+  max-width: 160rem;
+  margin: 0 auto;
+  background-color: #f7f9f8;
+  padding: 6rem 0;
+}
+
+.cta-section {
+  width: 100%;
+  max-width: 160rem;
+  text-align: center;
+  margin: 0 auto;
+  padding: 3rem;
+}
+
+.cta-heading {
+  font-family: "Manrope", sans-serif;
+  font-size: 7.2rem;
+  font-weight: 900;
+  line-height: 1.05;
+  padding-bottom: 2rem;
+  letter-spacing: -0.3rem;
+}
+
+.cta-paragraph {
+  font-family: "Inter", sans-serif;
+  font-size: 1.8rem;
+  font-weight: 500;
+  margin-bottom: 2rem;
+}
+
+.cta-button {
+  padding: 1rem 2rem;
+  border-radius: 1.2rem;
+  font-size: 1.4rem;
+}
