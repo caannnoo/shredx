@@ -1,0 +1,96 @@
+.howitworks {
+  width: 100%;
+  max-width: 160rem;
+  margin: 0 auto;
+  background-color: #f7f9f8;
+  padding: 6rem 0;
+}
+
+.howitworks-section {
+  width: 100%;
+  max-width: 160rem;
+  text-align: center;
+  margin: 0 auto;
+  padding-bottom: 3rem;
+}
+
+.howitworks-heading {
+  font-family: "Manrope", sans-serif;
+  font-size: 7.2rem;
+  font-weight: 900;
+  line-height: 1.05;
+  padding-bottom: 4.5rem;
+  letter-spacing: -0.3rem;
+}
+
+.howitworks-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2rem;
+}
+
+.hiw-cards {
+  min-height: 10rem;
+  padding: 2rem;
+  background-color: #343939;
+  border-radius: 1.2rem;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  text-align: left;
+}
+
+.hiw-card-nums {
+  margin-bottom: 0.8rem;
+  font-size: 1.6rem;
+  font-weight: 900;
+  color: lightgray;
+}
+
+.hiw-card-heads {
+  margin-bottom: 0.8rem;
+  font-size: 1.6rem;
+  font-weight: 900;
+  color: white;
+}
+
+.hiw-card-paragraphs {
+  font-size: 1.6rem;
+  font-weight: 600;
+  color: white;
+}
+
+.hiw-card2 {
+  min-height: 10rem;
+  padding: 2rem;
+  background-color: lightgrey;
+  border-radius: 1.2rem;
+}
+.hiw-card3 {
+  min-height: 10rem;
+  padding: 2rem;
+  background-color: lightgrey;
+  border-radius: 1.2rem;
+}
+
+@media (max-width: 1600px) {
+  .howitworks {
+    padding: 3rem 4rem;
+  }
+}
+
+@media (max-width: 1200px) {
+  .howitworks {
+    padding: 3rem 4rem;
+  }
+}
+
+@media (max-width: 600px) {
+  .howitworks-heading {
+    font-size: 4.4rem;
+  }
+
+  .howitworks-grid {
+    grid-template-columns: repeat(1, 1fr);
+  }
+}

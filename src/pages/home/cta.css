@@ -1,0 +1,61 @@
+.cta {
+  width: 100%;
+  max-width: 160rem;
+  margin: 0 auto;
+  background-color: #f7f9f8;
+  padding: 6rem 0;
+}
+
+.cta-section {
+  width: 100%;
+  max-width: 160rem;
+  text-align: center;
+  margin: 0 auto;
+  padding: 3rem;
+}
+
+.cta-heading {
+  font-family: "Manrope", sans-serif;
+  font-size: 7.2rem;
+  font-weight: 900;
+  line-height: 1.05;
+  padding-bottom: 2rem;
+  letter-spacing: -0.3rem;
+}
+
+.cta-paragraph {
+  font-family: "Inter", sans-serif;
+  font-size: 1.8rem;
+  font-weight: 500;
+  margin-bottom: 3rem;
+}
+
+.cta-button {
+  padding: 1rem 2rem;
+  border-radius: 1.5rem;
+  background-color: #000;
+  color: #fff;
+  text-decoration: none;
+  font-weight: 700;
+  font-family: "Manrope", sans-serif;
+  font-size: 1.6rem;
+}
+
+@media (max-width: 600px) {
+  .cta {
+    padding: 0;
+  }
+
+  .cta-heading {
+    font-size: 4.4rem;
+  }
+
+  .cta-paragraph {
+    font-size: 1.4rem;
+  }
+
+  .cta-button {
+    padding: 1rem 1.8rem;
+    font-size: 1.4rem;
+  }
+}
