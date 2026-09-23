@@ -1,4 +1,5 @@
 import "./hero.css";
+import { Link } from "react-router-dom";
 
 function Hero() {
   return (
@@ -17,7 +18,9 @@ function Hero() {
           move you forward become easier to keep.
         </p>
         <div className="hero-buttons">
-          <button className="hero-button-primary">Start Tracking</button>
+          <Link to="/register" className="hero-button-primary">
+            Start Tracking
+          </Link>
 
           <a href="#howitworks" className="hero-button-secondary">
             See How It Works

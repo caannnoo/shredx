@@ -1,4 +1,5 @@
 import "./cta.css";
+import { Link } from "react-router-dom";
 
 function Cta() {
   return (
@@ -8,7 +9,9 @@ function Cta() {
         <p className="cta-paragraph">
           Start tracking what matters and build momentum one day at a time.
         </p>
-        <button className="cta-button">Start Tracking</button>
+        <Link to="/register" className="cta-button">
+          Start Tracking
+        </Link>
       </div>
     </div>
   );
