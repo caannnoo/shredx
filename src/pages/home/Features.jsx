@@ -2,7 +2,7 @@ import "./features.css";
 
 function Features() {
   return (
-    <div className="features">
+    <div id="features" className="features">
       <div className="features-section">
         <h1 className="featureheadingone">
           Built for every part of the journey.

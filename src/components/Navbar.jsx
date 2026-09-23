@@ -15,11 +15,11 @@ function Navbar() {
         </li>
 
         <li>
-          <Link to="#features">Features</Link>
+          <a href="#features">Features</a>
         </li>
 
         <li>
-          <Link to="#howitworks">How it works</Link>
+          <a href="#howitworks">How it works</a>
         </li>
       </ul>
 

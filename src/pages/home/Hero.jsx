@@ -19,7 +19,9 @@ function Hero() {
         <div className="hero-buttons">
           <button className="hero-button-primary">Start Tracking</button>
 
-          <button className="hero-button-secondary">See How It Works</button>
+          <a href="#howitworks" className="hero-button-secondary">
+            See How It Works
+          </a>
         </div>
       </div>
       <div className="dashboard-preview">Dashboard Preview</div>

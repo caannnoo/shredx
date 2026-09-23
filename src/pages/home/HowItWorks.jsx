@@ -2,7 +2,7 @@ import "./howitworks.css";
 
 function Howitworks() {
   return (
-    <div className="howitworks">
+    <div id="howitworks" className="howitworks">
       <div className="howitworks-section">
         <h1 className="howitworks-heading">A simple practice, repeated.</h1>
         <div className="howitworks-grid">
