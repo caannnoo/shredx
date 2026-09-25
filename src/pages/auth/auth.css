@@ -1,0 +1,116 @@
+.auth {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.auth-container {
+  width: 55rem;
+  border: 1px solid #e1e4e4;
+  border-radius: 2rem;
+  background-color: #fff;
+  padding: 3rem;
+}
+
+.auth-container h1 {
+  font-size: 3rem;
+  font-weight: 800;
+  line-height: 1.1;
+  letter-spacing: -0.15rem;
+  margin-bottom: 1rem;
+}
+
+.auth-container > p {
+  font-size: 1.6rem;
+  line-height: 1.2;
+  color: #6f7676;
+  margin-bottom: 2.5rem;
+}
+
+/* FORM */
+
+.auth-container form {
+  display: flex;
+  flex-direction: column;
+}
+
+.auth-container label {
+  font-size: 1.4rem;
+  font-weight: 600;
+  color: #343939;
+  margin-bottom: 0.5rem;
+}
+
+.auth-container input,
+.auth-container select {
+  font-family: "Manrope", sans-serif;
+  font-size: 1.5rem;
+  height: 3.6rem;
+  padding: 0 0.8rem;
+  margin-bottom: 2rem;
+  background-color: #f7f9f8;
+  border: 1px solid #e1e4e4;
+  border-radius: 1.2rem;
+  outline: none;
+}
+
+.auth-container input:focus,
+.auth-container select:focus {
+  background-color: #ffffff;
+  border-color: #171a1a;
+}
+
+.auth-container form button {
+  height: 3.6rem;
+  margin-top: 0.5rem;
+  border: none;
+  border-radius: 1.2rem;
+  background-color: #171a1a;
+  color: #ffffff;
+  font-family: "Manrope", sans-serif;
+  font-size: 1.5rem;
+  font-weight: 500;
+  margin-bottom: 1.5rem;
+}
+
+.auth-container form button:hover {
+  background-color: #343939;
+}
+
+.auth-container form button:active {
+  transform: scale(0.98);
+}
+
+/* LOGIN / REGISTER SWITCH */
+
+.switch {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+}
+
+.switch-paragraph {
+  color: #171a1a;
+  font-size: 1.4rem;
+  font-weight: 700;
+}
+
+.switch-button {
+  display: inline-block;
+  color: #171a1a;
+  font-size: 1.4rem;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.switch-button:hover {
+  text-decoration: underline;
+}
+
+/* Smartphone */
+@media (max-width: 600px) {
+  .auth-container {
+    width: 36rem;
+  }
+}

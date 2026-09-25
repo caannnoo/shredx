@@ -100,20 +100,18 @@
     display: none;
   }
 
-  .nav-links-auth a:not(.start-tracking) {
+  .nav-links-auth {
+    gap: 0;
     display: none;
   }
 
-  .nav-links-auth {
-    gap: 0;
+  .logo-link {
+    display: flex;
+    justify-content: center;
+    flex: 1;
   }
 
   .logo {
     width: 18rem;
-  }
-
-  .start-tracking {
-    font-size: 1.4rem;
-    padding: 1rem 2rem;
   }
 }
