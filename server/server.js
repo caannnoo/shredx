@@ -2,12 +2,31 @@ const express = require("express");
 const cors = require("cors");
 const pool = require("./db");
 const bcrypt = require("bcrypt");
+const session = require("express-session");
 
 const app = express();
 const PORT = 3000;
 
-app.use(cors());
+app.use(
+  cors({
+    origin: "http://localhost:5173",
+    credentials: true,
+  }),
+);
+
 app.use(express.json());
+app.use(
+  session({
+    secret: process.env.SESSION_SECRET,
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
+      httpOnly: true,
+      secure: false,
+      maxAge: 1000 * 60 * 60 * 24,
+    },
+  }),
+);
 
 app.get("/api/db-test", async (req, res) => {
   try {
@@ -74,8 +93,29 @@ app.post("/api/login", async (req, res) => {
     });
   }
 
+  req.session.userId = user.id;
+
   res.json({
     message: "Login successful",
+  });
+});
+
+app.get("/api/me", async (req, res) => {
+  if (!req.session.userId) {
+    return res.status(401).json({
+      message: "Not authenticated",
+    });
+  }
+
+  const result = await pool.query(
+    `SELECT id, first_name, last_name, gender, email, created_at
+     FROM users
+     WHERE id = $1`,
+    [req.session.userId],
+  );
+
+  res.json({
+    user: result.rows[0],
   });
 });
 
