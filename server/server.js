@@ -28,22 +28,6 @@ app.use(
   }),
 );
 
-app.get("/api/db-test", async (req, res) => {
-  try {
-    const result = await pool.query("SELECT NOW()");
-
-    res.json({
-      message: "Datenbank verbunden",
-      time: result.rows[0].now,
-    });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({
-      message: "Datenbankverbindung fehlgeschlagen",
-    });
-  }
-});
-
 app.post("/api/register", async (req, res) => {
   const { firstName, lastName, gender, email, password, confirmPassword } =
     req.body;
@@ -71,32 +55,48 @@ app.post("/api/register", async (req, res) => {
 });
 
 app.post("/api/login", async (req, res) => {
+  // Email und Passwort aus dem Request holen
   const { email, password } = req.body;
 
+  // User anhand der Email in der Datenbank suchen
   const result = await pool.query("SELECT * FROM users WHERE email = $1", [
     email,
   ]);
 
+  // Gefundenen User speichern
   const user = result.rows[0];
 
+  // Prüfen, ob der User existiert
   if (!user) {
     return res.status(401).json({
       message: "Invalid email or password",
     });
   }
 
+  // Eingegebenes Passwort mit dem gespeicherten Hash vergleichen
   const passwordMatches = await bcrypt.compare(password, user.password_hash);
 
+  // Login abbrechen, wenn das Passwort falsch ist
   if (!passwordMatches) {
     return res.status(401).json({
       message: "Invalid email or password",
     });
   }
 
+  // Eingeloggten User in der Session speichern
   req.session.userId = user.id;
+
+  // Prüfen, ob dieser User bereits ein Profil hat
+  const profileResult = await pool.query(
+    "SELECT id FROM profiles WHERE user_id = $1",
+    [user.id],
+  );
+
+  const hasProfile = profileResult.rows.length > 0;
 
   res.json({
     message: "Login successful",
+    hasProfile,
   });
 });
 

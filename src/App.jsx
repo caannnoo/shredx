@@ -1,6 +1,7 @@
 import { Routes, Route } from "react-router-dom";
 import Home from "./pages/home/Home";
 import Auth from "./pages/auth/Auth";
+import Profile from "./pages/profile/Profile";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 
@@ -13,6 +14,7 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/login" element={<Auth />} />
           <Route path="/register" element={<Auth />} />
+          <Route path="/profile" element={<Profile />} />
         </Routes>
       </main>
       <Footer />
