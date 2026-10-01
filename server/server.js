@@ -15,6 +15,7 @@ app.use(
 );
 
 app.use(express.json());
+
 app.use(
   session({
     secret: process.env.SESSION_SECRET,
@@ -100,6 +101,50 @@ app.post("/api/login", async (req, res) => {
   });
 });
 
+app.patch("/api/password", async (req, res) => {
+  // Prüfen, ob User eingeloggt ist
+  if (!req.session.userId) {
+    return res.status(401).json({
+      message: "Not authenticated",
+    });
+  }
+
+  const { currentPassword, newPassword } = req.body;
+
+  // User aus der Datenbank holen
+  const result = await pool.query(
+    "SELECT password_hash FROM users WHERE id = $1",
+    [req.session.userId],
+  );
+
+  const user = result.rows[0];
+
+  // Aktuelles Passwort überprüfen
+  const passwordMatches = await bcrypt.compare(
+    currentPassword,
+    user.password_hash,
+  );
+
+  if (!passwordMatches) {
+    return res.status(401).json({
+      message: "Current password is incorrect",
+    });
+  }
+
+  // Neues Passwort hashen
+  const newPasswordHash = await bcrypt.hash(newPassword, 10);
+
+  // Neues Passwort speichern
+  await pool.query("UPDATE users SET password_hash = $1 WHERE id = $2", [
+    newPasswordHash,
+    req.session.userId,
+  ]);
+
+  res.json({
+    message: "Password successfully changed",
+  });
+});
+
 app.get("/api/me", async (req, res) => {
   if (!req.session.userId) {
     return res.status(401).json({
@@ -116,6 +161,124 @@ app.get("/api/me", async (req, res) => {
 
   res.json({
     user: result.rows[0],
+  });
+});
+
+app.post("/api/profile", async (req, res) => {
+  // Prüfen, ob der User eingeloggt ist
+  if (!req.session.userId) {
+    return res.status(401).json({
+      message: "Not authenticated",
+    });
+  }
+
+  // Profildaten aus dem Request holen
+  const {
+    dateOfBirth,
+    height,
+    currentWeight,
+    goalWeight,
+    activityLevel,
+    primaryGoal,
+    weeklyGoal,
+    protein,
+    carbs,
+    fat,
+    dailyCalories,
+  } = req.body;
+
+  // Profil in der Datenbank speichern
+  const result = await pool.query(
+    `INSERT INTO profiles (
+    user_id,
+    date_of_birth,
+    height_cm,
+    current_weight_kg,
+    goal_weight_kg,
+    activity_level,
+    primary_goal,
+    weekly_goal_kg,
+    protein_percent,
+    carbs_percent,
+    fat_percent,
+    daily_calorie_goal
+  )
+  VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)
+
+  ON CONFLICT (user_id)
+  DO UPDATE SET
+    date_of_birth = EXCLUDED.date_of_birth,
+    height_cm = EXCLUDED.height_cm,
+    current_weight_kg = EXCLUDED.current_weight_kg,
+    goal_weight_kg = EXCLUDED.goal_weight_kg,
+    activity_level = EXCLUDED.activity_level,
+    primary_goal = EXCLUDED.primary_goal,
+    weekly_goal_kg = EXCLUDED.weekly_goal_kg,
+    protein_percent = EXCLUDED.protein_percent,
+    carbs_percent = EXCLUDED.carbs_percent,
+    fat_percent = EXCLUDED.fat_percent,
+    daily_calorie_goal = EXCLUDED.daily_calorie_goal,
+    updated_at = CURRENT_TIMESTAMP
+
+  RETURNING *`,
+    [
+      req.session.userId,
+      dateOfBirth,
+      height,
+      currentWeight,
+      goalWeight,
+      activityLevel,
+      primaryGoal,
+      weeklyGoal,
+      protein,
+      carbs,
+      fat,
+      dailyCalories,
+    ],
+  );
+
+  res.status(201).json({
+    message: "Profile successfully saved",
+    profile: result.rows[0],
+  });
+});
+
+app.get("/api/profile", async (req, res) => {
+  if (!req.session.userId) {
+    return res.status(401).json({
+      message: "Not authenticated",
+    });
+  }
+
+  const result = await pool.query(
+    `SELECT
+    id,
+    user_id,
+    TO_CHAR(date_of_birth, 'YYYY-MM-DD') AS date_of_birth,
+    height_cm,
+    current_weight_kg,
+    goal_weight_kg,
+    activity_level,
+    primary_goal,
+    weekly_goal_kg,
+    protein_percent,
+    carbs_percent,
+    fat_percent,
+    created_at,
+    updated_at
+  FROM profiles
+  WHERE user_id = $1`,
+    [req.session.userId],
+  );
+
+  if (result.rows.length === 0) {
+    return res.status(404).json({
+      message: "Profile not found",
+    });
+  }
+
+  res.json({
+    profile: result.rows[0],
   });
 });
 

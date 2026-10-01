@@ -93,13 +93,19 @@
   border-radius: 1rem;
   background-color: #fff;
   font-family: "Inter", sans-serif;
-  font-size: 1.2rem;
+  font-size: 1.5rem;
   color: #17211e;
   outline: none;
 }
 
 .personal-field input:focus {
   border-color: #8a9191;
+}
+
+.personal-field input:read-only {
+  background-color: #f3f5f4;
+  color: #6f7676;
+  cursor: not-allowed;
 }
 
 /* =========================
@@ -178,7 +184,7 @@
 
 .fitness-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(2, 1fr);
   gap: 2rem;
 }
 
@@ -194,6 +200,7 @@
   color: #343939;
 }
 
+.fitness-field input,
 .fitness-field select {
   width: 100%;
   padding: 1.2rem 1.4rem;
@@ -204,11 +211,16 @@
   font-size: 1.5rem;
   color: #17211e;
   outline: none;
-  cursor: pointer;
 }
 
 .fitness-field select:focus {
   border-color: #8a9191;
+}
+
+.fitness-field input:read-only {
+  background-color: #f3f5f4;
+  color: #6f7676;
+  cursor: not-allowed;
 }
 
 /* =========================
@@ -291,7 +303,6 @@
 .macro-bar {
   width: 100%;
   height: 1rem;
-  background-color: #1cad6f;
   border-radius: 999px;
   margin-top: 1rem;
 }
@@ -380,14 +391,19 @@
   position: relative;
   width: 100%;
   height: 1rem;
-  background-color: #dfe5e2;
   border-radius: 999px;
+  background: linear-gradient(
+    to right,
+    #7db7e8 0% 14%,
+    #22a96b 14% 40%,
+    #f5bd45 40% 60%,
+    #e86868 60% 100%
+  );
 }
 
 .bmi-indicator {
   position: absolute;
   top: 50%;
-  left: 45%;
   width: 0.4rem;
   height: 1.8rem;
   background-color: #17211e;
@@ -396,14 +412,24 @@
 }
 
 .bmi-scale {
-  display: flex;
-  justify-content: space-between;
+  position: relative;
+  height: 2rem;
   margin-top: 0.8rem;
 }
 
 .bmi-scale span {
+  position: absolute;
+  transform: translateX(-50%);
   font-size: 1.2rem;
   color: #8a9191;
+}
+
+.bmi-scale span:first-child {
+  transform: translateX(0);
+}
+
+.bmi-scale span:last-child {
+  transform: translateX(-100%);
 }
 
 .bmi-info {

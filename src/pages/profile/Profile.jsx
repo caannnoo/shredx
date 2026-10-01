@@ -12,10 +12,12 @@ function Profile() {
   const [activityLevel, setActivityLevel] = useState("");
   const [primaryGoal, setPrimaryGoal] = useState("");
   const [weeklyGoal, setWeeklyGoal] = useState("");
-
   const [protein, setProtein] = useState(30);
   const [carbs, setCarbs] = useState(40);
   const [fat, setFat] = useState(30);
+  const [currentPassword, setCurrentPassword] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmNewPassword, setConfirmNewPassword] = useState("");
 
   useEffect(() => {
     const loadUser = async () => {
@@ -32,8 +34,274 @@ function Profile() {
       }
     };
 
+    const loadProfile = async () => {
+      const response = await fetch("http://localhost:3000/api/profile", {
+        credentials: "include",
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        const profile = data.profile;
+
+        setDateOfBirth(profile.date_of_birth);
+        setHeight(profile.height_cm);
+        setCurrentWeight(profile.current_weight_kg);
+        setGoalWeight(profile.goal_weight_kg);
+        setActivityLevel(profile.activity_level);
+        setPrimaryGoal(profile.primary_goal);
+        setWeeklyGoal(profile.weekly_goal_kg);
+        setProtein(profile.protein_percent);
+        setCarbs(profile.carbs_percent);
+        setFat(profile.fat_percent);
+      }
+    };
+
     loadUser();
+    loadProfile();
   }, []);
+
+  const calculateAge = (dateOfBirth) => {
+    const today = new Date();
+    const birthDate = new Date(dateOfBirth);
+
+    let age = today.getFullYear() - birthDate.getFullYear();
+
+    const monthDifference = today.getMonth() - birthDate.getMonth();
+
+    if (
+      monthDifference < 0 ||
+      (monthDifference === 0 && today.getDate() < birthDate.getDate())
+    ) {
+      age--;
+    }
+
+    return age;
+  };
+
+  const calculateBMR = () => {
+    if (!dateOfBirth || !height || !currentWeight || !gender) {
+      return 0;
+    }
+
+    const age = calculateAge(dateOfBirth);
+
+    if (gender === "male") {
+      return 10 * currentWeight + 6.25 * height - 5 * age + 5;
+    }
+
+    if (gender === "female") {
+      return 10 * currentWeight + 6.25 * height - 5 * age - 161;
+    }
+
+    return 0;
+  };
+
+  const calculateTDEE = () => {
+    const bmr = calculateBMR();
+
+    if (!bmr || !activityLevel) {
+      return 0;
+    }
+
+    const activityFactors = {
+      sedentary: 1.2,
+      lightly_active: 1.375,
+      moderately_active: 1.55,
+      very_active: 1.725,
+      extra_active: 1.9,
+    };
+
+    return bmr * activityFactors[activityLevel];
+  };
+
+  const calculateDailyCalories = () => {
+    const tdee = calculateTDEE();
+
+    if (!tdee || !primaryGoal) {
+      return 0;
+    }
+
+    if (primaryGoal === "maintain_weight") {
+      return Math.round(tdee);
+    }
+
+    if (!weeklyGoal) {
+      return 0;
+    }
+
+    const dailyAdjustment = (Number(weeklyGoal) * 7700) / 7;
+
+    if (primaryGoal === "lose_weight") {
+      return Math.round(tdee - dailyAdjustment);
+    }
+
+    if (primaryGoal === "gain_weight") {
+      return Math.round(tdee + dailyAdjustment);
+    }
+
+    return Math.round(tdee);
+  };
+
+  const calculateBMI = () => {
+    if (!height || !currentWeight) {
+      return 0;
+    }
+
+    const heightInMeters = Number(height) / 100;
+
+    const bmi = Number(currentWeight) / (heightInMeters * heightInMeters);
+
+    return bmi.toFixed(1);
+  };
+
+  const getBMICategory = () => {
+    const bmi = Number(calculateBMI());
+
+    if (!bmi) {
+      return "--";
+    }
+
+    if (bmi < 18.5) {
+      return "Underweight";
+    }
+
+    if (bmi < 25) {
+      return "Normal Weight";
+    }
+
+    if (bmi < 30) {
+      return "Overweight";
+    }
+
+    return "Obesity";
+  };
+
+  const getBMIPosition = () => {
+    const bmi = Number(calculateBMI());
+
+    if (!bmi) {
+      return 0;
+    }
+
+    const minBMI = 15;
+    const maxBMI = 40;
+
+    const position = ((bmi - minBMI) / (maxBMI - minBMI)) * 100;
+
+    return Math.min(Math.max(position, 0), 100);
+  };
+
+  const getBMIColor = () => {
+    const bmi = Number(calculateBMI());
+
+    if (!bmi) {
+      return "#8a9191";
+    }
+
+    if (bmi < 18.5) {
+      return "#7db7e8"; // blau
+    }
+
+    if (bmi < 25) {
+      return "#22a96b"; // grün
+    }
+
+    if (bmi < 30) {
+      return "#f5bd45"; // gelb
+    }
+
+    return "#e86868"; // rot
+  };
+
+  const handleSaveProfile = async () => {
+    if (
+      !dateOfBirth ||
+      !height ||
+      !currentWeight ||
+      !goalWeight ||
+      !activityLevel ||
+      !primaryGoal ||
+      !weeklyGoal
+    ) {
+      alert("Please fill in all profile fields.");
+      return;
+    }
+
+    if (protein + carbs + fat !== 100) {
+      alert("Macro goals must add up to 100%.");
+      return;
+    }
+
+    const profileData = {
+      dateOfBirth,
+      height,
+      currentWeight,
+      goalWeight,
+      activityLevel,
+      primaryGoal,
+      weeklyGoal,
+      protein,
+      carbs,
+      fat,
+      dailyCalories: calculateDailyCalories(),
+    };
+
+    const response = await fetch("http://localhost:3000/api/profile", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      credentials: "include",
+      body: JSON.stringify(profileData),
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      alert(data.message);
+      return;
+    }
+
+    alert(data.message);
+  };
+
+  const handleChangePassword = async () => {
+    if (!currentPassword || !newPassword || !confirmNewPassword) {
+      alert("Please fill in all password fields.");
+      return;
+    }
+
+    if (newPassword !== confirmNewPassword) {
+      alert("New passwords do not match.");
+      return;
+    }
+
+    const response = await fetch("http://localhost:3000/api/password", {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      credentials: "include",
+      body: JSON.stringify({
+        currentPassword,
+        newPassword,
+      }),
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      alert(data.message);
+      return;
+    }
+
+    alert(data.message);
+
+    setCurrentPassword("");
+    setNewPassword("");
+    setConfirmNewPassword("");
+  };
 
   return (
     <section className="profile">
@@ -51,30 +319,15 @@ function Profile() {
           <div className="personal-grid">
             <div className="personal-field">
               <label htmlFor="firstName">First Name</label>
-              <input
-                id="firstName"
-                type="text"
-                value={firstName}
-                onChange={(e) => setFirstName(e.target.value)}
-              />
+              <input id="firstName" type="text" value={firstName} readOnly />
             </div>
             <div className="personal-field">
               <label htmlFor="lastName">Last Name</label>
-              <input
-                id="lastName"
-                type="text"
-                value={lastName}
-                onChange={(e) => setLastName(e.target.value)}
-              />
+              <input id="lastName" type="text" value={lastName} readOnly />
             </div>
             <div className="personal-field">
               <label htmlFor="gender">Gender</label>
-              <input
-                id="gender"
-                type="text"
-                value={gender}
-                onChange={(e) => setGender(e.target.value)}
-              />
+              <input id="gender" type="text" value={gender} readOnly />
             </div>
             <div className="personal-field">
               <label htmlFor="dateOfBirth">Date of Birth</label>
@@ -173,6 +426,19 @@ function Profile() {
                 <option value="1.00">1.00 kg per week</option>
               </select>
             </div>
+            <div className="fitness-field">
+              <label htmlFor="dailyCalories">Daily Calorie Goal</label>
+              <input
+                id="dailyCalories"
+                type="text"
+                value={
+                  calculateDailyCalories()
+                    ? `${calculateDailyCalories()} kcal`
+                    : ""
+                }
+                readOnly
+              />
+            </div>
           </div>
         </div>
       </div>
@@ -217,9 +483,21 @@ function Profile() {
                 <span>%</span>
               </div>
             </div>
-            <div className="macro-bar" />
+            <div
+              className="macro-bar"
+              style={{
+                background: `linear-gradient(
+      to right,
+      #000 0% ${protein}%,
+      #5d5959 ${protein}% ${protein + carbs}%,
+      #cacaca ${protein + carbs}% 100%
+    )`,
+              }}
+            />
             <p className="macro-total">Total: {protein + carbs + fat}%</p>
-            <button className="save-profile-button">Save Profile</button>
+            <button className="save-profile-button" onClick={handleSaveProfile}>
+              Save Profile
+            </button>
           </div>
         </div>
         <div className="bmi-calculator-card">
@@ -232,17 +510,24 @@ function Profile() {
             <div className="bmi-header">
               <div>
                 <h2>Body Mass Index</h2>
-                <p className="bmi-category">Category: Normal Weight</p>
+                <p className="bmi-category" style={{ color: getBMIColor() }}>
+                  Category: {getBMICategory()}
+                </p>
               </div>
-              <span className="bmi-value">23.5</span>
+              <span className="bmi-value">{calculateBMI() || "--"}</span>
             </div>
             <div className="bmi-bar">
-              <div className="bmi-indicator"></div>
+              <div
+                className="bmi-indicator"
+                style={{ left: `${getBMIPosition()}%` }}
+              ></div>
             </div>
             <div className="bmi-scale">
-              <span>18.5</span>
-              <span>25</span>
-              <span>30+</span>
+              <span style={{ left: "0%" }}>15</span>
+              <span style={{ left: "14%" }}>18.5</span>
+              <span style={{ left: "40%" }}>25</span>
+              <span style={{ left: "60%" }}>30</span>
+              <span style={{ left: "100%" }}>40+</span>
             </div>
             <p className="bmi-info">
               BMI is a general screening measure and is not intended to diagnose
@@ -256,32 +541,42 @@ function Profile() {
           <div className="security-field">
             <label htmlFor="currentPassword">Current Password</label>
             <div className="password-input">
-              <input id="currentPassword" type="password" />
+              <input
+                id="currentPassword"
+                type="password"
+                value={currentPassword}
+                onChange={(e) => setCurrentPassword(e.target.value)}
+              />
             </div>
           </div>
           <div className="security-field">
             <label htmlFor="newPassword">New Password</label>
             <div className="password-input">
-              <input id="newPassword" type="password" />
+              <input
+                id="newPassword"
+                type="password"
+                value={newPassword}
+                onChange={(e) => setNewPassword(e.target.value)}
+              />
             </div>
-            <div className="password-strength">
-              <span></span>
-              <span></span>
-              <span></span>
-              <span></span>
-            </div>
-            <p className="password-strength-text">
-              Strength: Enter a new password
-            </p>
           </div>
           <div className="security-field">
             <label htmlFor="confirmNewPassword">Confirm New Password</label>
 
             <div className="password-input">
-              <input id="confirmNewPassword" type="password" />
+              <input
+                id="confirmNewPassword"
+                type="password"
+                value={confirmNewPassword}
+                onChange={(e) => setConfirmNewPassword(e.target.value)}
+              />
             </div>
           </div>
-          <button type="button" className="change-password-button">
+          <button
+            type="button"
+            className="change-password-button"
+            onClick={handleChangePassword}
+          >
             Change Password
           </button>
         </div>
