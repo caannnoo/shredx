@@ -4,14 +4,14 @@ import Features from "./Features";
 import HowItWorks from "./HowItWorks";
 import Cta from "./Cta";
 
-function Home() {
+function Home({ isLoggedIn }) {
   return (
     <div>
-      <Hero />
+      <Hero isLoggedIn={isLoggedIn} />
       <Benefits />
       <Features />
       <HowItWorks />
-      <Cta />
+      <Cta isLoggedIn={isLoggedIn} />
     </div>
   );
 }

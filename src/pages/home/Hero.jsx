@@ -1,7 +1,7 @@
 import "./hero.css";
 import { Link } from "react-router-dom";
 
-function Hero() {
+function Hero({ isLoggedIn }) {
   return (
     <div className="hero">
       <div className="hero-section">
@@ -18,9 +18,11 @@ function Hero() {
           move you forward become easier to keep.
         </p>
         <div className="hero-buttons">
-          <Link to="/register" className="hero-button-primary">
-            Start Tracking
-          </Link>
+          {!isLoggedIn && (
+            <Link to="/register" className="hero-button-primary">
+              Start Tracking
+            </Link>
+          )}
 
           <a href="#howitworks" className="hero-button-secondary">
             See How It Works

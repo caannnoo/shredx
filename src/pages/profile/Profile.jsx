@@ -1,7 +1,9 @@
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import "./profile.css";
 
-function Profile() {
+function Profile({ setIsLoggedIn }) {
+  const navigate = useNavigate();
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [gender, setGender] = useState("");
@@ -303,6 +305,18 @@ function Profile() {
     setConfirmNewPassword("");
   };
 
+  const handleLogout = async () => {
+    const response = await fetch("http://localhost:3000/api/logout", {
+      method: "POST",
+      credentials: "include",
+    });
+
+    if (response.ok) {
+      setIsLoggedIn(false);
+      navigate("/");
+    }
+  };
+
   return (
     <section className="profile">
       <div className="profile-header">
@@ -580,6 +594,15 @@ function Profile() {
             Change Password
           </button>
         </div>
+      </div>
+      <div className="profile-logout">
+        <button
+          type="button"
+          className="profile-logout-button"
+          onClick={handleLogout}
+        >
+          Logout
+        </button>
       </div>
     </section>
   );

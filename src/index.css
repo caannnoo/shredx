@@ -32,3 +32,9 @@ body {
   display: flex;
   flex-direction: column;
 }
+
+@media (max-width: 450px) {
+  body {
+    padding-bottom: 7rem;
+  }
+}

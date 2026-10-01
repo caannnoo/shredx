@@ -282,6 +282,22 @@ app.get("/api/profile", async (req, res) => {
   });
 });
 
+app.post("/api/logout", (req, res) => {
+  req.session.destroy((error) => {
+    if (error) {
+      return res.status(500).json({
+        message: "Logout failed",
+      });
+    }
+
+    res.clearCookie("connect.sid");
+
+    res.json({
+      message: "Logout successful",
+    });
+  });
+});
+
 app.listen(PORT, () => {
   console.log(`Server läuft auf Port ${PORT}`);
 });

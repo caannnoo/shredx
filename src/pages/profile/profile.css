@@ -532,14 +532,78 @@
   background-color: #343939;
 }
 
+.profile-logout {
+  display: none;
+}
+
 @media (max-width: 1200px) {
   .profile {
     padding: 6rem 8rem;
   }
 }
 
-@media (max-width: 600px) {
+@media (max-width: 450px) {
   .profile {
-    padding: 4rem 4rem;
+    padding: 4rem 2.5rem;
+  }
+
+  .profile-card {
+    padding: 2rem;
+  }
+
+  .body-card {
+    padding: 2rem;
+  }
+
+  .body-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .fitness-field input,
+  .fitness-field select {
+    font-size: 1.3rem;
+  }
+
+  .fitness-card {
+    padding: 2rem;
+  }
+
+  .macro-goals-card {
+    padding: 2rem;
+  }
+
+  .bmi-calculator-card {
+    padding: 2rem;
+  }
+
+  .security-card {
+    padding: 2rem;
+  }
+
+  .profile-logout {
+    display: flex;
+    justify-content: center;
+    margin-top: 2rem;
+  }
+
+  .profile-logout-button {
+    width: 100%;
+    padding: 1.4rem;
+
+    border: none;
+    border-radius: 0.8rem;
+
+    background-color: #e5484d;
+    color: #ffffff;
+
+    font-family: inherit;
+    font-size: 1.6rem;
+    font-weight: 600;
+
+    cursor: pointer;
+  }
+
+  .profile-logout-button:hover {
+    background-color: #cf3c41;
   }
 }

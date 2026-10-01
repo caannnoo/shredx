@@ -1,7 +1,7 @@
 import "./cta.css";
 import { Link } from "react-router-dom";
 
-function Cta() {
+function Cta({ isLoggedIn }) {
   return (
     <div className="cta">
       <div className="cta-section">
@@ -9,9 +9,11 @@ function Cta() {
         <p className="cta-paragraph">
           Start tracking what matters and build momentum one day at a time.
         </p>
-        <Link to="/register" className="cta-button">
-          Start Tracking
-        </Link>
+        {!isLoggedIn && (
+          <Link to="/register" className="cta-button">
+            Start Tracking
+          </Link>
+        )}
       </div>
     </div>
   );

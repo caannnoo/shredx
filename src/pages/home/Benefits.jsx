@@ -12,8 +12,8 @@ function Benefits() {
       <div className="benefits-section">
         <h4 className="benefitsheadingfour">ONE CLEAR PICTURE</h4>
         <h1 className="benefitsheadingone">
-          The numbers matter. The <br />
-          pattern matters more.
+          The numbers matter. <br />
+          Pattern matters more.
         </h1>
         <p className="benefitsparagraph">
           Everything you need to make better daily choices,

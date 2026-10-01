@@ -46,6 +46,8 @@ function Auth() {
     const data = await response.json();
 
     if (isLogin) {
+      window.dispatchEvent(new Event("authChanged"));
+
       if (data.hasProfile) {
         navigate("/dashboard");
       } else {

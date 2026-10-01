@@ -29,7 +29,7 @@
 
   font-family: "Manrope", sans-serif;
   font-weight: 600;
-  font-size: 1.8rem;
+  font-size: 1.6rem;
 }
 
 .nav-links a {
@@ -47,7 +47,7 @@
 
   font-family: "Manrope", sans-serif;
   font-weight: 600;
-  font-size: 1.8rem;
+  font-size: 1.6rem;
 }
 
 .nav-links-auth a {
@@ -63,6 +63,29 @@
   color: #fff;
   text-decoration: none;
   font-weight: 600;
+}
+
+.logout-button {
+  padding: 1rem 1.8rem;
+  border: none;
+  border-radius: 1rem;
+
+  background-color: #e5484d;
+  color: #ffffff;
+
+  font-family: inherit;
+  font-size: 1.6rem;
+  font-weight: 600;
+
+  cursor: pointer;
+}
+
+.logout-button:hover {
+  background-color: #cf3c41;
+}
+
+.logout-button:active {
+  transform: translateY(0);
 }
 
 /* Notebook */
