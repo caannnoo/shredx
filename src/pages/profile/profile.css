@@ -27,7 +27,7 @@
 }
 
 .profile-header h1 {
-  font-family: "Manrope", sans-serif;
+  font-family: "Inter", sans-serif;
   font-size: 4rem;
   font-weight: 800;
   line-height: 1.15;
@@ -530,4 +530,16 @@
 
 .change-password-button:hover {
   background-color: #343939;
+}
+
+@media (max-width: 1200px) {
+  .profile {
+    padding: 6rem 8rem;
+  }
+}
+
+@media (max-width: 600px) {
+  .profile {
+    padding: 4rem 4rem;
+  }
 }
