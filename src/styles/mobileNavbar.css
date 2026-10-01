@@ -1,0 +1,41 @@
+.mobile-navbar {
+  display: none;
+}
+
+@media (max-width: 450px) {
+  .mobile-navbar {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    z-index: 1000;
+
+    width: 100%;
+    height: 7rem;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+
+    background-color: #ffffff;
+    border-top: 1px solid #e1e4e4;
+  }
+
+  .mobile-navbar a {
+    flex: 1;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.4rem;
+
+    color: #6f7676;
+    text-decoration: none;
+    font-size: 1.2rem;
+    font-weight: 600;
+  }
+
+  .mobile-navbar a:hover {
+    color: #000;
+  }
+}

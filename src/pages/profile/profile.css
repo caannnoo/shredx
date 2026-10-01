@@ -1,0 +1,609 @@
+/* =========================
+   Profile
+========================= */
+
+.profile {
+  width: 100%;
+  padding: 6rem 3rem;
+}
+
+/* =========================
+   Profile-Header
+========================= */
+
+.profile-header {
+  width: 100%;
+  max-width: 120rem;
+  margin: 0 auto;
+}
+
+.profile-header h4 {
+  font-size: 1.3rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.15rem;
+  color: #6f7b77;
+  margin-bottom: 1rem;
+}
+
+.profile-header h1 {
+  font-family: "Inter", sans-serif;
+  font-size: 4rem;
+  font-weight: 800;
+  line-height: 1.15;
+  color: #17211e;
+  margin-bottom: 1.2rem;
+}
+
+.profile-header p {
+  font-size: 1.7rem;
+  line-height: 1.6;
+  color: #6f7b77;
+  margin-bottom: 2rem;
+}
+
+/* =========================
+   Profile-Container / Profile-Card
+========================= */
+
+.profile-container {
+  width: 100%;
+  max-width: 120rem;
+  margin: 0 auto;
+}
+
+.profile-card {
+  background-color: #fff;
+  border: 1px solid #e1e4e4;
+  border-radius: 2rem;
+  padding: 3rem;
+  margin-bottom: 2rem;
+}
+
+.profile-card h2 {
+  font-family: "Manrope", sans-serif;
+  font-size: 2rem;
+  font-weight: 700;
+  color: #17211e;
+  margin-bottom: 2.5rem;
+}
+
+.personal-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 2rem;
+}
+
+.personal-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+}
+
+.personal-field label {
+  font-size: 1.4rem;
+  font-weight: 600;
+  color: #343939;
+}
+
+.personal-field input {
+  width: 100%;
+  padding: 1.2rem 1.4rem;
+  border: 1px solid #e1e4e4;
+  border-radius: 1rem;
+  background-color: #fff;
+  font-family: "Inter", sans-serif;
+  font-size: 1.5rem;
+  color: #17211e;
+  outline: none;
+}
+
+.personal-field input:focus {
+  border-color: #8a9191;
+}
+
+.personal-field input:read-only {
+  background-color: #f3f5f4;
+  color: #6f7676;
+  cursor: not-allowed;
+}
+
+/* =========================
+   Body-Card
+========================= */
+
+.body-card {
+  background-color: #fff;
+  border: 1px solid #e1e4e4;
+  border-radius: 2rem;
+  padding: 3rem;
+  margin-bottom: 2rem;
+}
+
+.body-card h2 {
+  font-family: "Manrope", sans-serif;
+  font-size: 2rem;
+  font-weight: 700;
+  color: #17211e;
+  margin-bottom: 2.5rem;
+}
+
+.body-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2rem;
+}
+
+.body-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+}
+
+.body-field label {
+  font-size: 1.4rem;
+  font-weight: 600;
+  color: #343939;
+}
+
+.body-field input {
+  width: 100%;
+  padding: 1.2rem 1.4rem;
+  border: 1px solid #e1e4e4;
+  border-radius: 1rem;
+  background-color: #fff;
+  font-family: "Inter", sans-serif;
+  font-size: 1.5rem;
+  color: #17211e;
+  outline: none;
+}
+
+.body-field input:focus {
+  border-color: #8a9191;
+}
+
+/* =========================
+   Fitness-Card
+========================= */
+
+.fitness-card {
+  background-color: #fff;
+  border: 1px solid #e1e4e4;
+  border-radius: 2rem;
+  padding: 3rem;
+  margin-bottom: 2rem;
+}
+
+.fitness-card h2 {
+  font-family: "Manrope", sans-serif;
+  font-size: 2rem;
+  font-weight: 700;
+  color: #17211e;
+  margin-bottom: 2.5rem;
+}
+
+.fitness-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 2rem;
+}
+
+.fitness-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+}
+
+.fitness-field label {
+  font-size: 1.4rem;
+  font-weight: 600;
+  color: #343939;
+}
+
+.fitness-field input,
+.fitness-field select {
+  width: 100%;
+  padding: 1.2rem 1.4rem;
+  border: 1px solid #e1e4e4;
+  border-radius: 1rem;
+  background-color: #fff;
+  font-family: "Inter", sans-serif;
+  font-size: 1.5rem;
+  color: #17211e;
+  outline: none;
+}
+
+.fitness-field select:focus {
+  border-color: #8a9191;
+}
+
+.fitness-field input:read-only {
+  background-color: #f3f5f4;
+  color: #6f7676;
+  cursor: not-allowed;
+}
+
+/* =========================
+   Profile-Tools / Macro-Goals-Card
+========================= */
+
+.profile-tools {
+  width: 100%;
+  max-width: 120rem;
+  margin: 0 auto;
+}
+
+.macro-goals-card {
+  background-color: #fff;
+  border: 1px solid #e1e4e4;
+  border-radius: 2rem;
+  padding: 3rem;
+  margin-bottom: 2rem;
+}
+
+.macro-goals-card h2 {
+  font-family: "Manrope", sans-serif;
+  font-size: 2rem;
+  font-weight: 700;
+  color: #17211e;
+  margin-bottom: 0.8rem;
+}
+
+.macro-goals-card > p {
+  font-size: 1.4rem;
+  color: #6f7b77;
+  margin-bottom: 2.5rem;
+}
+
+.macros {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.macro-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.macro-row label {
+  font-size: 1.4rem;
+  font-weight: 600;
+  color: #343939;
+}
+
+.macro-input {
+  display: flex;
+  align-items: center;
+  width: 10rem;
+  padding: 1rem 1.2rem;
+  border: 1px solid #e1e4e4;
+  border-radius: 1rem;
+  background-color: #fff;
+}
+
+.macro-input input {
+  width: 100%;
+  border: none;
+  outline: none;
+  background: transparent;
+  font-family: "Inter", sans-serif;
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #17211e;
+}
+
+.macro-input span {
+  font-size: 1.4rem;
+  color: #8a9191;
+  margin-left: 0.5rem;
+}
+
+.macro-bar {
+  width: 100%;
+  height: 1rem;
+  border-radius: 999px;
+  margin-top: 1rem;
+}
+
+.macro-total {
+  font-size: 1.4rem;
+  color: #6f7b77;
+}
+
+.save-profile-button {
+  width: 100%;
+  padding: 1.3rem;
+  border: none;
+  border-radius: 1rem;
+  background-color: #17211e;
+  color: #fff;
+  font-family: "Inter", sans-serif;
+  font-size: 1.5rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.save-profile-button:hover {
+  background-color: #343939;
+}
+
+/* =========================
+   BMI-Calculator-Card
+========================= */
+
+.bmi-calculator-card {
+  background-color: #fff;
+  border: 1px solid #e1e4e4;
+  border-radius: 2rem;
+  padding: 3rem;
+  margin-bottom: 2rem;
+}
+
+.bmi-calculator-card > h2 {
+  font-family: "Manrope", sans-serif;
+  font-size: 2rem;
+  font-weight: 700;
+  color: #17211e;
+  margin-bottom: 0.8rem;
+}
+
+.bmi-calculator-card > p {
+  font-size: 1.4rem;
+  color: #6f7b77;
+  margin-bottom: 2.5rem;
+}
+
+.bmi {
+  background-color: #f7f9f8;
+  border-radius: 1.5rem;
+  padding: 2rem;
+}
+
+.bmi-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+}
+
+.bmi-header h2 {
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: #17211e;
+  margin-bottom: 0.5rem;
+}
+
+.bmi-category {
+  font-size: 1.3rem;
+  color: #6f7b77;
+}
+
+.bmi-value {
+  font-family: "Manrope", sans-serif;
+  font-size: 3rem;
+  font-weight: 800;
+  color: #17211e;
+}
+
+.bmi-bar {
+  position: relative;
+  width: 100%;
+  height: 1rem;
+  border-radius: 999px;
+  background: linear-gradient(
+    to right,
+    #7db7e8 0% 14%,
+    #22a96b 14% 40%,
+    #f5bd45 40% 60%,
+    #e86868 60% 100%
+  );
+}
+
+.bmi-indicator {
+  position: absolute;
+  top: 50%;
+  width: 0.4rem;
+  height: 1.8rem;
+  background-color: #17211e;
+  border-radius: 999px;
+  transform: translateY(-50%);
+}
+
+.bmi-scale {
+  position: relative;
+  height: 2rem;
+  margin-top: 0.8rem;
+}
+
+.bmi-scale span {
+  position: absolute;
+  transform: translateX(-50%);
+  font-size: 1.2rem;
+  color: #8a9191;
+}
+
+.bmi-scale span:first-child {
+  transform: translateX(0);
+}
+
+.bmi-scale span:last-child {
+  transform: translateX(-100%);
+}
+
+.bmi-info {
+  font-size: 1.2rem;
+  line-height: 1.5;
+  color: #8a9191;
+  margin-top: 2rem;
+}
+
+/* =========================
+   Security-Card
+========================= */
+
+.security-card {
+  background-color: #fff;
+  border: 1px solid #e1e4e4;
+  border-radius: 2rem;
+  padding: 3rem;
+}
+
+.security-card > h2 {
+  font-family: "Manrope", sans-serif;
+  font-size: 2rem;
+  font-weight: 700;
+  color: #17211e;
+  margin-bottom: 0.8rem;
+}
+
+.security-card > p {
+  font-size: 1.4rem;
+  color: #6f7b77;
+  margin-bottom: 2.5rem;
+}
+
+.security-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+  margin-bottom: 1.8rem;
+}
+
+.security-field label {
+  font-size: 1.4rem;
+  font-weight: 600;
+  color: #343939;
+}
+
+.password-input {
+  width: 100%;
+}
+
+.password-input input {
+  width: 100%;
+  padding: 1.2rem 1.4rem;
+  border: 1px solid #e1e4e4;
+  border-radius: 1rem;
+  background-color: #fff;
+  font-family: "Inter", sans-serif;
+  font-size: 1.5rem;
+  color: #17211e;
+  outline: none;
+}
+
+.password-input input:focus {
+  border-color: #8a9191;
+}
+
+.password-strength {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.6rem;
+  margin-top: 0.5rem;
+}
+
+.password-strength span {
+  height: 0.5rem;
+  background-color: #e1e4e4;
+  border-radius: 999px;
+}
+
+.password-strength-text {
+  font-size: 1.2rem;
+  color: #8a9191;
+}
+
+.change-password-button {
+  width: 100%;
+  padding: 1.3rem;
+  border: none;
+  border-radius: 1rem;
+  background-color: #17211e;
+  color: #fff;
+  font-family: "Inter", sans-serif;
+  font-size: 1.5rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.change-password-button:hover {
+  background-color: #343939;
+}
+
+.profile-logout {
+  display: none;
+}
+
+@media (max-width: 1200px) {
+  .profile {
+    padding: 6rem 8rem;
+  }
+}
+
+@media (max-width: 450px) {
+  .profile {
+    padding: 4rem 2.5rem;
+  }
+
+  .profile-card {
+    padding: 2rem;
+  }
+
+  .body-card {
+    padding: 2rem;
+  }
+
+  .body-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .fitness-field input,
+  .fitness-field select {
+    font-size: 1.3rem;
+  }
+
+  .fitness-card {
+    padding: 2rem;
+  }
+
+  .macro-goals-card {
+    padding: 2rem;
+  }
+
+  .bmi-calculator-card {
+    padding: 2rem;
+  }
+
+  .security-card {
+    padding: 2rem;
+  }
+
+  .profile-logout {
+    display: flex;
+    justify-content: center;
+    margin-top: 2rem;
+  }
+
+  .profile-logout-button {
+    width: 100%;
+    padding: 1.4rem;
+
+    border: none;
+    border-radius: 0.8rem;
+
+    background-color: #e5484d;
+    color: #ffffff;
+
+    font-family: inherit;
+    font-size: 1.6rem;
+    font-weight: 600;
+
+    cursor: pointer;
+  }
+
+  .profile-logout-button:hover {
+    background-color: #cf3c41;
+  }
+}

@@ -1,9 +1,10 @@
 import "../auth/auth.css";
 import { useState } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 
 function Auth() {
   const location = useLocation();
+  const navigate = useNavigate();
   const isLogin = location.pathname === "/login";
 
   const [firstName, setFirstName] = useState("");
@@ -44,9 +45,14 @@ function Auth() {
 
     const data = await response.json();
 
-    if (!response.ok) {
-      alert(data.message);
-      return;
+    if (isLogin) {
+      window.dispatchEvent(new Event("authChanged"));
+
+      if (data.hasProfile) {
+        navigate("/dashboard");
+      } else {
+        navigate("/profile");
+      }
     }
 
     alert(data.message);
