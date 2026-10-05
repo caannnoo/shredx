@@ -1,3 +1,11 @@
+// Lädt Umgebungsvariablen aus der .env-Datei im Server-Ordner
+const path = require("path");
+
+require("dotenv").config({
+  path: path.join(__dirname, ".env"),
+});
+
+
 // Express erstellt den Server
 const express = require("express");
 
@@ -82,6 +90,9 @@ app.post("/api/login", async (req, res) => {
   // Ersten gefundenen User speichern deswegen [0]
   const user = result.rows[0];
 
+  console.log("Login-E-Mail:", email);
+  console.log("User gefunden:", !!user);
+
   // Prüfen, ob der User existiert
   if (!user) {
     return res.status(401).json({
@@ -90,7 +101,14 @@ app.post("/api/login", async (req, res) => {
   }
 
   // Eingegebenes Passwort mit dem gespeicherten Hash vergleichen
-  const passwordMatches = await bcrypt.compare(password, user.password_hash);
+  const passwordMatches = await bcrypt.compare(
+  password,
+  user.password_hash,
+);
+
+console.log("Passwort stimmt:", passwordMatches);
+
+  
 
   // Login abbrechen, wenn das Passwort falsch ist
   if (!passwordMatches) {
