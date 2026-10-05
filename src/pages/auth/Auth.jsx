@@ -2,11 +2,16 @@ import "../auth/auth.css";
 import { useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 
-function Auth() {
+function Auth({ setIsLoggedIn }) {
+  // Prüft anhand der aktuellen URL, ob die Login-Seite angezeigt wird
   const location = useLocation();
-  const navigate = useNavigate();
+  // Bin ich auf /login?
   const isLogin = location.pathname === "/login";
 
+  // Ermöglicht die Weiterleitung zu einer anderen Seite
+  const navigate = useNavigate();
+
+  // Use States
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [gender, setGender] = useState("");
@@ -20,9 +25,11 @@ function Auth() {
     // Nur beim Registrieren prüfen
     if (!isLogin && password !== confirmPassword) {
       alert("Passwords do not match");
+      // Funktion wird hier beendet, wenn Passwort falsch
       return;
     }
 
+    // Hier werden Objekte erstellt
     const user = {
       firstName,
       lastName,
@@ -32,8 +39,10 @@ function Auth() {
       confirmPassword,
     };
 
+    // Bestimmt, ob die Daten an Login oder Registrierung gesendet werden
     const endpoint = isLogin ? "/api/login" : "/api/register";
 
+    // Anfrage an das Backend
     const response = await fetch(`http://localhost:3000${endpoint}`, {
       method: "POST",
       headers: {
@@ -43,11 +52,13 @@ function Auth() {
       body: JSON.stringify(user),
     });
 
+    // Liest die JSON-Daten aus der Backend-Antwort aus
     const data = await response.json();
 
     if (isLogin) {
-      window.dispatchEvent(new Event("authChanged"));
+      setIsLoggedIn(true);
 
+      // Je nach vorhandenem Profil zur passenden Seite weiterleiten
       if (data.hasProfile) {
         navigate("/dashboard");
       } else {
@@ -55,6 +66,7 @@ function Auth() {
       }
     }
 
+    // Nachricht aus der Backend-Antwort anzeigen
     alert(data.message);
   };
 

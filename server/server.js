@@ -1,12 +1,28 @@
+// Express erstellt den Server
 const express = require("express");
+
+// Cors erlaubt React Frontend, Anfragen an Backend zu schicken
 const cors = require("cors");
+
+// PostgreSQL-Verbindung für DB-Abfragen
 const pool = require("./db");
+
+// Bcrypt verschlüsselt Passwörter und prüft Passwörter beim Login
 const bcrypt = require("bcrypt");
+
+// Express Session verwaltet die Login-Session
 const session = require("express-session");
 
+// Erstellt die Express-Anwendung (Backend)
 const app = express();
+
+// Port des Backends
 const PORT = 3000;
 
+// JSON vom Frontend wird als req.body lesbar
+app.use(express.json());
+
+// Dieses Frontend darf dem Backend anfragen stellen
 app.use(
   cors({
     origin: "http://localhost:5173",
@@ -14,8 +30,7 @@ app.use(
   }),
 );
 
-app.use(express.json());
-
+// Login-Sessions / req.session werden ermöglicht
 app.use(
   session({
     secret: process.env.SESSION_SECRET,
@@ -64,7 +79,7 @@ app.post("/api/login", async (req, res) => {
     email,
   ]);
 
-  // Gefundenen User speichern
+  // Ersten gefundenen User speichern deswegen [0]
   const user = result.rows[0];
 
   // Prüfen, ob der User existiert
@@ -93,8 +108,10 @@ app.post("/api/login", async (req, res) => {
     [user.id],
   );
 
+  // Prüft, ob mindestens ein Profil für den User gefunden wurde
   const hasProfile = profileResult.rows.length > 0;
 
+  // Erfolgreiche Login-Antwort mit Profilstatus an das Frontend senden
   res.json({
     message: "Login successful",
     hasProfile,
@@ -299,5 +316,5 @@ app.post("/api/logout", (req, res) => {
 });
 
 app.listen(PORT, () => {
-  console.log(`Server läuft auf Port ${PORT}`);
+  console.log(`Läuft auf Port ${PORT}`);
 });
