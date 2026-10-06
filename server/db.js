@@ -1,6 +1,15 @@
+// PostgreSQL-Verbindungspool importieren
 const { Pool } = require("pg");
-require("dotenv").config();
 
+// Pfad-Modul von Node.js importieren
+const path = require("node:path");
+
+// .env-Datei zuverlässig aus dem server-Ordner laden
+require("dotenv").config({
+  path: path.join(__dirname, ".env"),
+});
+
+// PostgreSQL-Verbindungspool mit den Daten aus der .env erstellen
 const pool = new Pool({
   host: process.env.DB_HOST,
   port: process.env.DB_PORT,
@@ -9,4 +18,5 @@ const pool = new Pool({
   password: process.env.DB_PASSWORD,
 });
 
+// PostgreSQL-Verbindungspool für andere Dateien exportieren
 module.exports = pool;

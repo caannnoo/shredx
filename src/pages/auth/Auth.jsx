@@ -55,6 +55,12 @@ function Auth({ setIsLoggedIn }) {
     // Liest die JSON-Daten aus der Backend-Antwort aus
     const data = await response.json();
 
+    // Bei einer fehlerhaften Backend-Antwort abbrechen
+    if (!response.ok) {
+      alert(data.message);
+      return;
+    }
+
     if (isLogin) {
       setIsLoggedIn(true);
 

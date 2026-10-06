@@ -1,10 +1,9 @@
 // Lädt Umgebungsvariablen aus der .env-Datei im Server-Ordner
-const path = require("path");
+const path = require("node:path");
 
 require("dotenv").config({
   path: path.join(__dirname, ".env"),
 });
-
 
 // Express erstellt den Server
 const express = require("express");
@@ -23,6 +22,9 @@ const session = require("express-session");
 
 // Erstellt die Express-Anwendung (Backend)
 const app = express();
+
+// Express-Information aus den HTTP-Headern entfernen
+app.disable("x-powered-by");
 
 // Port des Backends
 const PORT = 3000;
@@ -53,17 +55,21 @@ app.use(
 );
 
 app.post("/api/register", async (req, res) => {
+  // Registrierungsdaten aus dem Request-Body auslesen
   const { firstName, lastName, gender, email, password, confirmPassword } =
     req.body;
 
+  // Registrierung abbrechen, wenn die Passwörter nicht übereinstimmen
   if (password !== confirmPassword) {
     return res.status(400).json({
       message: "Passwords do not match",
     });
   }
 
+  // Passwort hashen, bevor es in der Datenbank gespeichert wird
   const passwordHash = await bcrypt.hash(password, 10);
 
+  // Neuen User in der PostgreSQL-Datenbank speichern
   const result = await pool.query(
     `INSERT INTO users
       (first_name, last_name, gender, email, password_hash)
@@ -72,6 +78,7 @@ app.post("/api/register", async (req, res) => {
     [firstName, lastName, gender, email, passwordHash],
   );
 
+  // Erfolgreiche Registrierung mit dem erstellten User an das Frontend zurückgeben
   res.status(201).json({
     message: "Account successfully created",
     user: result.rows[0],
@@ -101,14 +108,9 @@ app.post("/api/login", async (req, res) => {
   }
 
   // Eingegebenes Passwort mit dem gespeicherten Hash vergleichen
-  const passwordMatches = await bcrypt.compare(
-  password,
-  user.password_hash,
-);
+  const passwordMatches = await bcrypt.compare(password, user.password_hash);
 
-console.log("Passwort stimmt:", passwordMatches);
-
-  
+  console.log("Passwort stimmt:", passwordMatches);
 
   // Login abbrechen, wenn das Passwort falsch ist
   if (!passwordMatches) {
@@ -144,22 +146,25 @@ app.patch("/api/password", async (req, res) => {
     });
   }
 
+  // Aktuelles und neues Passwort aus dem Request-Body auslesen
   const { currentPassword, newPassword } = req.body;
 
-  // User aus der Datenbank holen
+  // Passwort-Hash des eingeloggten Users aus der Datenbank abrufen
   const result = await pool.query(
     "SELECT password_hash FROM users WHERE id = $1",
     [req.session.userId],
   );
 
+  // Gefundenen User aus dem Datenbankergebnis speichern
   const user = result.rows[0];
 
-  // Aktuelles Passwort überprüfen
+  // Eingegebenes aktuelles Passwort mit dem gespeicherten Hash vergleichen
   const passwordMatches = await bcrypt.compare(
     currentPassword,
     user.password_hash,
   );
 
+  // Passwortänderung abbrechen, wenn das aktuelle Passwort falsch ist
   if (!passwordMatches) {
     return res.status(401).json({
       message: "Current password is incorrect",
@@ -169,7 +174,7 @@ app.patch("/api/password", async (req, res) => {
   // Neues Passwort hashen
   const newPasswordHash = await bcrypt.hash(newPassword, 10);
 
-  // Neues Passwort speichern
+  // Neuen Passwort-Hash beim eingeloggten User in der Datenbank speichern
   await pool.query("UPDATE users SET password_hash = $1 WHERE id = $2", [
     newPasswordHash,
     req.session.userId,
@@ -181,12 +186,14 @@ app.patch("/api/password", async (req, res) => {
 });
 
 app.get("/api/me", async (req, res) => {
+  // Anfrage abbrechen, wenn kein User eingeloggt ist
   if (!req.session.userId) {
     return res.status(401).json({
       message: "Not authenticated",
     });
   }
 
+  // Daten des eingeloggten Users aus der Datenbank abrufen
   const result = await pool.query(
     `SELECT id, first_name, last_name, gender, email, created_at
      FROM users
@@ -194,6 +201,7 @@ app.get("/api/me", async (req, res) => {
     [req.session.userId],
   );
 
+  // Daten des eingeloggten Users an das Frontend senden
   res.json({
     user: result.rows[0],
   });
@@ -207,7 +215,7 @@ app.post("/api/profile", async (req, res) => {
     });
   }
 
-  // Profildaten aus dem Request holen
+  // Profildaten aus dem Request-Body auslesen
   const {
     dateOfBirth,
     height,
@@ -222,7 +230,9 @@ app.post("/api/profile", async (req, res) => {
     dailyCalories,
   } = req.body;
 
-  // Profil in der Datenbank speichern
+  // Profildaten des eingeloggten Users in der Datenbank speichern +
+  // Neues Profil erstellen oder bestehendes Profil des Users aktualisieren +
+  // Gespeichertes bzw. aktualisiertes Profil vollständig zurückgeben
   const result = await pool.query(
     `INSERT INTO profiles (
     user_id,
@@ -240,6 +250,7 @@ app.post("/api/profile", async (req, res) => {
   )
   VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)
 
+  
   ON CONFLICT (user_id)
   DO UPDATE SET
     date_of_birth = EXCLUDED.date_of_birth,
@@ -255,6 +266,7 @@ app.post("/api/profile", async (req, res) => {
     daily_calorie_goal = EXCLUDED.daily_calorie_goal,
     updated_at = CURRENT_TIMESTAMP
 
+  
   RETURNING *`,
     [
       req.session.userId,
@@ -279,12 +291,14 @@ app.post("/api/profile", async (req, res) => {
 });
 
 app.get("/api/profile", async (req, res) => {
+  // Anfrage abbrechen, wenn kein User eingeloggt ist
   if (!req.session.userId) {
     return res.status(401).json({
       message: "Not authenticated",
     });
   }
 
+  // Profildaten des eingeloggten Users aus der Datenbank abrufen
   const result = await pool.query(
     `SELECT
     id,
@@ -306,6 +320,7 @@ app.get("/api/profile", async (req, res) => {
     [req.session.userId],
   );
 
+  // Anfrage abbrechen, wenn für den User noch kein Profil existiert
   if (result.rows.length === 0) {
     return res.status(404).json({
       message: "Profile not found",
@@ -319,14 +334,17 @@ app.get("/api/profile", async (req, res) => {
 
 app.post("/api/logout", (req, res) => {
   req.session.destroy((error) => {
+    // Fehler beim Löschen der Session abfangen
     if (error) {
       return res.status(500).json({
         message: "Logout failed",
       });
     }
 
+    // Session-Cookie im Browser löschen
     res.clearCookie("connect.sid");
 
+    // Erfolgreichen Logout an das Frontend melden
     res.json({
       message: "Logout successful",
     });

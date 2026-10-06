@@ -1,8 +1,10 @@
+// React Hooks und Navigation importieren
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import "./profile.css";
 
 function Profile({ setIsLoggedIn }) {
+  // Ermöglicht die Weiterleitung zu einer anderen Seite
   const navigate = useNavigate();
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
@@ -21,6 +23,7 @@ function Profile({ setIsLoggedIn }) {
   const [newPassword, setNewPassword] = useState("");
   const [confirmNewPassword, setConfirmNewPassword] = useState("");
 
+  // User- und Profildaten beim Laden der Profilseite vom Backend abrufen
   useEffect(() => {
     const loadUser = async () => {
       const response = await fetch("http://localhost:3000/api/me", {
@@ -63,6 +66,7 @@ function Profile({ setIsLoggedIn }) {
     loadProfile();
   }, []);
 
+  // Alter anhand des Geburtsdatums berechnen
   const calculateAge = (dateOfBirth) => {
     const today = new Date();
     const birthDate = new Date(dateOfBirth);
@@ -81,6 +85,7 @@ function Profile({ setIsLoggedIn }) {
     return age;
   };
 
+  // Grundumsatz (BMR) anhand der Mifflin-St.-Jeor-Formel berechnen
   const calculateBMR = () => {
     if (!dateOfBirth || !height || !currentWeight || !gender) {
       return 0;
@@ -99,6 +104,7 @@ function Profile({ setIsLoggedIn }) {
     return 0;
   };
 
+  // Gesamtumsatz (TDEE) anhand des BMR und Aktivitätslevels berechnen
   const calculateTDEE = () => {
     const bmr = calculateBMR();
 
@@ -117,6 +123,7 @@ function Profile({ setIsLoggedIn }) {
     return bmr * activityFactors[activityLevel];
   };
 
+  // Tägliches Kalorienziel anhand des Gesamtumsatzes und Gewichtsziels berechnen
   const calculateDailyCalories = () => {
     const tdee = calculateTDEE();
 
@@ -145,6 +152,7 @@ function Profile({ setIsLoggedIn }) {
     return Math.round(tdee);
   };
 
+  // BMI anhand von Körpergröße und aktuellem Gewicht berechnen
   const calculateBMI = () => {
     if (!height || !currentWeight) {
       return 0;
@@ -157,6 +165,7 @@ function Profile({ setIsLoggedIn }) {
     return bmi.toFixed(1);
   };
 
+  // Berechneten BMI einer Gewichtskategorie zuordnen
   const getBMICategory = () => {
     const bmi = Number(calculateBMI());
 
@@ -179,6 +188,7 @@ function Profile({ setIsLoggedIn }) {
     return "Obesity";
   };
 
+  // Position des BMI-Indikators auf der BMI-Leiste berechnen
   const getBMIPosition = () => {
     const bmi = Number(calculateBMI());
 
@@ -194,6 +204,7 @@ function Profile({ setIsLoggedIn }) {
     return Math.min(Math.max(position, 0), 100);
   };
 
+  // Farbe des BMI-Indikators anhand der BMI-Kategorie bestimmen
   const getBMIColor = () => {
     const bmi = Number(calculateBMI());
 
@@ -235,6 +246,7 @@ function Profile({ setIsLoggedIn }) {
       return;
     }
 
+    // Profildaten für die Übertragung an das Backend zusammenstellen
     const profileData = {
       dateOfBirth,
       height,
@@ -249,6 +261,7 @@ function Profile({ setIsLoggedIn }) {
       dailyCalories: calculateDailyCalories(),
     };
 
+    // Profildaten als JSON an das Backend senden
     const response = await fetch("http://localhost:3000/api/profile", {
       method: "POST",
       headers: {
@@ -258,13 +271,16 @@ function Profile({ setIsLoggedIn }) {
       body: JSON.stringify(profileData),
     });
 
+    // JSON-Antwort des Backends auslesen
     const data = await response.json();
 
+    // Bei einer fehlerhaften Backend-Antwort abbrechen
     if (!response.ok) {
       alert(data.message);
       return;
     }
 
+    // Erfolgsmeldung anzeigen
     alert(data.message);
   };
 
@@ -279,6 +295,7 @@ function Profile({ setIsLoggedIn }) {
       return;
     }
 
+    // Aktuelles und neues Passwort an das Backend senden
     const response = await fetch("http://localhost:3000/api/password", {
       method: "PATCH",
       headers: {
@@ -291,20 +308,25 @@ function Profile({ setIsLoggedIn }) {
       }),
     });
 
+    // JSON-Antwort des Backends auslesen
     const data = await response.json();
 
+    // Bei einer fehlerhaften Backend-Antwort abbrechen
     if (!response.ok) {
       alert(data.message);
       return;
     }
 
+    // Erfolgsmeldung anzeigen
     alert(data.message);
 
+    // Passwortfelder nach erfolgreicher Änderung leeren
     setCurrentPassword("");
     setNewPassword("");
     setConfirmNewPassword("");
   };
 
+  // User ausloggen und bei Erfolg zur Startseite weiterleiten
   const handleLogout = async () => {
     const response = await fetch("http://localhost:3000/api/logout", {
       method: "POST",
