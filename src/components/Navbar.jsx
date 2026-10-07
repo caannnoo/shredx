@@ -31,11 +31,11 @@ function Navbar({ isLoggedIn, setIsLoggedIn }) {
             </li>
 
             <li>
-              <Link to="/calorietracker">Calorietracker</Link>
+              <Link to="/calorie-tracker">Calorietracker</Link>
             </li>
 
             <li>
-              <Link to="/workouttracker">Workouttracker</Link>
+              <Link to="/workout-tracker">Workouttracker</Link>
             </li>
           </>
         ) : (

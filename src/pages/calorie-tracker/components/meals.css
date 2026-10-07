@@ -1,0 +1,97 @@
+/* =========================
+   Meals
+========================= */
+
+.meals {
+  width: 100%;
+  max-width: 160rem;
+  margin: 0 auto;
+  background-color: #f7f9f8;
+}
+
+.meals-section {
+  width: 100%;
+  max-width: 120rem;
+  margin: 0 auto;
+  padding-bottom: 6rem;
+}
+
+.meals-heading {
+  margin: 0 0 16px;
+  font-size: 2.8rem;
+}
+
+/* =========================
+   Meals-Grid
+========================= */
+
+.meals-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+}
+
+.meal-card {
+  padding: 20px;
+
+  background: #ffffff;
+  border: 1px solid #d8d8d8;
+  border-radius: 16px;
+}
+
+.meal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  padding-bottom: 16px;
+  border-bottom: 1px solid #e5e5e5;
+}
+
+.meal-header h3 {
+  margin: 0 0 4px;
+  font-size: 18px;
+}
+
+.meal-header span {
+  color: #777777;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.meal-header button {
+  color: #777777;
+  background-color: white;
+  border: none;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.meal-header button:hover {
+  background: #ffffff;
+  color: #222222;
+}
+
+.meal-food {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  padding-top: 16px;
+}
+
+.meal-food strong {
+  font-size: 14px;
+}
+
+.meal-food span {
+  color: #777777;
+  font-size: 13px;
+}
+
+.meal-empty {
+  margin: 16px 0 0;
+
+  color: #999999;
+  font-size: 14px;
+}

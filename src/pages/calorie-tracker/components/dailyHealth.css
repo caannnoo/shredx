@@ -1,0 +1,153 @@
+/* =========================
+   Daily-Health
+========================= */
+
+.daily-health {
+  width: 100%;
+  max-width: 160rem;
+  margin: 0 auto;
+  background-color: #f7f9f8;
+}
+
+.daily-health-section {
+  width: 100%;
+  max-width: 120rem;
+  margin: 0 auto;
+  padding-bottom: 6rem;
+}
+
+.daily-health-heading {
+  margin: 0 0 16px;
+  font-size: 2.8rem;
+}
+
+.daily-health-paragraph {
+  color: #777777;
+  font-size: 13px;
+  font-weight: 600;
+  margin-bottom: 2rem;
+}
+
+/* =========================
+   Daily-Health-Grid
+========================= */
+
+.daily-health-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+}
+
+.health-card {
+  padding: 20px;
+
+  background: #ffffff;
+  border: 1px solid #d8d8d8;
+  border-radius: 16px;
+}
+
+.health-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  margin-bottom: 16px;
+}
+
+.health-card-header h3 {
+  margin: 0;
+  font-size: 18px;
+}
+
+.health-card-header button {
+  color: #777777;
+  background-color: white;
+  border: none;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.health-card-header button:hover {
+  background: #ffffff;
+  color: #222222;
+}
+
+.health-value {
+  display: block;
+  margin-bottom: 10px;
+
+  font-size: 26px;
+}
+
+.health-progress {
+  width: 100%;
+  height: 7px;
+
+  margin-top: 16px;
+
+  background: #d4d4d4;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.health-progress-fill {
+  height: 100%;
+  background: #222222;
+  border-radius: 10px;
+}
+
+.water-buttons {
+  display: flex;
+  gap: 8px;
+
+  margin-top: 16px;
+}
+
+.water-buttons button {
+  background: #f2f2f2;
+  color: #222222;
+  border: none;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.activity {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  padding: 12px 0;
+  border-bottom: 1px solid #e5e5e5;
+}
+
+.activity div {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.activity strong {
+  font-size: 14px;
+}
+
+.activity span {
+  color: #777777;
+  font-size: 13px;
+}
+
+.activity-total {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  padding-top: 16px;
+}
+
+.activity-total span {
+  color: #777777;
+  font-size: 13px;
+}
+
+.activity-total strong {
+  font-size: 16px;
+}
