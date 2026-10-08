@@ -313,6 +313,7 @@ app.get("/api/profile", async (req, res) => {
     protein_percent,
     carbs_percent,
     fat_percent,
+    daily_calorie_goal,
     created_at,
     updated_at
   FROM profiles
@@ -349,6 +350,202 @@ app.post("/api/logout", (req, res) => {
       message: "Logout successful",
     });
   });
+});
+
+app.get("/api/foods", async (req, res) => {
+  try {
+    const result = await pool.query("SELECT * FROM foods ORDER BY name");
+
+    res.json(result.rows);
+  } catch (error) {
+    console.error("Fehler beim Laden der Lebensmittel:", error);
+    res.status(500).json({
+      message: "Lebensmittel konnten nicht geladen werden.",
+    });
+  }
+});
+
+app.get("/api/foods/search", async (req, res) => {
+  try {
+    // Suchbegriff aus der URL holen
+    const searchTerm = req.query.q?.trim();
+
+    if (!searchTerm) {
+      return res.status(400).json({
+        message: "Bitte einen Suchbegriff eingeben.",
+      });
+    }
+
+    // Suchbegriff sicher für die URL kodieren
+    const url = `https://world.openfoodfacts.org/cgi/search.pl?search_terms=${encodeURIComponent(searchTerm)}&search_simple=1&action=process&json=1&page_size=20`;
+
+    const response = await fetch(url, {
+      headers: {
+        "User-Agent": "ShredX/1.0 (Node.js; learning-project)",
+        Accept: "application/json",
+      },
+    });
+
+    if (!response.ok) {
+      console.log("Open Food Facts Status:", response.status);
+
+      return res.status(502).json({
+        message: "Open Food Facts ist nicht erreichbar.",
+        status: response.status,
+      });
+    }
+
+    const data = await response.json();
+
+    const foods = (data.products ?? []).map((product) => ({
+      name: product.product_name || "Unbekanntes Lebensmittel",
+      barcode: product.code,
+      calories_per_100g: product.nutriments?.["energy-kcal_100g"] ?? null,
+      protein_per_100g: product.nutriments?.proteins_100g ?? null,
+      carbs_per_100g: product.nutriments?.carbohydrates_100g ?? null,
+      fat_per_100g: product.nutriments?.fat_100g ?? null,
+    }));
+
+    res.json(foods);
+  } catch (error) {
+    console.error("Fehler bei Open Food Facts:", error);
+
+    res.status(500).json({
+      message: "Lebensmittelsuche fehlgeschlagen.",
+    });
+  }
+});
+
+app.post("/api/foods/manual", async (req, res) => {
+  const { name, calories, protein, carbs, fat } = req.body;
+
+  if (
+    !name?.trim() ||
+    [calories, protein, carbs, fat].some(
+      (value) =>
+        value === "" ||
+        value == null ||
+        !Number.isFinite(Number(value)) ||
+        Number(value) < 0,
+    )
+  ) {
+    return res.status(400).json({
+      message: "Bitte gültige Nährwerte eingeben.",
+    });
+  }
+
+  try {
+    const result = await pool.query(
+      `INSERT INTO foods (
+        name,
+        calories_per_100g,
+        protein_per_100g,
+        carbs_per_100g,
+        fat_per_100g
+      )
+      VALUES ($1, $2, $3, $4, $5)
+      RETURNING *`,
+      [name.trim(), calories, protein, carbs, fat],
+    );
+
+    res.status(201).json(result.rows[0]);
+  } catch (error) {
+    console.error("Fehler beim Speichern:", error);
+
+    res.status(500).json({
+      message: "Lebensmittel konnte nicht gespeichert werden.",
+    });
+  }
+});
+
+app.post("/api/food-entries", async (req, res) => {
+  // Nur eingeloggte User dürfen Essen eintragen
+  const userId = req.session?.userId;
+
+  if (!userId) {
+    return res.status(401).json({
+      message: "Bitte zuerst einloggen.",
+    });
+  }
+
+  const { foodId, trackingDate, mealType, amount } = req.body;
+
+  if (
+    !Number.isInteger(Number(foodId)) ||
+    Number(foodId) <= 0 ||
+    !/^\d{4}-\d{2}-\d{2}$/.test(trackingDate ?? "") ||
+    !["breakfast", "lunch", "dinner", "snacks"].includes(mealType) ||
+    !Number.isFinite(Number(amount)) ||
+    Number(amount) <= 0
+  ) {
+    return res.status(400).json({
+      message: "Ungültige Lebensmitteldaten.",
+    });
+  }
+
+  try {
+    const result = await pool.query(
+      `INSERT INTO food_entries
+        (user_id, food_id, tracking_date, meal_type, amount_g)
+       VALUES ($1, $2, $3, $4, $5)
+       RETURNING *`,
+      [userId, foodId, trackingDate, mealType, amount],
+    );
+
+    res.status(201).json(result.rows[0]);
+  } catch (error) {
+    console.error("Fehler beim Speichern der Mahlzeit:", error);
+
+    res.status(500).json({
+      message: "Mahlzeit konnte nicht gespeichert werden.",
+    });
+  }
+});
+
+app.get("/api/food-entries", async (req, res) => {
+  const userId = req.session?.userId;
+
+  if (!userId) {
+    return res.status(401).json({
+      message: "Bitte zuerst einloggen.",
+    });
+  }
+
+  const { date } = req.query;
+
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(date ?? "")) {
+    return res.status(400).json({
+      message: "Bitte ein gültiges Datum angeben.",
+    });
+  }
+
+  try {
+    const result = await pool.query(
+      `SELECT
+         fe.id,
+         fe.meal_type,
+         fe.amount_g,
+         f.name,
+         ROUND(f.calories_per_100g * fe.amount_g / 100, 1) AS calories,
+         ROUND(f.protein_per_100g * fe.amount_g / 100, 1) AS protein_g,
+         ROUND(f.carbs_per_100g * fe.amount_g / 100, 1) AS carbs_g,
+         ROUND(f.fat_per_100g * fe.amount_g / 100, 1) AS fat_g
+       FROM food_entries fe
+       JOIN foods f ON fe.food_id = f.id
+       WHERE fe.user_id = $1
+         AND fe.tracking_date = $2
+       ORDER BY fe.id`,
+      [userId, date],
+    );
+
+    res.json(result.rows);
+  } catch (error) {
+    console.error("Fehler beim Laden der Mahlzeiten:", error);
+
+    res.status(500).json({
+      message: "Mahlzeiten konnten nicht geladen werden.",
+    });
+  }
 });
 
 app.listen(PORT, () => {

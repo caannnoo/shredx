@@ -1,0 +1,37 @@
+.manual-food-form {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.manual-food-form input {
+  width: 100%;
+  padding: 13px 15px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  background: #fff;
+  color: #111;
+  font-size: 14px;
+  box-sizing: border-box;
+}
+
+.manual-food-form input:focus {
+  outline: none;
+  border-color: #111;
+}
+
+.manual-food-form button {
+  padding: 14px;
+  margin-top: 8px;
+  background: #111;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.manual-food-form button:hover {
+  background: #333;
+}

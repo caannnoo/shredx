@@ -1,0 +1,198 @@
+.food-search-bar {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.food-search-bar input {
+  flex: 1;
+  min-width: 0;
+  padding: 12px 14px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-size: 14px;
+  outline: none;
+}
+
+.food-search-bar input:focus {
+  border-color: #111;
+}
+
+.food-search-bar button {
+  padding: 12px 20px;
+  background: #111;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.food-search-bar button:hover {
+  background: #333;
+}
+
+.food-search-results {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.food-search-item {
+  padding: 16px;
+  border: 1px solid #e5e5e5;
+  border-radius: 10px;
+  background: #fafafa;
+}
+
+.food-search-item-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.food-search-item-header h3 {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.food-search-item-header strong {
+  white-space: nowrap;
+  font-size: 14px;
+}
+
+.food-search-item p {
+  margin: 8px 0;
+  color: #777;
+  font-size: 12px;
+}
+
+.food-search-macros {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  color: #555;
+  font-size: 12px;
+}
+
+.food-search-item-actions {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.food-search-add-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border: 1px solid #222;
+  border-radius: 8px;
+  background: #fff;
+  color: #222;
+  cursor: pointer;
+}
+
+.food-search-add-button:hover {
+  background: #222;
+  color: #fff;
+}
+
+.food-amount-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  z-index: 1000;
+}
+
+.food-amount-popup {
+  position: relative;
+  background: #fff;
+  padding: 28px;
+  border-radius: 12px;
+  width: 90%;
+  max-width: 400px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+}
+
+.food-amount-close {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: none;
+  color: #777;
+  cursor: pointer;
+}
+
+.food-amount-close:hover {
+  color: #111;
+}
+
+.food-amount-popup h3 {
+  margin: 0 32px 8px 0;
+  font-size: 20px;
+  font-weight: 600;
+  color: #222;
+}
+
+.food-amount-popup p {
+  margin: 0 0 24px;
+  font-size: 14px;
+  color: #777;
+}
+
+.food-amount-popup input {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 14px 16px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-size: 16px;
+  outline: none;
+}
+
+.food-amount-popup input:focus {
+  border-color: #222;
+}
+
+.food-amount-popup span {
+  display: block;
+  margin-top: 8px;
+  font-size: 13px;
+  color: #888;
+}
+
+.food-amount-popup > button:not(.food-amount-close) {
+  width: 100%;
+  margin-top: 24px;
+  padding: 14px;
+  border: none;
+  border-radius: 8px;
+  background: #222;
+  color: white;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.food-amount-popup > button:not(.food-amount-close):hover {
+  background: #444;
+}
+
+.food-amount-popup > button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
