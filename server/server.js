@@ -548,6 +548,185 @@ app.get("/api/food-entries", async (req, res) => {
   }
 });
 
+app.post("/api/daily-tracking/weight", async (req, res) => {
+  try {
+    const userId = req.session.userId;
+
+    const { weight } = req.body;
+
+    if (!userId) {
+      return res.status(401).json({ error: "Not authenticated" });
+    }
+
+    if (
+      weight == null ||
+      !Number.isFinite(Number(weight)) ||
+      Number(weight) <= 0
+    ) {
+      return res.status(400).json({ error: "Invalid weight" });
+    }
+
+    const result = await pool.query(
+      `INSERT INTO daily_tracking (user_id, tracking_date, weight_kg)
+   VALUES ($1, CURRENT_DATE, $2)
+   ON CONFLICT (user_id, tracking_date)
+   DO UPDATE SET
+     weight_kg = EXCLUDED.weight_kg,
+     updated_at = NOW()
+   RETURNING *`,
+      [userId, Number(weight)],
+    );
+
+    res.json({ tracking: result.rows[0] });
+  } catch (error) {
+    console.error("Error saving weight:", error);
+    res.status(500).json({ error: "Server error" });
+  }
+});
+
+app.get("/api/daily-tracking/weight", async (req, res) => {
+  try {
+    const userId = req.session.userId;
+
+    if (!userId) {
+      return res.status(401).json({ error: "Not authenticated" });
+    }
+
+    const result = await pool.query(
+      `SELECT weight_kg
+       FROM daily_tracking
+       WHERE user_id = $1
+         AND weight_kg IS NOT NULL
+       ORDER BY tracking_date DESC
+       LIMIT 1`,
+      [userId],
+    );
+
+    res.json({ weight: result.rows[0]?.weight_kg ?? null });
+  } catch (error) {
+    console.error("Error loading weight:", error);
+    res.status(500).json({ error: "Server error" });
+  }
+});
+
+app.post("/api/daily-tracking/water", async (req, res) => {
+  try {
+    const userId = req.session.userId;
+    const { amount } = req.body;
+
+    if (!userId) {
+      return res.status(401).json({ error: "Not authenticated" });
+    }
+
+    if (!Number.isInteger(amount) || amount === 0) {
+      return res.status(400).json({ error: "Invalid water amount" });
+    }
+
+    const result = await pool.query(
+      `INSERT INTO daily_tracking (user_id, tracking_date, water_ml)
+   VALUES ($1, CURRENT_DATE, GREATEST($2, 0))
+   ON CONFLICT (user_id, tracking_date)
+   DO UPDATE SET
+     water_ml = GREATEST(
+  COALESCE(daily_tracking.water_ml, 0) + $2,
+  0
+),
+     updated_at = NOW()
+   RETURNING water_ml`,
+      [userId, amount],
+    );
+
+    res.json({ water: result.rows[0].water_ml });
+  } catch (error) {
+    console.error("Error saving water:", error);
+    res.status(500).json({ error: "Server error" });
+  }
+});
+
+app.get("/api/daily-tracking/water", async (req, res) => {
+  try {
+    const userId = req.session.userId;
+
+    if (!userId) {
+      return res.status(401).json({ error: "Not authenticated" });
+    }
+
+    const result = await pool.query(
+      `SELECT water_ml
+       FROM daily_tracking
+       WHERE user_id = $1
+         AND tracking_date = CURRENT_DATE`,
+      [userId],
+    );
+
+    res.json({
+      water: result.rows[0]?.water_ml ?? 0,
+    });
+  } catch (error) {
+    console.error("Error loading water:", error);
+    res.status(500).json({ error: "Server error" });
+  }
+});
+
+app.post("/api/daily-tracking/steps", async (req, res) => {
+  try {
+    const userId = req.session.userId;
+    const { amount } = req.body;
+
+    if (!userId) {
+      return res.status(401).json({ error: "Not authenticated" });
+    }
+
+    if (!Number.isInteger(amount) || amount === 0) {
+      return res.status(400).json({ error: "Invalid steps amount" });
+    }
+
+    const result = await pool.query(
+      `INSERT INTO daily_tracking (user_id, tracking_date, steps)
+   VALUES ($1, CURRENT_DATE, GREATEST($2, 0))
+   ON CONFLICT (user_id, tracking_date)
+   DO UPDATE SET
+     steps = GREATEST(
+       COALESCE(daily_tracking.steps, 0) + $2,
+       0
+     ),
+     updated_at = NOW()
+   RETURNING steps`,
+      [userId, amount],
+    );
+
+    res.json({ steps: result.rows[0].steps });
+  } catch (error) {
+    console.error("Error saving steps:", error);
+    res.status(500).json({ error: "Server error" });
+  }
+});
+
+app.get("/api/daily-tracking/steps", async (req, res) => {
+  try {
+    const userId = req.session.userId;
+
+    if (!userId) {
+      return res.status(401).json({ error: "Not authenticated" });
+    }
+
+    const result = await pool.query(
+      `SELECT steps
+       FROM daily_tracking
+       WHERE user_id = $1
+         AND tracking_date = CURRENT_DATE`,
+      [userId],
+    );
+
+    res.json({
+      steps: result.rows[0]?.steps ?? 0,
+    });
+  } catch (error) {
+    console.error("Error loading steps:", error);
+    res.status(500).json({ error: "Server error" });
+  }
+});
+
 app.listen(PORT, () => {
   console.log(`Läuft auf Port ${PORT}`);
 });
