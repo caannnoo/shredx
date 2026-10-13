@@ -2,7 +2,7 @@ import "./foodSearch.css";
 import { useState } from "react";
 import { PlusIcon, XIcon } from "@phosphor-icons/react";
 
-function FoodSearch({ selectedMeal, onFoodAdded }) {
+function FoodSearch({ selectedMeal, onFoodAdded, selectedDate }) {
   const [searchTerm, setSearchTerm] = useState("");
   const [foods, setFoods] = useState([]);
   const [selectedFood, setSelectedFood] = useState(null);
@@ -53,7 +53,7 @@ function FoodSearch({ selectedMeal, onFoodAdded }) {
 
     console.log("Saved food:", data);
 
-    const trackingDate = new Date().toLocaleDateString("en-CA");
+    const trackingDate = selectedDate;
 
     const entryResponse = await fetch(
       "http://localhost:3000/api/food-entries",

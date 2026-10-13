@@ -552,7 +552,7 @@ app.post("/api/daily-tracking/weight", async (req, res) => {
   try {
     const userId = req.session.userId;
 
-    const { weight } = req.body;
+    const { weight, selectedDate } = req.body;
 
     if (!userId) {
       return res.status(401).json({ error: "Not authenticated" });
@@ -568,13 +568,13 @@ app.post("/api/daily-tracking/weight", async (req, res) => {
 
     const result = await pool.query(
       `INSERT INTO daily_tracking (user_id, tracking_date, weight_kg)
-   VALUES ($1, CURRENT_DATE, $2)
+   VALUES ($1, $2, $3)
    ON CONFLICT (user_id, tracking_date)
    DO UPDATE SET
      weight_kg = EXCLUDED.weight_kg,
      updated_at = NOW()
    RETURNING *`,
-      [userId, Number(weight)],
+      [userId, selectedDate, Number(weight)],
     );
 
     res.json({ tracking: result.rows[0] });
@@ -588,21 +588,28 @@ app.get("/api/daily-tracking/weight", async (req, res) => {
   try {
     const userId = req.session.userId;
 
+    const selectedDate = req.query.date;
+
     if (!userId) {
       return res.status(401).json({ error: "Not authenticated" });
     }
 
     const result = await pool.query(
-      `SELECT weight_kg
-       FROM daily_tracking
-       WHERE user_id = $1
-         AND weight_kg IS NOT NULL
-       ORDER BY tracking_date DESC
-       LIMIT 1`,
-      [userId],
+      `SELECT weight_kg, tracking_date
+   FROM daily_tracking
+   WHERE user_id = $1
+     AND weight_kg IS NOT NULL
+     AND tracking_date <= $2
+   ORDER BY tracking_date DESC
+   LIMIT 2`,
+      [userId, selectedDate],
     );
 
-    res.json({ weight: result.rows[0]?.weight_kg ?? null });
+    res.json({
+      weight: result.rows[0]?.weight_kg ?? null,
+      previousWeight: result.rows[1]?.weight_kg ?? null,
+      lastWeightDate: result.rows[0]?.tracking_date ?? null,
+    });
   } catch (error) {
     console.error("Error loading weight:", error);
     res.status(500).json({ error: "Server error" });
@@ -612,7 +619,7 @@ app.get("/api/daily-tracking/weight", async (req, res) => {
 app.post("/api/daily-tracking/water", async (req, res) => {
   try {
     const userId = req.session.userId;
-    const { amount } = req.body;
+    const { amount, selectedDate } = req.body;
 
     if (!userId) {
       return res.status(401).json({ error: "Not authenticated" });
@@ -624,16 +631,16 @@ app.post("/api/daily-tracking/water", async (req, res) => {
 
     const result = await pool.query(
       `INSERT INTO daily_tracking (user_id, tracking_date, water_ml)
-   VALUES ($1, CURRENT_DATE, GREATEST($2, 0))
+   VALUES ($1, $2, GREATEST($3, 0))
    ON CONFLICT (user_id, tracking_date)
    DO UPDATE SET
      water_ml = GREATEST(
-  COALESCE(daily_tracking.water_ml, 0) + $2,
-  0
-),
+       COALESCE(daily_tracking.water_ml, 0) + $3,
+       0
+     ),
      updated_at = NOW()
    RETURNING water_ml`,
-      [userId, amount],
+      [userId, selectedDate, amount],
     );
 
     res.json({ water: result.rows[0].water_ml });
@@ -647,6 +654,8 @@ app.get("/api/daily-tracking/water", async (req, res) => {
   try {
     const userId = req.session.userId;
 
+    const selectedDate = req.query.date;
+
     if (!userId) {
       return res.status(401).json({ error: "Not authenticated" });
     }
@@ -655,8 +664,8 @@ app.get("/api/daily-tracking/water", async (req, res) => {
       `SELECT water_ml
        FROM daily_tracking
        WHERE user_id = $1
-         AND tracking_date = CURRENT_DATE`,
-      [userId],
+         AND tracking_date = $2`,
+      [userId, selectedDate],
     );
 
     res.json({
@@ -671,7 +680,7 @@ app.get("/api/daily-tracking/water", async (req, res) => {
 app.post("/api/daily-tracking/steps", async (req, res) => {
   try {
     const userId = req.session.userId;
-    const { amount } = req.body;
+    const { amount, selectedDate } = req.body;
 
     if (!userId) {
       return res.status(401).json({ error: "Not authenticated" });
@@ -683,16 +692,16 @@ app.post("/api/daily-tracking/steps", async (req, res) => {
 
     const result = await pool.query(
       `INSERT INTO daily_tracking (user_id, tracking_date, steps)
-   VALUES ($1, CURRENT_DATE, GREATEST($2, 0))
+   VALUES ($1, $2, GREATEST($3, 0))
    ON CONFLICT (user_id, tracking_date)
    DO UPDATE SET
      steps = GREATEST(
-       COALESCE(daily_tracking.steps, 0) + $2,
+       COALESCE(daily_tracking.steps, 0) + $3,
        0
      ),
      updated_at = NOW()
    RETURNING steps`,
-      [userId, amount],
+      [userId, selectedDate, amount],
     );
 
     res.json({ steps: result.rows[0].steps });
@@ -705,6 +714,7 @@ app.post("/api/daily-tracking/steps", async (req, res) => {
 app.get("/api/daily-tracking/steps", async (req, res) => {
   try {
     const userId = req.session.userId;
+    const selectedDate = req.query.date;
 
     if (!userId) {
       return res.status(401).json({ error: "Not authenticated" });
@@ -714,8 +724,8 @@ app.get("/api/daily-tracking/steps", async (req, res) => {
       `SELECT steps
        FROM daily_tracking
        WHERE user_id = $1
-         AND tracking_date = CURRENT_DATE`,
-      [userId],
+         AND tracking_date = $2`,
+      [userId, selectedDate],
     );
 
     res.json({
@@ -724,6 +734,109 @@ app.get("/api/daily-tracking/steps", async (req, res) => {
   } catch (error) {
     console.error("Error loading steps:", error);
     res.status(500).json({ error: "Server error" });
+  }
+});
+
+app.get("/api/activity-entries", async (req, res) => {
+  try {
+    const userId = req.session.userId;
+
+    const selectedDate = req.query.date;
+
+    if (!userId) {
+      return res.status(401).json({ error: "Not authenticated" });
+    }
+
+    const result = await pool.query(
+      `SELECT id, activity_name, duration_minutes, calories_burned
+       FROM activity_entries
+       WHERE user_id = $1 AND tracking_date = $2
+       ORDER BY created_at DESC`,
+      [userId, selectedDate],
+    );
+
+    res.json({ activities: result.rows });
+  } catch (error) {
+    console.error("Error loading activities:", error);
+    res.status(500).json({ error: "Server error" });
+  }
+});
+
+app.post("/api/activity-entries", async (req, res) => {
+  try {
+    const userId = req.session.userId;
+    const { activityName, duration, caloriesBurned, selectedDate } = req.body;
+
+    if (!userId) {
+      return res.status(401).json({ error: "Not authenticated" });
+    }
+
+    if (
+      !activityName ||
+      !Number.isInteger(duration) ||
+      duration <= 0 ||
+      !Number.isInteger(caloriesBurned) ||
+      caloriesBurned < 0
+    ) {
+      return res.status(400).json({ error: "Invalid activity data" });
+    }
+
+    const result = await pool.query(
+      `INSERT INTO activity_entries
+   (user_id, tracking_date, activity_name, duration_minutes, calories_burned)
+   VALUES ($1, $2, $3, $4, $5)
+   RETURNING *`,
+      [userId, selectedDate, activityName, duration, caloriesBurned],
+    );
+
+    res.status(201).json({
+      activity: result.rows[0],
+    });
+  } catch (error) {
+    console.error("Error saving activity:", error);
+    res.status(500).json({ error: "Server error" });
+  }
+});
+
+app.delete("/api/activity-entries/:id", async (req, res) => {
+  try {
+    const userId = req.session.userId;
+    const activityId = Number(req.params.id);
+
+    if (!userId) {
+      return res.status(401).json({
+        error: "Not authenticated",
+      });
+    }
+
+    if (!Number.isInteger(activityId) || activityId <= 0) {
+      return res.status(400).json({
+        error: "Invalid activity ID",
+      });
+    }
+
+    const result = await pool.query(
+      `DELETE FROM activity_entries
+   WHERE id = $1 AND user_id = $2
+   RETURNING id`,
+      [activityId, userId],
+    );
+
+    if (result.rowCount === 0) {
+      return res.status(404).json({
+        error: "Activity not found",
+      });
+    }
+
+    res.json({
+      message: "Activity deleted successfully",
+    });
+  } catch (error) {
+    console.error("Error deleting activity:", error);
+
+    res.status(500).json({
+      error: "Server error",
+    });
   }
 });
 

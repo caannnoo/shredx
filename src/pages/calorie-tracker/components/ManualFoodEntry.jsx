@@ -1,7 +1,7 @@
 import "./manualFoodEntry.css";
 import { useState } from "react";
 
-function ManualFoodEntry({ mealType, onFoodAdded }) {
+function ManualFoodEntry({ mealType, onFoodAdded, selectedDate }) {
   async function saveFood() {
     if (
       !food.name.trim() ||
@@ -43,13 +43,7 @@ function ManualFoodEntry({ mealType, onFoodAdded }) {
       console.log("Selected meal:", mealType);
       console.log("Amount:", food.amount);
 
-      // Heutiges Datum im lokalen Format
-      const today = new Date();
-      const trackingDate = [
-        today.getFullYear(),
-        String(today.getMonth() + 1).padStart(2, "0"),
-        String(today.getDate()).padStart(2, "0"),
-      ].join("-");
+      const trackingDate = selectedDate;
 
       // Lebensmittel zur Mahlzeit hinzufügen
       const entryResponse = await fetch(

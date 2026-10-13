@@ -7,13 +7,27 @@ function CalorieOverview({
   totalProtein,
   totalCarbs,
   totalFat,
+  burnedCalories,
+  selectedDate,
+  setSelectedDate,
 }) {
+  const changeDate = (days) => {
+    const date = new Date(`${selectedDate}T12:00:00`);
+
+    date.setDate(date.getDate() + days);
+
+    const newDate = [
+      date.getFullYear(),
+      String(date.getMonth() + 1).padStart(2, "0"),
+      String(date.getDate()).padStart(2, "0"),
+    ].join("-");
+
+    setSelectedDate(newDate);
+  };
   const [dailyGoal, setDailyGoal] = useState(null);
   const [proteinPercent, setProteinPercent] = useState(null);
   const [carbsPercent, setCarbsPercent] = useState(null);
   const [fatPercent, setFatPercent] = useState(null);
-
-  const burnedCalories = 350; // Vorläufiger Wert
 
   const netCalories = Number(totalCalories) - burnedCalories;
 
@@ -78,42 +92,49 @@ function CalorieOverview({
           <h1>Your day, in balance.</h1>
         </div>
         <div className="calorieoverview-date">
-          <button>
+          <button onClick={() => changeDate(-1)}>
             <CaretLeftIcon size={16} weight="bold" />
             Previous
           </button>
-          <p>Today · August 17</p>
-          <button>
+          <p>
+            {new Date(`${selectedDate}T12:00:00`).toLocaleDateString("en-US", {
+              month: "long",
+              day: "numeric",
+              year: "numeric",
+            })}
+          </p>
+          <button onClick={() => changeDate(1)}>
             Next
             <CaretRightIcon size={16} weight="bold" />
           </button>
         </div>
+
         <div className="calorieoverview-calories">
-          <div className="calorie-circle">
-            <strong>750</strong>
-            <span>remaining</span>
-          </div>
+          <h2>Calorie progress</h2>
 
-          <div className="calorie-stat">
-            <span>Daily Goal</span>
-            <strong>{dailyGoal !== null ? `${dailyGoal} kcal` : "—"}</strong>
-          </div>
+          <div className="calorie-cards">
+            <div className="calorie-stat">
+              <span>Daily Goal</span>
+              <strong>{dailyGoal !== null ? `${dailyGoal} kcal` : "—"}</strong>
+            </div>
 
-          <div className="calorie-stat">
-            <span>Consumed</span>
-            <strong>{Number(totalCalories).toFixed(1)} kcal</strong>
-          </div>
+            <div className="calorie-stat">
+              <span>Consumed</span>
+              <strong>{Number(totalCalories).toFixed(1)} kcal</strong>
+            </div>
 
-          <div className="calorie-stat">
-            <span>Burned</span>
-            <strong>{burnedCalories} kcal</strong>
-          </div>
+            <div className="calorie-stat">
+              <span>Burned</span>
+              <strong>{burnedCalories} kcal</strong>
+            </div>
 
-          <div className="calorie-stat">
-            <span>Net Calories</span>
-            <strong>{netCalories.toFixed(1)} kcal</strong>
+            <div className="calorie-stat">
+              <span>Net Calories</span>
+              <strong>{netCalories.toFixed(1)} kcal</strong>
+            </div>
           </div>
         </div>
+
         <div className="calorieoverview-macros">
           <h2>Macro progress</h2>
 

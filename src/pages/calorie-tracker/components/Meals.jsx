@@ -9,6 +9,7 @@ function Meals({
   setTotalProtein,
   setTotalCarbs,
   setTotalFat,
+  selectedDate,
 }) {
   const [showFoodSearch, setShowFoodSearch] = useState(false);
   const [foodMode, setFoodMode] = useState("search");
@@ -69,16 +70,8 @@ function Meals({
   useEffect(() => {
     async function loadFoodEntries() {
       try {
-        // Heutiges Datum ermitteln
-        const today = new Date();
-        const trackingDate = [
-          today.getFullYear(),
-          String(today.getMonth() + 1).padStart(2, "0"),
-          String(today.getDate()).padStart(2, "0"),
-        ].join("-");
-
         const response = await fetch(
-          `http://localhost:3000/api/food-entries?date=${trackingDate}`,
+          `http://localhost:3000/api/food-entries?date=${selectedDate}`,
           {
             credentials: "include",
           },
@@ -96,7 +89,7 @@ function Meals({
     }
 
     loadFoodEntries();
-  }, [refreshKey]);
+  }, [refreshKey, selectedDate]);
 
   return (
     <div className="meals">
@@ -288,6 +281,7 @@ function Meals({
                 {foodMode === "search" ? (
                   <FoodSearch
                     selectedMeal={selectedMeal}
+                    selectedDate={selectedDate}
                     onFoodAdded={() => {
                       setRefreshKey((previous) => previous + 1);
                       setShowFoodSearch(false);
@@ -296,6 +290,7 @@ function Meals({
                 ) : (
                   <ManualFoodEntry
                     mealType={selectedMeal}
+                    selectedDate={selectedDate}
                     onFoodAdded={() => {
                       setRefreshKey((previous) => previous + 1);
                       setShowFoodSearch(false);
