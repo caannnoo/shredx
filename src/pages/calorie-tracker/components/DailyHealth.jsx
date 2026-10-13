@@ -17,7 +17,6 @@ function DailyHealth({ setBurnedCalories, selectedDate }) {
     weight !== null && previousWeight !== null
       ? Number((weight - previousWeight).toFixed(1))
       : null;
-  const today = new Date().toLocaleDateString("en-CA");
 
   const lastEntryDay = lastWeightDate
     ? new Date(lastWeightDate).toLocaleDateString("en-CA")
@@ -322,8 +321,6 @@ function DailyHealth({ setBurnedCalories, selectedDate }) {
                         console.error("Failed to save weight");
                         return;
                       }
-
-                      const data = await response.json();
 
                       const weightResponse = await fetch(
                         `http://localhost:3000/api/daily-tracking/weight?date=${selectedDate}`,
