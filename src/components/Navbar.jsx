@@ -40,7 +40,7 @@ function Navbar({ isLoggedIn, setIsLoggedIn }) {
           </>
         ) : (
           <>
-            <li>
+            {/* <li>
               <Link to="/">Home</Link>
             </li>
 
@@ -50,7 +50,7 @@ function Navbar({ isLoggedIn, setIsLoggedIn }) {
 
             <li>
               <a href="#howitworks">How it works</a>
-            </li>
+            </li> */}
           </>
         )}
       </ul>

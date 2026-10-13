@@ -24,9 +24,9 @@ function Hero({ isLoggedIn }) {
             </Link>
           )}
 
-          <a href="#howitworks" className="hero-button-secondary">
+          {/* <a href="#howitworks" className="hero-button-secondary">
             See How It Works
-          </a>
+          </a> */}
         </div>
       </div>
       <div className="dashboard-preview">Dashboard Preview</div>

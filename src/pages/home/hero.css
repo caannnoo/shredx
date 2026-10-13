@@ -53,6 +53,18 @@
   font-family: "Manrope", sans-serif;
   font-size: 1.6rem;
   border: none;
+
+  cursor: pointer;
+  transition:
+    background-color 0.25s ease,
+    transform 0.25s ease,
+    box-shadow 0.25s ease;
+}
+
+.hero-button-primary:hover {
+  background-color: #252525;
+  transform: translateY(-3px);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.25);
 }
 
 .hero-button-secondary {

@@ -4,7 +4,7 @@
 
 .navbar {
   width: 100%;
-  max-width: 160rem;
+  max-width: 140rem;
   height: 12rem;
 
   margin: 0 auto;
@@ -36,6 +36,24 @@
   text-decoration: none;
   display: inline-block;
   color: #000;
+  position: relative;
+}
+
+.nav-links a::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -6px;
+  width: 100%;
+  height: 2px;
+  background: #000;
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.25s ease;
+}
+
+.nav-links a:hover::after {
+  transform: scaleX(1);
 }
 
 .nav-links-auth {
@@ -63,6 +81,13 @@
   color: #fff;
   text-decoration: none;
   font-weight: 600;
+  transition: all 0.25s ease;
+}
+
+.nav-links-auth .start-tracking:hover {
+  background-color: #252525;
+  transform: translateY(-3px);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.25);
 }
 
 .logout-button {
@@ -86,6 +111,29 @@
 
 .logout-button:active {
   transform: translateY(0);
+}
+
+.nav-links-auth a:not(.start-tracking) {
+  position: relative;
+}
+
+.nav-links-auth a:not(.start-tracking)::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -6px;
+
+  width: 100%;
+  height: 2px;
+  background-color: #000;
+
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.25s ease;
+}
+
+.nav-links-auth a:not(.start-tracking):hover::after {
+  transform: scaleX(1);
 }
 
 /* Notebook */
