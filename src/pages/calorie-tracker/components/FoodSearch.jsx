@@ -152,6 +152,53 @@ function FoodSearch({ selectedMeal, onFoodAdded, selectedDate }) {
 
             <span>grams</span>
 
+            <div className="food-amount-nutrition">
+              <p>
+                Calories:{" "}
+                {selectedFood.calories_per_100g == null
+                  ? "–"
+                  : (
+                      (Number(selectedFood.calories_per_100g) *
+                        Number(amount)) /
+                      100
+                    ).toFixed(1)}{" "}
+                kcal
+              </p>
+
+              <p>
+                Protein:{" "}
+                {selectedFood.protein_per_100g == null
+                  ? "–"
+                  : (
+                      (Number(selectedFood.protein_per_100g) * Number(amount)) /
+                      100
+                    ).toFixed(1)}{" "}
+                g
+              </p>
+
+              <p>
+                Carbs:{" "}
+                {selectedFood.carbs_per_100g == null
+                  ? "–"
+                  : (
+                      (Number(selectedFood.carbs_per_100g) * Number(amount)) /
+                      100
+                    ).toFixed(1)}{" "}
+                g
+              </p>
+
+              <p>
+                Fat:{" "}
+                {selectedFood.fat_per_100g == null
+                  ? "–"
+                  : (
+                      (Number(selectedFood.fat_per_100g) * Number(amount)) /
+                      100
+                    ).toFixed(1)}{" "}
+                g
+              </p>
+            </div>
+
             <button
               type="button"
               disabled={!Number.isFinite(Number(amount)) || Number(amount) <= 0}
