@@ -1,0 +1,76 @@
+/* =========================
+   Workout Footer
+========================= */
+
+.workoutfooter {
+  width: 100%;
+  max-width: 160rem;
+  margin: 0 auto;
+  padding: 2rem 0 6rem;
+  background-color: #f7f9f8;
+}
+
+.workoutfooter-section {
+  width: 100%;
+  max-width: 120rem;
+  margin: 0 auto;
+
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2rem;
+}
+
+.workoutfooter-card {
+  padding: 2.4rem;
+  border-radius: 1.5rem;
+  background-color: #fff;
+  border: 1px solid #e2e5e3;
+}
+
+/* =========================
+   Workout History
+========================= */
+
+.workoutfooter-card h3 {
+  font-family: "Inter", sans-serif;
+  font-size: 1.8rem;
+  font-weight: 800;
+  color: #242424;
+  margin: 0 0 2rem;
+}
+
+.workout-history p {
+  font-family: "Inter", sans-serif;
+  font-size: 1.4rem;
+  font-weight: 500;
+  color: #555;
+
+  padding: 0.6rem 0;
+  margin: 0;
+
+  border-bottom: 1px solid #e8e8e8;
+}
+
+.workout-history p:last-child {
+  border-bottom: none;
+}
+
+/* =========================
+   Personal Records
+========================= */
+
+.workout-records p {
+  font-family: "Inter", sans-serif;
+  font-size: 1.4rem;
+  font-weight: 500;
+  color: #555;
+
+  padding: 0.6rem 0;
+  margin: 0;
+
+  border-bottom: 1px solid #e8e8e8;
+}
+
+.workout-records p:last-child {
+  border-bottom: none;
+}

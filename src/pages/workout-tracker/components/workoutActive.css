@@ -1,0 +1,197 @@
+/* =========================
+   Active Workout
+========================= */
+
+.workoutactive {
+  width: 100%;
+  max-width: 160rem;
+  margin: 0 auto;
+  padding: 0 4rem;
+  background-color: #f7f9f8;
+}
+
+.workoutactive-section {
+  width: 100%;
+  max-width: 120rem;
+  margin: 0 auto;
+  padding: 3rem;
+  background-color: #fff;
+  border: 1px solid #e2e5e3;
+  border-radius: 2rem;
+}
+
+.workoutactive-header {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  margin-bottom: 2rem;
+}
+
+.workoutactive-header h3 {
+  font-family: "Inter", sans-serif;
+  font-size: 2rem;
+  font-weight: 800;
+  color: #242424;
+  margin: 0;
+}
+
+.workoutactive-header span {
+  font-size: 1.4rem;
+  font-weight: 500;
+  color: #777;
+}
+
+/* =========================
+   Active Exercise Card
+========================= */
+
+.workoutactive-exercise {
+  background-color: #f3f4f4;
+  border-radius: 1.5rem;
+  padding: 2.4rem;
+}
+
+.workoutactive-exercise h4 {
+  font-family: "Inter", sans-serif;
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: #242424;
+  margin: 0 0 0.8rem;
+}
+
+.workoutactive-exercise > p {
+  font-size: 1.3rem;
+  font-weight: 500;
+  color: #777;
+  margin: 0;
+}
+
+/* =========================
+   Workout Sets
+========================= */
+
+.workoutactive-sets {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+  margin-top: 2rem;
+}
+
+.workoutactive-sets p {
+  font-size: 1.4rem;
+  font-weight: 500;
+  color: #444;
+  margin: 0;
+  line-height: 1.5;
+}
+
+/* =========================
+   Workout Actions
+========================= */
+
+.workoutactive-actions {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  margin-top: 2rem;
+}
+
+.workoutactive-actions button {
+  padding: 0;
+  background: none;
+  border: none;
+
+  font-family: "Inter", sans-serif;
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: #242424;
+
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+
+.workoutactive-actions button:hover {
+  color: #777;
+}
+
+.workoutactive-actions span {
+  font-size: 1.3rem;
+  font-weight: 500;
+  color: #777;
+}
+
+/* =========================
+   Finish Workout Button
+========================= */
+
+.finish-workout-btn {
+  display: block;
+  margin: 2rem auto 0 0;
+  padding: 1.3rem 2.4rem;
+
+  background-color: #242424;
+  color: #fff;
+  border: none;
+  border-radius: 1rem;
+
+  font-family: "Inter", sans-serif;
+  font-size: 1.4rem;
+  font-weight: 700;
+
+  cursor: pointer;
+  transition:
+    background-color 0.2s ease,
+    transform 0.2s ease;
+}
+
+.finish-workout-btn:hover {
+  background-color: #444;
+  transform: translateY(-2px);
+}
+
+/* =========================
+   Training Calendar
+========================= */
+
+.workout-calendar-days,
+.workout-calendar-status {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 0.8rem;
+  text-align: center;
+}
+
+.workout-calendar-days {
+  margin-bottom: 1rem;
+}
+
+.workout-calendar-days span {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: #777;
+}
+
+.workout-calendar-status span {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  aspect-ratio: 1;
+  border-radius: 0.8rem;
+  background-color: #f0f0f0;
+
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: #242424;
+}
+
+.workout-calendar-status span:nth-child(-n + 5) {
+  background-color: #242424;
+  color: #fff;
+}
+
+.workout-calendar > p {
+  margin: 1.8rem 0 0;
+  font-size: 1.2rem;
+  color: #777;
+}
