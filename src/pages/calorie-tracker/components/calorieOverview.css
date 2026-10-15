@@ -256,3 +256,72 @@
   height: 100%;
   background: #222222;
 }
+
+@media (max-width: 1200px) {
+  .calorie-cards {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.2rem;
+  }
+
+  .calorieoverview-header {
+    width: calc(100% - 3.2rem);
+    margin: 0 auto 24px;
+    box-sizing: border-box;
+  }
+
+  .calorieoverview-date {
+    width: calc(100% - 3.2rem);
+    margin: 0 auto 24px;
+    box-sizing: border-box;
+  }
+
+  .calorieoverview-calories {
+    width: calc(100% - 3.2rem);
+    margin: 0 auto 24px;
+    box-sizing: border-box;
+  }
+
+  .calorieoverview-macros {
+    width: calc(100% - 3.2rem);
+    margin: 0 auto 24px;
+    box-sizing: border-box;
+  }
+}
+
+@media (max-width: 600px) {
+  .calorie-cards {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.2rem;
+  }
+
+  .macro-cards {
+    flex-direction: column;
+    gap: 1.2rem;
+  }
+
+  .calorieoverview-header {
+    width: calc(100% - 3.2rem);
+    margin: 0 auto 24px;
+    box-sizing: border-box;
+  }
+
+  .calorieoverview-date {
+    width: calc(100% - 3.2rem);
+    margin: 0 auto 24px;
+    box-sizing: border-box;
+  }
+
+  .calorieoverview-calories {
+    width: calc(100% - 3.2rem);
+    margin: 0 auto 24px;
+    box-sizing: border-box;
+  }
+
+  .calorieoverview-macros {
+    width: calc(100% - 3.2rem);
+    margin: 0 auto 24px;
+    box-sizing: border-box;
+  }
+}
