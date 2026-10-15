@@ -1,0 +1,102 @@
+/* =========================
+   Workout-Header
+========================= */
+
+.workoutheader {
+  width: 100%;
+  max-width: 160rem;
+  margin: 0 auto;
+  background-color: #f7f9f8;
+  padding: 6rem 0 0 0;
+}
+
+.workoutheader-section {
+  width: 100%;
+  max-width: 120rem;
+  margin: 0 auto;
+}
+
+.workoutheader-header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 2rem;
+}
+
+.workout-header-text {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+}
+
+.workout-header-actions {
+  display: flex;
+  gap: 1.2rem;
+}
+
+.workout-header-text h4 {
+  font-size: 1.3rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.15rem;
+  color: #6f7b77;
+  margin-bottom: 1rem;
+}
+
+.workout-header-text h1 {
+  font-family: "Inter", sans-serif;
+  font-size: 4rem;
+  font-weight: 800;
+  line-height: 1.15;
+  color: #17211e;
+  margin-bottom: -0.5rem;
+}
+
+.create-workout-btn {
+  padding: 1.2rem 1.8rem;
+  border: none;
+  border-radius: 1rem;
+
+  background-color: #242424;
+  color: #fff;
+
+  font-family: "Inter", sans-serif;
+  font-size: 1.4rem;
+  font-weight: 600;
+
+  cursor: pointer;
+  transition:
+    background-color 0.2s ease,
+    transform 0.2s ease;
+}
+
+.create-workout-btn:hover {
+  background-color: #444;
+  transform: translateY(-2px);
+}
+
+.all-workouts-btn {
+  padding: 1.2rem 1.8rem;
+  border: 1px solid #d8dddd;
+  border-radius: 1rem;
+
+  background-color: #fff;
+  color: #242424;
+
+  font-family: "Inter", sans-serif;
+  font-size: 1.4rem;
+  font-weight: 600;
+
+  cursor: pointer;
+
+  transition:
+    background-color 0.2s ease,
+    border-color 0.2s ease,
+    transform 0.2s ease;
+}
+
+.all-workouts-btn:hover {
+  background-color: #f0f2f1;
+  border-color: #999;
+  transform: translateY(-2px);
+}
