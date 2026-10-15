@@ -548,6 +548,96 @@ app.get("/api/food-entries", async (req, res) => {
   }
 });
 
+app.delete("/api/food-entries/:id", async (req, res) => {
+  const userId = req.session?.userId;
+  const entryId = Number(req.params.id);
+
+  if (!userId) {
+    return res.status(401).json({
+      message: "Bitte zuerst einloggen.",
+    });
+  }
+
+  if (!Number.isSafeInteger(entryId) || entryId <= 0) {
+    return res.status(400).json({
+      message: "Ungültige Eintrags-ID.",
+    });
+  }
+
+  try {
+    const result = await pool.query(
+      `DELETE FROM food_entries
+       WHERE id = $1 AND user_id = $2
+       RETURNING id`,
+      [entryId, userId],
+    );
+
+    if (result.rowCount === 0) {
+      return res.status(404).json({
+        message: "Mahlzeit nicht gefunden.",
+      });
+    }
+
+    res.json({
+      message: "Mahlzeit erfolgreich gelöscht.",
+    });
+  } catch (error) {
+    console.error("Fehler beim Löschen der Mahlzeit:", error);
+
+    res.status(500).json({
+      message: "Mahlzeit konnte nicht gelöscht werden.",
+    });
+  }
+});
+
+app.patch("/api/food-entries/:id", async (req, res) => {
+  const userId = req.session?.userId;
+  const entryId = Number(req.params.id);
+  const { amount } = req.body;
+
+  if (!userId) {
+    return res.status(401).json({
+      message: "Bitte zuerst einloggen.",
+    });
+  }
+
+  if (!Number.isSafeInteger(entryId) || entryId <= 0) {
+    return res.status(400).json({
+      message: "Ungültige Eintrags-ID.",
+    });
+  }
+
+  if (!Number.isFinite(Number(amount)) || Number(amount) <= 0) {
+    return res.status(400).json({
+      message: "Bitte eine gültige Grammmenge angeben.",
+    });
+  }
+
+  try {
+    const result = await pool.query(
+      `UPDATE food_entries
+       SET amount_g = $1
+       WHERE id = $2 AND user_id = $3
+       RETURNING id, amount_g`,
+      [Number(amount), entryId, userId],
+    );
+
+    if (result.rowCount === 0) {
+      return res.status(404).json({
+        message: "Lebensmitteleintrag nicht gefunden.",
+      });
+    }
+
+    res.json(result.rows[0]);
+  } catch (error) {
+    console.error("Fehler beim Bearbeiten des Lebensmittels:", error);
+
+    res.status(500).json({
+      message: "Lebensmittel konnte nicht bearbeitet werden.",
+    });
+  }
+});
+
 app.post("/api/daily-tracking/weight", async (req, res) => {
   try {
     const userId = req.session.userId;

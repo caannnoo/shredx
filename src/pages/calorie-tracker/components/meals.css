@@ -147,13 +147,18 @@
 }
 
 .meal-food-entry {
-  display: flex;
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 7rem;
   align-items: center;
-  justify-content: space-between;
   gap: 16px;
 
   padding: 14px 4px;
   border-bottom: 1px solid #e5e5e5;
+}
+
+.meal-food-entry p:nth-child(2),
+.meal-food-entry p:nth-child(3) {
+  text-align: center;
 }
 
 .meal-food-entry:last-child {
@@ -214,4 +219,114 @@
   color: #111;
   font-weight: 600;
   border-bottom-color: #111;
+}
+
+.meal-food-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.8rem;
+}
+
+.meal-food-actions button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 0.4rem;
+  border: none;
+  background: transparent;
+  color: #6f7676;
+  cursor: pointer;
+
+  transition: color 0.2s ease;
+}
+
+.meal-food-actions button:first-child:hover {
+  color: #000;
+}
+
+.meal-food-actions button:last-child:hover {
+  color: #e5484d;
+}
+
+.edit-food-nutrition {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.2rem;
+  margin-top: 2rem;
+}
+
+.edit-food-nutrition p {
+  padding: 1.4rem;
+  border-radius: 1.2rem;
+  background-color: #f3f5f4;
+  font-size: 1.4rem;
+  font-weight: 600;
+  text-align: center;
+}
+
+.edit-food-save {
+  width: 100%;
+  padding: 1.2rem 2rem;
+  margin-top: 2rem;
+
+  border: none;
+  border-radius: 1.5rem;
+
+  background-color: #000;
+  color: #fff;
+
+  font-family: "Manrope", sans-serif;
+  font-size: 1.6rem;
+  font-weight: 700;
+
+  cursor: pointer;
+
+  transition:
+    background-color 0.25s ease,
+    transform 0.25s ease,
+    box-shadow 0.25s ease;
+}
+
+.edit-food-save:hover {
+  background-color: #252525;
+  transform: translateY(-3px);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.25);
+}
+
+.food-modal h3 {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #111;
+  margin: 1.5rem 0 2rem;
+}
+
+.food-modal label[for="edit-food-amount"] {
+  display: block;
+  font-size: 1.4rem;
+  font-weight: 600;
+  color: #444;
+}
+
+#edit-food-amount {
+  width: 100%;
+  padding: 1.2rem 1.4rem;
+  margin-top: 0.8rem;
+
+  border: 1px solid #d8dddd;
+  border-radius: 1.2rem;
+
+  background-color: #f7f9f8;
+  color: #000;
+
+  font-family: "Manrope", sans-serif;
+  font-size: 1.6rem;
+
+  outline: none;
+  transition: border-color 0.2s ease;
+}
+
+#edit-food-amount:focus {
+  border-color: #000;
 }

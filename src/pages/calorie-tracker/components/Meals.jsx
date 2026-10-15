@@ -1,6 +1,10 @@
 import "./meals.css";
 import { useState, useEffect } from "react";
-import { ForkKnifeIcon } from "@phosphor-icons/react";
+import {
+  ForkKnifeIcon,
+  PencilSimpleIcon,
+  TrashIcon,
+} from "@phosphor-icons/react";
 import FoodSearch from "./FoodSearch";
 import ManualFoodEntry from "./ManualFoodEntry";
 
@@ -16,6 +20,8 @@ function Meals({
   const [selectedMeal, setSelectedMeal] = useState(null);
   const [foodEntries, setFoodEntries] = useState([]);
   const [refreshKey, setRefreshKey] = useState(0);
+  const [editingFood, setEditingFood] = useState(null);
+  const [editAmount, setEditAmount] = useState("");
 
   const breakfastCalories = foodEntries
     .filter((entry) => entry.meal_type === "breakfast")
@@ -50,6 +56,64 @@ function Meals({
     (total, entry) => total + Number(entry.fat_g),
     0,
   );
+
+  const handleDeleteFood = async (entryId) => {
+    try {
+      const response = await fetch(
+        `http://localhost:3000/api/food-entries/${entryId}`,
+        {
+          method: "DELETE",
+          credentials: "include",
+        },
+      );
+
+      if (!response.ok) {
+        throw new Error("Lebensmittel konnte nicht gelöscht werden.");
+      }
+
+      setRefreshKey((previous) => previous + 1);
+    } catch (error) {
+      console.error("Fehler beim Löschen:", error);
+    }
+  };
+
+  const handleSaveFood = async () => {
+    const amount = Number(editAmount);
+
+    if (!Number.isFinite(amount) || amount <= 0) {
+      alert("Bitte eine gültige Grammmenge eingeben.");
+      return;
+    }
+
+    try {
+      const response = await fetch(
+        `http://localhost:3000/api/food-entries/${editingFood.id}`,
+        {
+          method: "PATCH",
+          credentials: "include",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ amount }),
+        },
+      );
+
+      if (!response.ok) {
+        throw new Error("Lebensmittel konnte nicht aktualisiert werden.");
+      }
+
+      setEditingFood(null);
+      setRefreshKey((previous) => previous + 1);
+    } catch (error) {
+      console.error("Fehler beim Bearbeiten:", error);
+      alert("Die Änderung konnte nicht gespeichert werden.");
+    }
+  };
+
+  const editFactor =
+    editingFood && Number(editingFood.amount_g) > 0
+      ? Number(editAmount) / Number(editingFood.amount_g)
+      : 0;
 
   useEffect(() => {
     setTotalCalories(totalCalories);
@@ -130,6 +194,27 @@ function Meals({
                       <p>{entry.name}</p>
                       <p>{entry.amount_g} g</p>
                       <p>{entry.calories} kcal</p>
+
+                      <div className="meal-food-actions">
+                        <button
+                          type="button"
+                          aria-label={`Edit ${entry.name}`}
+                          onClick={() => {
+                            setEditingFood(entry);
+                            setEditAmount(String(entry.amount_g));
+                          }}
+                        >
+                          <PencilSimpleIcon size={20} />
+                        </button>
+
+                        <button
+                          type="button"
+                          aria-label={`Delete ${entry.name}`}
+                          onClick={() => handleDeleteFood(entry.id)}
+                        >
+                          <TrashIcon size={20} />
+                        </button>
+                      </div>
                     </div>
                   ))
               )}
@@ -169,6 +254,27 @@ function Meals({
                       <p>{entry.name}</p>
                       <p>{entry.amount_g} g</p>
                       <p>{entry.calories} kcal</p>
+
+                      <div className="meal-food-actions">
+                        <button
+                          type="button"
+                          aria-label={`Edit ${entry.name}`}
+                          onClick={() => {
+                            setEditingFood(entry);
+                            setEditAmount(String(entry.amount_g));
+                          }}
+                        >
+                          <PencilSimpleIcon size={20} />
+                        </button>
+
+                        <button
+                          type="button"
+                          aria-label={`Delete ${entry.name}`}
+                          onClick={() => handleDeleteFood(entry.id)}
+                        >
+                          <TrashIcon size={20} />
+                        </button>
+                      </div>
                     </div>
                   ))
               )}
@@ -208,6 +314,27 @@ function Meals({
                       <p>{entry.name}</p>
                       <p>{entry.amount_g} g</p>
                       <p>{entry.calories} kcal</p>
+
+                      <div className="meal-food-actions">
+                        <button
+                          type="button"
+                          aria-label={`Edit ${entry.name}`}
+                          onClick={() => {
+                            setEditingFood(entry);
+                            setEditAmount(String(entry.amount_g));
+                          }}
+                        >
+                          <PencilSimpleIcon size={20} />
+                        </button>
+
+                        <button
+                          type="button"
+                          aria-label={`Delete ${entry.name}`}
+                          onClick={() => handleDeleteFood(entry.id)}
+                        >
+                          <TrashIcon size={20} />
+                        </button>
+                      </div>
                     </div>
                   ))
               )}
@@ -247,11 +374,89 @@ function Meals({
                       <p>{entry.name}</p>
                       <p>{entry.amount_g} g</p>
                       <p>{entry.calories} kcal</p>
+
+                      <div className="meal-food-actions">
+                        <button
+                          type="button"
+                          aria-label={`Edit ${entry.name}`}
+                          onClick={() => {
+                            setEditingFood(entry);
+                            setEditAmount(String(entry.amount_g));
+                          }}
+                        >
+                          <PencilSimpleIcon size={20} />
+                        </button>
+
+                        <button
+                          type="button"
+                          aria-label={`Delete ${entry.name}`}
+                          onClick={() => handleDeleteFood(entry.id)}
+                        >
+                          <TrashIcon size={20} />
+                        </button>
+                      </div>
                     </div>
                   ))
               )}
             </div>
           </div>
+
+          {editingFood && (
+            <div className="food-modal-overlay">
+              <div className="food-modal">
+                <div className="food-modal-header">
+                  <h2>Edit Food</h2>
+
+                  <button type="button" onClick={() => setEditingFood(null)}>
+                    ✕
+                  </button>
+                </div>
+
+                <h3>{editingFood.name}</h3>
+
+                <label htmlFor="edit-food-amount">Amount (g)</label>
+
+                <input
+                  id="edit-food-amount"
+                  type="number"
+                  min="0.1"
+                  step="0.1"
+                  value={editAmount}
+                  onChange={(e) => setEditAmount(e.target.value)}
+                />
+
+                <div className="edit-food-nutrition">
+                  <p>
+                    Calories:{" "}
+                    {(Number(editingFood.calories) * editFactor).toFixed(1)}{" "}
+                    kcal
+                  </p>
+
+                  <p>
+                    Protein:{" "}
+                    {(Number(editingFood.protein_g) * editFactor).toFixed(1)} g
+                  </p>
+
+                  <p>
+                    Carbs:{" "}
+                    {(Number(editingFood.carbs_g) * editFactor).toFixed(1)} g
+                  </p>
+
+                  <p>
+                    Fat: {(Number(editingFood.fat_g) * editFactor).toFixed(1)} g
+                  </p>
+                </div>
+
+                <button
+                  type="button"
+                  className="edit-food-save"
+                  onClick={handleSaveFood}
+                >
+                  Save Changes
+                </button>
+              </div>
+            </div>
+          )}
 
           {showFoodSearch && (
             <div className="food-modal-overlay">
