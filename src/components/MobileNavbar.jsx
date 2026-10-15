@@ -15,7 +15,7 @@ function MobileNavbar({ isLoggedIn }) {
         <span>Dashboard</span>
       </Link>
 
-      <Link to={isLoggedIn ? "/calorietracker" : "/login"}>
+      <Link to={isLoggedIn ? "/calorie-tracker" : "/login"}>
         <FireIcon size={24} />
         <span>Calories</span>
       </Link>

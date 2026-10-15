@@ -8,6 +8,7 @@ import { useEffect, useState } from "react";
 import Home from "./pages/home/Home";
 import Auth from "./pages/auth/Auth";
 import Profile from "./pages/profile/Profile";
+import CalorieTracker from "./pages/calorie-tracker/CalorieTracker";
 
 // Wiederverwendbare Komponenten
 import Navbar from "./components/Navbar";
@@ -56,6 +57,8 @@ function App() {
             path="/profile"
             element={<Profile setIsLoggedIn={setIsLoggedIn} />}
           />
+          {/* Kalorietracker Seite */}
+          <Route path="/calorie-tracker" element={<CalorieTracker />} />
         </Routes>
       </main>
       {/* Footer der Anwendung */}

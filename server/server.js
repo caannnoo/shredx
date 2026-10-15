@@ -313,6 +313,7 @@ app.get("/api/profile", async (req, res) => {
     protein_percent,
     carbs_percent,
     fat_percent,
+    daily_calorie_goal,
     created_at,
     updated_at
   FROM profiles
@@ -349,6 +350,584 @@ app.post("/api/logout", (req, res) => {
       message: "Logout successful",
     });
   });
+});
+
+app.get("/api/foods", async (req, res) => {
+  try {
+    const result = await pool.query("SELECT * FROM foods ORDER BY name");
+
+    res.json(result.rows);
+  } catch (error) {
+    console.error("Fehler beim Laden der Lebensmittel:", error);
+    res.status(500).json({
+      message: "Lebensmittel konnten nicht geladen werden.",
+    });
+  }
+});
+
+app.get("/api/foods/search", async (req, res) => {
+  try {
+    // Suchbegriff aus der URL holen
+    const searchTerm = req.query.q?.trim();
+
+    if (!searchTerm) {
+      return res.status(400).json({
+        message: "Bitte einen Suchbegriff eingeben.",
+      });
+    }
+
+    // Suchbegriff sicher für die URL kodieren
+    const url = `https://world.openfoodfacts.org/cgi/search.pl?search_terms=${encodeURIComponent(searchTerm)}&search_simple=1&action=process&json=1&page_size=20`;
+
+    const response = await fetch(url, {
+      headers: {
+        "User-Agent": "ShredX/1.0 (Node.js; learning-project)",
+        Accept: "application/json",
+      },
+    });
+
+    if (!response.ok) {
+      console.log("Open Food Facts Status:", response.status);
+
+      return res.status(502).json({
+        message: "Open Food Facts ist nicht erreichbar.",
+        status: response.status,
+      });
+    }
+
+    const data = await response.json();
+
+    const foods = (data.products ?? []).map((product) => ({
+      name: product.product_name || "Unbekanntes Lebensmittel",
+      barcode: product.code,
+      calories_per_100g: product.nutriments?.["energy-kcal_100g"] ?? null,
+      protein_per_100g: product.nutriments?.proteins_100g ?? null,
+      carbs_per_100g: product.nutriments?.carbohydrates_100g ?? null,
+      fat_per_100g: product.nutriments?.fat_100g ?? null,
+    }));
+
+    res.json(foods);
+  } catch (error) {
+    console.error("Fehler bei Open Food Facts:", error);
+
+    res.status(500).json({
+      message: "Lebensmittelsuche fehlgeschlagen.",
+    });
+  }
+});
+
+app.post("/api/foods/manual", async (req, res) => {
+  const { name, calories, protein, carbs, fat } = req.body;
+
+  if (
+    !name?.trim() ||
+    [calories, protein, carbs, fat].some(
+      (value) =>
+        value === "" ||
+        value == null ||
+        !Number.isFinite(Number(value)) ||
+        Number(value) < 0,
+    )
+  ) {
+    return res.status(400).json({
+      message: "Bitte gültige Nährwerte eingeben.",
+    });
+  }
+
+  try {
+    const result = await pool.query(
+      `INSERT INTO foods (
+        name,
+        calories_per_100g,
+        protein_per_100g,
+        carbs_per_100g,
+        fat_per_100g
+      )
+      VALUES ($1, $2, $3, $4, $5)
+      RETURNING *`,
+      [name.trim(), calories, protein, carbs, fat],
+    );
+
+    res.status(201).json(result.rows[0]);
+  } catch (error) {
+    console.error("Fehler beim Speichern:", error);
+
+    res.status(500).json({
+      message: "Lebensmittel konnte nicht gespeichert werden.",
+    });
+  }
+});
+
+app.post("/api/food-entries", async (req, res) => {
+  // Nur eingeloggte User dürfen Essen eintragen
+  const userId = req.session?.userId;
+
+  if (!userId) {
+    return res.status(401).json({
+      message: "Bitte zuerst einloggen.",
+    });
+  }
+
+  const { foodId, trackingDate, mealType, amount } = req.body;
+
+  if (
+    !Number.isInteger(Number(foodId)) ||
+    Number(foodId) <= 0 ||
+    !/^\d{4}-\d{2}-\d{2}$/.test(trackingDate ?? "") ||
+    !["breakfast", "lunch", "dinner", "snacks"].includes(mealType) ||
+    !Number.isFinite(Number(amount)) ||
+    Number(amount) <= 0
+  ) {
+    return res.status(400).json({
+      message: "Ungültige Lebensmitteldaten.",
+    });
+  }
+
+  try {
+    const result = await pool.query(
+      `INSERT INTO food_entries
+        (user_id, food_id, tracking_date, meal_type, amount_g)
+       VALUES ($1, $2, $3, $4, $5)
+       RETURNING *`,
+      [userId, foodId, trackingDate, mealType, amount],
+    );
+
+    res.status(201).json(result.rows[0]);
+  } catch (error) {
+    console.error("Fehler beim Speichern der Mahlzeit:", error);
+
+    res.status(500).json({
+      message: "Mahlzeit konnte nicht gespeichert werden.",
+    });
+  }
+});
+
+app.get("/api/food-entries", async (req, res) => {
+  const userId = req.session?.userId;
+
+  if (!userId) {
+    return res.status(401).json({
+      message: "Bitte zuerst einloggen.",
+    });
+  }
+
+  const { date } = req.query;
+
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(date ?? "")) {
+    return res.status(400).json({
+      message: "Bitte ein gültiges Datum angeben.",
+    });
+  }
+
+  try {
+    const result = await pool.query(
+      `SELECT
+         fe.id,
+         fe.meal_type,
+         fe.amount_g,
+         f.name,
+         ROUND(f.calories_per_100g * fe.amount_g / 100, 1) AS calories,
+         ROUND(f.protein_per_100g * fe.amount_g / 100, 1) AS protein_g,
+         ROUND(f.carbs_per_100g * fe.amount_g / 100, 1) AS carbs_g,
+         ROUND(f.fat_per_100g * fe.amount_g / 100, 1) AS fat_g
+       FROM food_entries fe
+       JOIN foods f ON fe.food_id = f.id
+       WHERE fe.user_id = $1
+         AND fe.tracking_date = $2
+       ORDER BY fe.id`,
+      [userId, date],
+    );
+
+    res.json(result.rows);
+  } catch (error) {
+    console.error("Fehler beim Laden der Mahlzeiten:", error);
+
+    res.status(500).json({
+      message: "Mahlzeiten konnten nicht geladen werden.",
+    });
+  }
+});
+
+app.delete("/api/food-entries/:id", async (req, res) => {
+  const userId = req.session?.userId;
+  const entryId = Number(req.params.id);
+
+  if (!userId) {
+    return res.status(401).json({
+      message: "Bitte zuerst einloggen.",
+    });
+  }
+
+  if (!Number.isSafeInteger(entryId) || entryId <= 0) {
+    return res.status(400).json({
+      message: "Ungültige Eintrags-ID.",
+    });
+  }
+
+  try {
+    const result = await pool.query(
+      `DELETE FROM food_entries
+       WHERE id = $1 AND user_id = $2
+       RETURNING id`,
+      [entryId, userId],
+    );
+
+    if (result.rowCount === 0) {
+      return res.status(404).json({
+        message: "Mahlzeit nicht gefunden.",
+      });
+    }
+
+    res.json({
+      message: "Mahlzeit erfolgreich gelöscht.",
+    });
+  } catch (error) {
+    console.error("Fehler beim Löschen der Mahlzeit:", error);
+
+    res.status(500).json({
+      message: "Mahlzeit konnte nicht gelöscht werden.",
+    });
+  }
+});
+
+app.patch("/api/food-entries/:id", async (req, res) => {
+  const userId = req.session?.userId;
+  const entryId = Number(req.params.id);
+  const { amount } = req.body;
+
+  if (!userId) {
+    return res.status(401).json({
+      message: "Bitte zuerst einloggen.",
+    });
+  }
+
+  if (!Number.isSafeInteger(entryId) || entryId <= 0) {
+    return res.status(400).json({
+      message: "Ungültige Eintrags-ID.",
+    });
+  }
+
+  if (!Number.isFinite(Number(amount)) || Number(amount) <= 0) {
+    return res.status(400).json({
+      message: "Bitte eine gültige Grammmenge angeben.",
+    });
+  }
+
+  try {
+    const result = await pool.query(
+      `UPDATE food_entries
+       SET amount_g = $1
+       WHERE id = $2 AND user_id = $3
+       RETURNING id, amount_g`,
+      [Number(amount), entryId, userId],
+    );
+
+    if (result.rowCount === 0) {
+      return res.status(404).json({
+        message: "Lebensmitteleintrag nicht gefunden.",
+      });
+    }
+
+    res.json(result.rows[0]);
+  } catch (error) {
+    console.error("Fehler beim Bearbeiten des Lebensmittels:", error);
+
+    res.status(500).json({
+      message: "Lebensmittel konnte nicht bearbeitet werden.",
+    });
+  }
+});
+
+app.post("/api/daily-tracking/weight", async (req, res) => {
+  try {
+    const userId = req.session.userId;
+
+    const { weight, selectedDate } = req.body;
+
+    if (!userId) {
+      return res.status(401).json({ error: "Not authenticated" });
+    }
+
+    if (
+      weight == null ||
+      !Number.isFinite(Number(weight)) ||
+      Number(weight) <= 0
+    ) {
+      return res.status(400).json({ error: "Invalid weight" });
+    }
+
+    const result = await pool.query(
+      `INSERT INTO daily_tracking (user_id, tracking_date, weight_kg)
+   VALUES ($1, $2, $3)
+   ON CONFLICT (user_id, tracking_date)
+   DO UPDATE SET
+     weight_kg = EXCLUDED.weight_kg,
+     updated_at = NOW()
+   RETURNING *`,
+      [userId, selectedDate, Number(weight)],
+    );
+
+    res.json({ tracking: result.rows[0] });
+  } catch (error) {
+    console.error("Error saving weight:", error);
+    res.status(500).json({ error: "Server error" });
+  }
+});
+
+app.get("/api/daily-tracking/weight", async (req, res) => {
+  try {
+    const userId = req.session.userId;
+
+    const selectedDate = req.query.date;
+
+    if (!userId) {
+      return res.status(401).json({ error: "Not authenticated" });
+    }
+
+    const result = await pool.query(
+      `SELECT weight_kg, tracking_date
+   FROM daily_tracking
+   WHERE user_id = $1
+     AND weight_kg IS NOT NULL
+     AND tracking_date <= $2
+   ORDER BY tracking_date DESC
+   LIMIT 2`,
+      [userId, selectedDate],
+    );
+
+    res.json({
+      weight: result.rows[0]?.weight_kg ?? null,
+      previousWeight: result.rows[1]?.weight_kg ?? null,
+      lastWeightDate: result.rows[0]?.tracking_date ?? null,
+    });
+  } catch (error) {
+    console.error("Error loading weight:", error);
+    res.status(500).json({ error: "Server error" });
+  }
+});
+
+app.post("/api/daily-tracking/water", async (req, res) => {
+  try {
+    const userId = req.session.userId;
+    const { amount, selectedDate } = req.body;
+
+    if (!userId) {
+      return res.status(401).json({ error: "Not authenticated" });
+    }
+
+    if (!Number.isInteger(amount) || amount === 0) {
+      return res.status(400).json({ error: "Invalid water amount" });
+    }
+
+    const result = await pool.query(
+      `INSERT INTO daily_tracking (user_id, tracking_date, water_ml)
+   VALUES ($1, $2, GREATEST($3, 0))
+   ON CONFLICT (user_id, tracking_date)
+   DO UPDATE SET
+     water_ml = GREATEST(
+       COALESCE(daily_tracking.water_ml, 0) + $3,
+       0
+     ),
+     updated_at = NOW()
+   RETURNING water_ml`,
+      [userId, selectedDate, amount],
+    );
+
+    res.json({ water: result.rows[0].water_ml });
+  } catch (error) {
+    console.error("Error saving water:", error);
+    res.status(500).json({ error: "Server error" });
+  }
+});
+
+app.get("/api/daily-tracking/water", async (req, res) => {
+  try {
+    const userId = req.session.userId;
+
+    const selectedDate = req.query.date;
+
+    if (!userId) {
+      return res.status(401).json({ error: "Not authenticated" });
+    }
+
+    const result = await pool.query(
+      `SELECT water_ml
+       FROM daily_tracking
+       WHERE user_id = $1
+         AND tracking_date = $2`,
+      [userId, selectedDate],
+    );
+
+    res.json({
+      water: result.rows[0]?.water_ml ?? 0,
+    });
+  } catch (error) {
+    console.error("Error loading water:", error);
+    res.status(500).json({ error: "Server error" });
+  }
+});
+
+app.post("/api/daily-tracking/steps", async (req, res) => {
+  try {
+    const userId = req.session.userId;
+    const { amount, selectedDate } = req.body;
+
+    if (!userId) {
+      return res.status(401).json({ error: "Not authenticated" });
+    }
+
+    if (!Number.isInteger(amount) || amount === 0) {
+      return res.status(400).json({ error: "Invalid steps amount" });
+    }
+
+    const result = await pool.query(
+      `INSERT INTO daily_tracking (user_id, tracking_date, steps)
+   VALUES ($1, $2, GREATEST($3, 0))
+   ON CONFLICT (user_id, tracking_date)
+   DO UPDATE SET
+     steps = GREATEST(
+       COALESCE(daily_tracking.steps, 0) + $3,
+       0
+     ),
+     updated_at = NOW()
+   RETURNING steps`,
+      [userId, selectedDate, amount],
+    );
+
+    res.json({ steps: result.rows[0].steps });
+  } catch (error) {
+    console.error("Error saving steps:", error);
+    res.status(500).json({ error: "Server error" });
+  }
+});
+
+app.get("/api/daily-tracking/steps", async (req, res) => {
+  try {
+    const userId = req.session.userId;
+    const selectedDate = req.query.date;
+
+    if (!userId) {
+      return res.status(401).json({ error: "Not authenticated" });
+    }
+
+    const result = await pool.query(
+      `SELECT steps
+       FROM daily_tracking
+       WHERE user_id = $1
+         AND tracking_date = $2`,
+      [userId, selectedDate],
+    );
+
+    res.json({
+      steps: result.rows[0]?.steps ?? 0,
+    });
+  } catch (error) {
+    console.error("Error loading steps:", error);
+    res.status(500).json({ error: "Server error" });
+  }
+});
+
+app.get("/api/activity-entries", async (req, res) => {
+  try {
+    const userId = req.session.userId;
+
+    const selectedDate = req.query.date;
+
+    if (!userId) {
+      return res.status(401).json({ error: "Not authenticated" });
+    }
+
+    const result = await pool.query(
+      `SELECT id, activity_name, duration_minutes, calories_burned
+       FROM activity_entries
+       WHERE user_id = $1 AND tracking_date = $2
+       ORDER BY created_at DESC`,
+      [userId, selectedDate],
+    );
+
+    res.json({ activities: result.rows });
+  } catch (error) {
+    console.error("Error loading activities:", error);
+    res.status(500).json({ error: "Server error" });
+  }
+});
+
+app.post("/api/activity-entries", async (req, res) => {
+  try {
+    const userId = req.session.userId;
+    const { activityName, duration, caloriesBurned, selectedDate } = req.body;
+
+    if (!userId) {
+      return res.status(401).json({ error: "Not authenticated" });
+    }
+
+    if (
+      !activityName ||
+      !Number.isInteger(duration) ||
+      duration <= 0 ||
+      !Number.isInteger(caloriesBurned) ||
+      caloriesBurned < 0
+    ) {
+      return res.status(400).json({ error: "Invalid activity data" });
+    }
+
+    const result = await pool.query(
+      `INSERT INTO activity_entries
+   (user_id, tracking_date, activity_name, duration_minutes, calories_burned)
+   VALUES ($1, $2, $3, $4, $5)
+   RETURNING *`,
+      [userId, selectedDate, activityName, duration, caloriesBurned],
+    );
+
+    res.status(201).json({
+      activity: result.rows[0],
+    });
+  } catch (error) {
+    console.error("Error saving activity:", error);
+    res.status(500).json({ error: "Server error" });
+  }
+});
+
+app.delete("/api/activity-entries/:id", async (req, res) => {
+  try {
+    const userId = req.session.userId;
+    const activityId = Number(req.params.id);
+
+    if (!userId) {
+      return res.status(401).json({
+        error: "Not authenticated",
+      });
+    }
+
+    if (!Number.isInteger(activityId) || activityId <= 0) {
+      return res.status(400).json({
+        error: "Invalid activity ID",
+      });
+    }
+
+    const result = await pool.query(
+      `DELETE FROM activity_entries
+   WHERE id = $1 AND user_id = $2
+   RETURNING id`,
+      [activityId, userId],
+    );
+
+    if (result.rowCount === 0) {
+      return res.status(404).json({
+        error: "Activity not found",
+      });
+    }
+
+    res.json({
+      message: "Activity deleted successfully",
+    });
+  } catch (error) {
+    console.error("Error deleting activity:", error);
+
+    res.status(500).json({
+      error: "Server error",
+    });
+  }
 });
 
 app.listen(PORT, () => {

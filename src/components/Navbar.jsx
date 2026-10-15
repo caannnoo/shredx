@@ -31,16 +31,16 @@ function Navbar({ isLoggedIn, setIsLoggedIn }) {
             </li>
 
             <li>
-              <Link to="/calorietracker">Calorietracker</Link>
+              <Link to="/calorie-tracker">Calorietracker</Link>
             </li>
 
             <li>
-              <Link to="/workouttracker">Workouttracker</Link>
+              <Link to="/workout-tracker">Workouttracker</Link>
             </li>
           </>
         ) : (
           <>
-            <li>
+            {/* <li>
               <Link to="/">Home</Link>
             </li>
 
@@ -50,7 +50,7 @@ function Navbar({ isLoggedIn, setIsLoggedIn }) {
 
             <li>
               <a href="#howitworks">How it works</a>
-            </li>
+            </li> */}
           </>
         )}
       </ul>

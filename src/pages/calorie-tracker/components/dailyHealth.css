@@ -1,0 +1,422 @@
+/* =========================
+   Daily-Health
+========================= */
+
+.daily-health {
+  width: 100%;
+  max-width: 160rem;
+  margin: 0 auto;
+  background-color: #f7f9f8;
+}
+
+.daily-health-section {
+  width: 100%;
+  max-width: 120rem;
+  margin: 0 auto;
+  padding-bottom: 6rem;
+}
+
+.daily-health-heading {
+  margin: 0 0 16px;
+  font-size: 2.8rem;
+}
+
+.daily-health-paragraph {
+  color: #777777;
+  font-size: 13px;
+  font-weight: 600;
+  margin-bottom: 2rem;
+}
+
+/* =========================
+   Daily-Health-Grid
+========================= */
+
+.daily-health-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+}
+
+.health-card {
+  padding: 20px;
+
+  background: #ffffff;
+  border: 1px solid #d8d8d8;
+  border-radius: 16px;
+}
+
+.health-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  margin-bottom: 16px;
+}
+
+.health-card-header h3 {
+  margin: 0;
+  font-size: 18px;
+}
+
+.health-card-header button {
+  color: #777777;
+  background-color: white;
+  border: none;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.health-card-header button:hover {
+  background: #ffffff;
+  color: #222222;
+}
+.health-value {
+  display: block;
+  margin-bottom: 10px;
+
+  font-size: 26px;
+}
+
+.health-progress {
+  width: 100%;
+  height: 7px;
+
+  margin-top: 16px;
+
+  background: #d4d4d4;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.health-progress-fill {
+  height: 100%;
+  background: #222222;
+  border-radius: 10px;
+}
+
+.steps-buttons,
+.water-buttons {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+  margin-top: 14px;
+}
+
+.steps-buttons button,
+.water-buttons button {
+  background: #383838;
+  color: #e5e5e5;
+  border: 1px solid #555;
+  border-radius: 8px;
+  padding: 10px 6px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.steps-buttons button:hover,
+.water-buttons button:hover {
+  background: #505050;
+  border-color: #777;
+}
+
+.steps-buttons button:active,
+.water-buttons button:active {
+  transform: scale(0.95);
+}
+
+.activity {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  padding: 12px 0;
+  border-bottom: 1px solid #e5e5e5;
+}
+
+.activity div {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.activity strong {
+  font-size: 14px;
+}
+
+.activity span {
+  color: #777777;
+  font-size: 13px;
+}
+
+.activity-total {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  padding-top: 16px;
+}
+
+.activity-total span {
+  color: #777777;
+  font-size: 13px;
+}
+
+.activity-total strong {
+  font-size: 16px;
+}
+
+.delete-activity-btn {
+  background: transparent;
+  border: none;
+  border-radius: 6px;
+  padding: 8px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background 0.2s ease;
+}
+
+.delete-activity-btn:hover {
+  background: rgba(239, 68, 68, 0.15);
+}
+
+.delete-activity-btn:active {
+  transform: scale(0.95);
+}
+
+.activity-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.65);
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  z-index: 1000;
+}
+
+.activity-modal {
+  background: #292929;
+  color: white;
+
+  width: 90%;
+  max-width: 420px;
+  padding: 28px;
+
+  border-radius: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+}
+
+.activity-modal select,
+.activity-modal input {
+  width: 100%;
+  padding: 12px 14px;
+  margin: 10px 0 18px;
+
+  background: #383838;
+  color: white;
+
+  border: 1px solid #555;
+  border-radius: 8px;
+
+  font-size: 14px;
+  box-sizing: border-box;
+}
+
+.activity-modal label {
+  display: block;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.activity-calories-preview {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid #444;
+  border-radius: 10px;
+
+  padding: 14px 16px;
+  margin-bottom: 20px;
+}
+
+.activity-calories-preview span {
+  color: #aaa;
+  font-size: 13px;
+}
+
+.activity-calories-preview strong {
+  color: #e5e5e5;
+  font-size: 20px;
+  font-weight: 700;
+}
+
+.activity-modal select:focus,
+.activity-modal input:focus {
+  outline: none;
+  border-color: #777;
+}
+
+.activity-modal button {
+  padding: 12px 18px;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.activity-modal button:first-of-type {
+  background: #e5e5e5;
+  color: #222;
+  margin-right: 10px;
+}
+
+.activity-modal button:first-of-type:hover {
+  background: #c5c5c5;
+}
+
+.activity-modal button:last-of-type {
+  background: #444;
+  color: white;
+}
+
+.activity-modal button:last-of-type:hover {
+  background: #555;
+}
+
+.weight-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.65);
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  z-index: 1000;
+}
+
+.weight-modal {
+  background: #292929;
+  color: white;
+
+  width: 90%;
+  max-width: 420px;
+  padding: 28px;
+
+  border-radius: 16px;
+  border: 1px solid #444;
+
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+}
+
+.weight-modal input {
+  width: 100%;
+  padding: 12px 14px;
+  margin: 10px 0 18px;
+
+  background: #383838;
+  color: white;
+
+  border: 1px solid #555;
+  border-radius: 8px;
+
+  font-size: 14px;
+  box-sizing: border-box;
+}
+
+.weight-modal input:focus {
+  outline: none;
+  border-color: #777;
+}
+
+.weight-modal label {
+  display: block;
+  font-size: 14px;
+  font-weight: 500;
+  color: #ccc;
+}
+
+.weight-modal button {
+  padding: 12px 18px;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.weight-modal button:first-of-type {
+  background: #e5e5e5;
+  color: #222;
+  margin-right: 10px;
+}
+
+.weight-modal button:first-of-type:hover {
+  background: #c5c5c5;
+}
+
+.weight-modal button:last-of-type {
+  background: #444;
+  color: white;
+}
+
+.weight-modal button:last-of-type:hover {
+  background: #555;
+}
+
+@media (max-width: 1200px) {
+  .daily-health-heading {
+    width: calc(100% - 3.2rem);
+    margin: 0 auto 24px;
+    box-sizing: border-box;
+  }
+
+  .daily-health-paragraph {
+    width: calc(100% - 3.2rem);
+    margin: 0 auto 24px;
+    box-sizing: border-box;
+  }
+
+  .daily-health-grid {
+    display: grid;
+    grid-template-columns: repeat(1, 1fr);
+    gap: 16px;
+    width: calc(100% - 3.2rem);
+    margin: 0 auto 24px;
+    box-sizing: border-box;
+  }
+}
+
+@media (max-width: 600px) {
+  .daily-health-heading {
+    width: calc(100% - 3.2rem);
+    margin: 0 auto 24px;
+    box-sizing: border-box;
+  }
+
+  .daily-health-paragraph {
+    width: calc(100% - 3.2rem);
+    margin: 0 auto 24px;
+    box-sizing: border-box;
+  }
+
+  .daily-health-grid {
+    display: grid;
+    grid-template-columns: repeat(1, 1fr);
+    gap: 16px;
+    width: calc(100% - 3.2rem);
+    margin: 0 auto 24px;
+    box-sizing: border-box;
+  }
+}
