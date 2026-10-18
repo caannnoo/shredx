@@ -930,6 +930,123 @@ app.delete("/api/activity-entries/:id", async (req, res) => {
   }
 });
 
+// Alle Übungen aus der Datenbank abrufen
+app.get("/api/exercises", async (req, res) => {
+  try {
+    const searchTerm = req.query.search || "";
+    const result = await pool.query(
+      `SELECT * FROM public.exercises
+   WHERE name ILIKE $1
+   ORDER BY name ASC`,
+      [`%${searchTerm}%`],
+    );
+
+    res.json(result.rows);
+  } catch (error) {
+    console.error("Fehler beim Laden der Übungen:", error);
+    res.status(500).json({
+      error: "Übungen konnten nicht geladen werden",
+    });
+  }
+});
+
+app.post("/api/workouts", async (req, res) => {
+  const client = await pool.connect();
+
+  try {
+    await client.query("BEGIN");
+
+    const { name, trainingDays, exercises } = req.body;
+
+    const userId = req.session.userId;
+
+    if (!userId) {
+      await client.query("ROLLBACK");
+
+      return res.status(401).json({
+        error: "Du musst angemeldet sein, um ein Workout zu erstellen.",
+      });
+    }
+
+    console.log("Neues Workout:", {
+      userId,
+      name,
+      trainingDays,
+      exercises,
+    });
+
+    const workoutResult = await client.query(
+      `INSERT INTO public.workouts
+    (user_id, name, training_days)
+   VALUES ($1, $2, $3)
+   RETURNING id`,
+      [userId, name, trainingDays],
+    );
+
+    const workoutId = workoutResult.rows[0].id;
+
+    console.log("Workout gespeichert mit ID:", workoutId);
+
+    for (const exercise of exercises) {
+      await client.query(
+        `INSERT INTO public.workout_exercises
+      (workout_id, exercise_id, position, target_sets)
+     VALUES ($1, $2, $3, $4)`,
+        [
+          workoutId,
+          exercise.exerciseId,
+          exercise.position,
+          exercise.targetSets,
+        ],
+      );
+    }
+
+    await client.query("COMMIT");
+
+    res.status(200).json({
+      message: "Workout-Daten im Backend angekommen!",
+    });
+  } catch (error) {
+    await client.query("ROLLBACK");
+
+    console.error("Fehler beim Erstellen des Workouts:", error);
+
+    res.status(500).json({
+      error: "Workout konnte nicht erstellt werden",
+    });
+  } finally {
+    client.release();
+  }
+});
+
+app.get("/api/workouts", async (req, res) => {
+  try {
+    const userId = req.session.userId;
+
+    if (!userId) {
+      return res.status(401).json({
+        error: "Du musst angemeldet sein.",
+      });
+    }
+
+    const result = await pool.query(
+      `SELECT *
+       FROM public.workouts
+       WHERE user_id = $1
+       ORDER BY created_at DESC, id DESC`,
+      [userId],
+    );
+
+    res.json(result.rows);
+  } catch (error) {
+    console.error("Fehler beim Laden der Workouts:", error);
+
+    res.status(500).json({
+      error: "Workouts konnten nicht geladen werden.",
+    });
+  }
+});
+
 app.listen(PORT, () => {
   console.log(`Läuft auf Port ${PORT}`);
 });

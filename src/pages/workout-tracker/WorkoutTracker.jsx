@@ -1,12 +1,27 @@
+import { useState } from "react";
+
 import WorkoutHeader from "./components/WorkoutHeader";
 import WorkoutToday from "./components/WorkoutToday";
 import WorkoutActive from "./components/WorkoutActive";
 import WorkoutFooter from "./components/WorkoutFooter";
+import WorkoutCreate from "./components/WorkoutCreate";
 
-function CalorieTracker() {
+function WorkoutTracker() {
+  const [isCreatingWorkout, setIsCreatingWorkout] = useState(false);
+
+  function handleCreateWorkout() {
+    setIsCreatingWorkout(true);
+    console.log("Create Workout wurde geklickt!");
+  }
+
+  function handleCloseWorkout() {
+    setIsCreatingWorkout(false);
+  }
+
   return (
     <div>
-      <WorkoutHeader />
+      <WorkoutHeader onCreateWorkout={handleCreateWorkout} />
+      {isCreatingWorkout && <WorkoutCreate onClose={handleCloseWorkout} />}
       <WorkoutToday />
       <WorkoutActive />
       <WorkoutFooter />
@@ -14,4 +29,4 @@ function CalorieTracker() {
   );
 }
 
-export default CalorieTracker;
+export default WorkoutTracker;

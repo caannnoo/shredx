@@ -1,6 +1,6 @@
 import "./workoutHeader.css";
 
-function WorkoutHeader() {
+function WorkoutHeader({ onCreateWorkout }) {
   return (
     <div className="workoutheader">
       <div className="workoutheader-section">
@@ -11,7 +11,11 @@ function WorkoutHeader() {
           </div>
 
           <div className="workout-header-actions">
-            <button type="button" className="create-workout-btn">
+            <button
+              type="button"
+              className="create-workout-btn"
+              onClick={onCreateWorkout}
+            >
               + Create Workout
             </button>
 
