@@ -14,15 +14,14 @@
   width: 90%;
   max-width: 600px;
   padding: 32px;
-
+  position: relative;
   background-color: #1c1c1c;
   color: white;
   border: 1px solid #383838;
   border-radius: 16px;
-}
-
-.workout-create-content {
-  position: relative;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-sizing: border-box;
 }
 
 .workout-create-close {

@@ -1,0 +1,141 @@
+.workout-show-overlay {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.85);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+  z-index: 1100;
+}
+
+.workout-show-popup {
+  position: relative;
+  background-color: #181818;
+  border: 1px solid #383838;
+  border-radius: 16px;
+  padding: 30px;
+  width: 100%;
+  max-width: 650px;
+  max-height: 80vh;
+  overflow-y: auto;
+  box-sizing: border-box;
+  color: #ffffff;
+}
+
+.workout-show-popup h2 {
+  margin-top: 0;
+  margin-bottom: 20px;
+  color: #ffffff;
+}
+
+.workout-show-popup p {
+  color: #bdbdbd;
+}
+
+.workout-show-close {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  background: transparent;
+  border: none;
+  color: #ffffff;
+  font-size: 24px;
+  cursor: pointer;
+}
+
+.workout-show-close:hover {
+  color: #aaaaaa;
+}
+
+.workout-show-exercises {
+  margin-top: 25px;
+}
+
+.workout-show-exercises h3 {
+  color: #ffffff;
+  font-size: 18px;
+  margin-bottom: 15px;
+}
+
+.workout-show-exercise {
+  background-color: #252525;
+  border: 1px solid #383838;
+  border-radius: 12px;
+  padding: 16px;
+  margin-bottom: 12px;
+  transition: border-color 0.2s ease;
+}
+
+.workout-show-exercise:hover {
+  border-color: #666666;
+}
+
+.workout-show-exercise h4 {
+  color: #ffffff;
+  font-size: 16px;
+  margin: 0 0 12px;
+}
+
+.workout-show-exercise p {
+  color: #bdbdbd;
+  font-size: 14px;
+  margin: 5px 0;
+}
+
+/* Workout-Header */
+.workout-show-header {
+  margin-bottom: 24px;
+  padding-bottom: 18px;
+  border-bottom: 1px solid #383838;
+}
+
+.workout-show-header h2 {
+  color: #ffffff;
+  font-size: 26px;
+  font-weight: 700;
+  margin: 0 0 6px;
+}
+
+.workout-show-header span {
+  color: #999999;
+  font-size: 13px;
+}
+
+/* Info-Karten */
+.workout-show-info {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 28px;
+}
+
+.workout-show-info-card {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 16px;
+  background-color: #252525;
+  border: 1px solid #383838;
+  border-radius: 12px;
+}
+
+.workout-show-info-card span {
+  color: #aaaaaa;
+  font-size: 13px;
+}
+
+.workout-show-info-card strong {
+  color: #ffffff;
+  font-size: 16px;
+  font-weight: 600;
+  text-transform: capitalize;
+  overflow-wrap: anywhere;
+}
+
+/* Auf kleinen Bildschirmen untereinander */
+@media (max-width: 480px) {
+  .workout-show-info {
+    grid-template-columns: 1fr;
+  }
+}

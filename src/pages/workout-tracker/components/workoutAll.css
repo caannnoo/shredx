@@ -1,0 +1,125 @@
+.all-workouts-overlay {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.8);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  padding: 20px;
+}
+
+.saved-workouts {
+  background-color: #181818;
+  border: 1px solid #383838;
+  border-radius: 16px;
+  padding: 30px;
+  width: 100%;
+  max-width: 650px;
+  max-height: 80vh;
+  overflow-y: auto;
+  box-sizing: border-box;
+}
+
+.saved-workouts h2 {
+  color: white;
+  margin-top: 0;
+  margin-bottom: 20px;
+}
+
+.saved-workout-card h3 {
+  color: #ffffff;
+}
+
+.saved-workout-card p {
+  color: #bdbdbd;
+}
+
+.all-workouts-close {
+  background: transparent;
+  border: none;
+  color: #ffffff;
+  font-size: 24px;
+  cursor: pointer;
+  display: block;
+  margin-left: auto;
+  padding: 4px 8px;
+}
+
+.all-workouts-close:hover {
+  color: #aaaaaa;
+}
+
+.saved-workout-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 18px;
+}
+
+.saved-workout-actions button {
+  flex: 1;
+  padding: 12px 10px;
+  border-radius: 8px;
+  border: 1px solid #444;
+  background-color: #292929;
+  color: #fff;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition:
+    background-color 0.2s,
+    transform 0.2s;
+}
+
+.saved-workout-show:hover,
+.saved-workout-edit:hover {
+  background-color: #444;
+  transform: translateY(-2px);
+}
+
+.saved-workout-delete {
+  background-color: #382020 !important;
+  border-color: #653333 !important;
+}
+
+.saved-workout-delete:hover {
+  background-color: #682626 !important;
+  transform: translateY(-2px);
+}
+
+/* Workout-Karten */
+.saved-workout-card {
+  background-color: #242424;
+  border: 1px solid #404040;
+  border-radius: 12px;
+  padding: 20px;
+  margin-bottom: 15px;
+  transition: border-color 0.2s ease;
+}
+
+.saved-workout-card:hover {
+  border-color: #666666;
+}
+
+.saved-workout-card h3 {
+  color: #ffffff;
+  font-size: 20px;
+  font-weight: 700;
+  margin: 0 0 12px;
+}
+
+.saved-workout-card p {
+  color: #bdbdbd;
+  font-size: 14px;
+  margin: 6px 0;
+}
+
+/* Überschrift */
+.saved-workouts h2 {
+  color: #ffffff;
+  font-size: 26px;
+  font-weight: 700;
+  margin-bottom: 25px;
+  padding-bottom: 15px;
+  border-bottom: 1px solid #383838;
+}

@@ -1,27 +1,70 @@
-import { useState } from "react";
-
+import { useState, useEffect } from "react";
 import WorkoutHeader from "./components/WorkoutHeader";
 import WorkoutToday from "./components/WorkoutToday";
 import WorkoutActive from "./components/WorkoutActive";
 import WorkoutFooter from "./components/WorkoutFooter";
 import WorkoutCreate from "./components/WorkoutCreate";
+import WorkoutAll from "./components/WorkoutAll";
 
 function WorkoutTracker() {
   const [isCreatingWorkout, setIsCreatingWorkout] = useState(false);
+  const [savedWorkouts, setSavedWorkouts] = useState([]);
+  const [showAllWorkouts, setShowAllWorkouts] = useState(false);
 
   function handleCreateWorkout() {
     setIsCreatingWorkout(true);
-    console.log("Create Workout wurde geklickt!");
   }
 
   function handleCloseWorkout() {
     setIsCreatingWorkout(false);
   }
 
+  useEffect(() => {
+    async function loadWorkouts() {
+      try {
+        const response = await fetch("http://localhost:3000/api/workouts", {
+          credentials: "include",
+        });
+
+        if (!response.ok) {
+          throw new Error("Workouts konnten nicht geladen werden");
+        }
+
+        const data = await response.json();
+
+        setSavedWorkouts(data);
+
+        console.log("Geladene Workouts:", data);
+      } catch (error) {
+        console.error("Fehler beim Laden der Workouts:", error);
+      }
+    }
+
+    loadWorkouts();
+  }, []);
+
   return (
     <div>
-      <WorkoutHeader onCreateWorkout={handleCreateWorkout} />
+      <WorkoutHeader
+        onCreateWorkout={handleCreateWorkout}
+        onShowAllWorkouts={() => setShowAllWorkouts((prev) => !prev)}
+      />
       {isCreatingWorkout && <WorkoutCreate onClose={handleCloseWorkout} />}
+      {showAllWorkouts && (
+        <WorkoutAll
+          savedWorkouts={savedWorkouts}
+          onClose={() => setShowAllWorkouts(false)}
+          onWorkoutUpdated={(updatedWorkout) => {
+            setSavedWorkouts((previousWorkouts) =>
+              previousWorkouts.map((workout) =>
+                workout.id === updatedWorkout.id
+                  ? { ...workout, ...updatedWorkout }
+                  : workout,
+              ),
+            );
+          }}
+        />
+      )}
       <WorkoutToday />
       <WorkoutActive />
       <WorkoutFooter />

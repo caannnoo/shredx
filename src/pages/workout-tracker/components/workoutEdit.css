@@ -1,0 +1,355 @@
+.workout-edit-overlay {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.85);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+  z-index: 1100;
+}
+
+.workout-edit-popup {
+  position: relative;
+  background-color: #181818;
+  border: 1px solid #383838;
+  border-radius: 16px;
+  padding: 30px;
+  width: 100%;
+  max-width: 650px;
+  max-height: 80vh;
+  overflow-y: auto;
+  box-sizing: border-box;
+  color: #ffffff;
+}
+
+.workout-edit-popup h2 {
+  color: #ffffff;
+  font-size: 26px;
+  font-weight: 700;
+  margin: 0 0 24px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid #383838;
+}
+
+.workout-edit-popup p {
+  color: #bdbdbd;
+}
+
+.workout-edit-close {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  background: transparent;
+  border: none;
+  color: #ffffff;
+  font-size: 24px;
+  cursor: pointer;
+}
+
+.workout-edit-close:hover {
+  color: #aaaaaa;
+}
+
+.workout-edit-field {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 24px;
+}
+
+.workout-edit-field label {
+  color: #ffffff;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.workout-edit-field input {
+  width: 100%;
+  box-sizing: border-box;
+  background-color: #252525;
+  border: 1px solid #444444;
+  border-radius: 10px;
+  padding: 14px;
+  color: #ffffff;
+  font-size: 15px;
+  outline: none;
+}
+
+.workout-edit-field input:focus {
+  border-color: #888888;
+}
+
+.workout-edit-days {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.workout-edit-day {
+  flex: 1;
+  min-width: 65px;
+  padding: 12px 8px;
+  background-color: #252525;
+  border: 1px solid #444;
+  border-radius: 10px;
+  color: #aaa;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.workout-edit-day:hover {
+  background-color: #383838;
+}
+
+.workout-edit-day.active {
+  background-color: #e5e5e5;
+  border-color: #fff;
+  color: #111;
+}
+
+/* Exercises-Bereich */
+.workout-edit-exercises {
+  margin-top: 28px;
+}
+
+.workout-edit-exercises h3 {
+  color: #ffffff;
+  font-size: 18px;
+  font-weight: 700;
+  margin-bottom: 16px;
+}
+
+/* Einzelne Übungskarte */
+.workout-edit-exercise {
+  background-color: #252525;
+  border: 1px solid #383838;
+  border-radius: 12px;
+  padding: 16px;
+  margin-bottom: 12px;
+  transition: border-color 0.2s ease;
+}
+
+.workout-edit-exercise:hover {
+  border-color: #666666;
+}
+
+.workout-edit-exercise h4 {
+  color: #ffffff;
+  font-size: 16px;
+  font-weight: 600;
+  margin: 0 0 12px;
+}
+
+.workout-edit-exercise p {
+  color: #bdbdbd;
+  font-size: 14px;
+  margin: 5px 0;
+}
+
+/* Sets-Steuerung */
+.workout-edit-sets {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 14px;
+}
+
+.workout-edit-sets span {
+  color: #bdbdbd;
+  font-size: 14px;
+  margin-right: auto;
+}
+
+.workout-edit-sets button {
+  width: 36px;
+  height: 36px;
+  background-color: #333333;
+  border: 1px solid #555555;
+  border-radius: 8px;
+  color: #ffffff;
+  font-size: 20px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.workout-edit-sets button:hover:not(:disabled) {
+  background-color: #505050;
+}
+
+.workout-edit-sets button:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+.workout-edit-sets strong {
+  color: #ffffff;
+  font-size: 17px;
+  min-width: 22px;
+  text-align: center;
+}
+
+.workout-edit-actions {
+  margin-top: 28px;
+  padding-top: 20px;
+  border-top: 1px solid #383838;
+}
+
+.workout-edit-save {
+  width: 100%;
+  padding: 15px;
+  background-color: #e5e5e5;
+  border: none;
+  border-radius: 10px;
+  color: #111111;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.workout-edit-save:hover:not(:disabled) {
+  background-color: #ffffff;
+}
+
+.workout-edit-save:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.workout-edit-remove {
+  padding: 7px 12px;
+  background: transparent;
+  border: 1px solid #555;
+  border-radius: 8px;
+  color: #bbb;
+  font-size: 13px;
+  cursor: pointer;
+  margin: 0;
+  flex-shrink: 0;
+}
+
+.workout-edit-remove:hover {
+  border-color: #e35b5b;
+  color: #ff7777;
+}
+
+.workout-edit-exercise-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.workout-edit-exercise-header h4 {
+  margin: 0;
+  flex: 1;
+}
+
+.workout-edit-add {
+  width: 100%;
+  padding: 13px;
+  margin: 12px 0 20px;
+  background: #292929;
+  border: 1px dashed #666;
+  border-radius: 10px;
+  color: #fff;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.workout-edit-add:hover {
+  background: #383838;
+  border-color: #fff;
+}
+
+.workout-edit-search {
+  margin-bottom: 20px;
+}
+
+.workout-edit-search input {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 13px;
+  background: #252525;
+  border: 1px solid #555;
+  border-radius: 10px;
+  color: #fff;
+  outline: none;
+}
+
+.workout-edit-muscle-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 15px;
+}
+
+.workout-edit-muscle-btn {
+  padding: 9px 14px;
+  background: #292929;
+  border: 1px solid #555;
+  border-radius: 8px;
+  color: #ccc;
+  cursor: pointer;
+}
+
+.workout-edit-muscle-btn:hover {
+  background: #383838;
+}
+
+.workout-edit-muscle-btn.active {
+  background: #fff;
+  color: #111;
+  border-color: #fff;
+}
+
+.workout-edit-available-list {
+  max-height: 300px;
+  overflow-y: auto;
+  margin-top: 16px;
+}
+
+.workout-edit-available-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  padding: 12px;
+  border-bottom: 1px solid #383838;
+}
+
+.workout-edit-available-item span {
+  color: #fff;
+  font-size: 14px;
+}
+
+.workout-edit-available-actions {
+  display: flex;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.workout-edit-available-actions button {
+  padding: 7px 10px;
+  background: #333;
+  border: 1px solid #555;
+  border-radius: 7px;
+  color: #fff;
+  cursor: pointer;
+}
+
+.workout-edit-available-actions button:hover {
+  background: #505050;
+}
+
+@media (max-width: 480px) {
+  .workout-edit-popup {
+    padding: 20px;
+  }
+}

@@ -1,6 +1,6 @@
 import "./workoutHeader.css";
 
-function WorkoutHeader({ onCreateWorkout }) {
+function WorkoutHeader({ onCreateWorkout, onShowAllWorkouts }) {
   return (
     <div className="workoutheader">
       <div className="workoutheader-section">
@@ -19,7 +19,11 @@ function WorkoutHeader({ onCreateWorkout }) {
               + Create Workout
             </button>
 
-            <button type="button" className="all-workouts-btn">
+            <button
+              type="button"
+              className="all-workouts-btn"
+              onClick={onShowAllWorkouts}
+            >
               All Workouts
             </button>
           </div>
