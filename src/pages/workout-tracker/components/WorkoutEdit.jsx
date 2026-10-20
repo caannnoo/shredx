@@ -1,5 +1,86 @@
 import "./workoutEdit.css";
 import { useEffect, useState } from "react";
+import {
+  DndContext,
+  closestCenter,
+  PointerSensor,
+  TouchSensor,
+  KeyboardSensor,
+  useSensor,
+  useSensors,
+} from "@dnd-kit/core";
+
+import {
+  SortableContext,
+  verticalListSortingStrategy,
+  arrayMove,
+  sortableKeyboardCoordinates,
+} from "@dnd-kit/sortable";
+
+import { useSortable } from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
+
+function SortableExercise({ exercise, index, changeSets, removeExercise }) {
+  const { attributes, listeners, setNodeRef, transform, transition } =
+    useSortable({
+      id: exercise.exercise_id,
+    });
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+  };
+
+  return (
+    <div ref={setNodeRef} style={style} className="workout-edit-exercise">
+      <div className="workout-edit-exercise-header">
+        <h4>
+          {index + 1}. {exercise.name}
+        </h4>
+
+        <div className="workout-edit-header-actions">
+          <button
+            type="button"
+            className="workout-edit-drag-handle"
+            {...attributes}
+            {...listeners}
+            style={{ touchAction: "none" }}
+            aria-label={`Move ${exercise.name}`}
+          >
+            ⠿
+          </button>
+
+          <button
+            type="button"
+            className="workout-edit-remove"
+            onClick={() => removeExercise(exercise.exercise_id)}
+            aria-label={`Remove ${exercise.name}`}
+          >
+            ✕
+          </button>
+        </div>
+      </div>
+
+      <div className="workout-edit-sets">
+        <label htmlFor={`edit-sets-${exercise.exercise_id}`}>Sets</label>
+
+        <input
+          id={`edit-sets-${exercise.exercise_id}`}
+          type="number"
+          min="1"
+          value={exercise.target_sets}
+          onChange={(e) => {
+            const sets = Number(e.target.value);
+
+            if (Number.isInteger(sets) && sets >= 1) {
+              changeSets(exercise.exercise_id, sets, true);
+            }
+          }}
+        />
+      </div>
+    </div>
+  );
+}
 
 function WorkoutEdit({ workout, onClose, onSaved }) {
   const [workoutName, setWorkoutName] = useState(workout.name);
@@ -23,13 +104,15 @@ function WorkoutEdit({ workout, onClose, onSaved }) {
     { value: "sunday", label: "Sun" },
   ];
 
-  const changeSets = (exerciseId, amount) => {
+  const changeSets = (exerciseId, value, isAbsolute = false) => {
     setSelectedExercises((prev) =>
       prev.map((exercise) =>
         exercise.exercise_id === exerciseId
           ? {
               ...exercise,
-              target_sets: Math.max(1, Number(exercise.target_sets) + amount),
+              target_sets: isAbsolute
+                ? value
+                : Math.max(1, Number(exercise.target_sets) + value),
             }
           : exercise,
       ),
@@ -149,6 +232,26 @@ function WorkoutEdit({ workout, onClose, onSaved }) {
 
     loadAvailableExercises();
   }, []);
+
+  const handleDragEnd = (event) => {
+    const { active, over } = event;
+
+    if (!over || active.id === over.id) return;
+
+    setSelectedExercises((prev) => {
+      const oldIndex = prev.findIndex(
+        (exercise) => exercise.exercise_id === active.id,
+      );
+
+      const newIndex = prev.findIndex(
+        (exercise) => exercise.exercise_id === over.id,
+      );
+
+      if (oldIndex === -1 || newIndex === -1) return prev;
+
+      return arrayMove(prev, oldIndex, newIndex);
+    });
+  };
 
   const handleSaveChanges = async () => {
     try {
@@ -318,47 +421,27 @@ function WorkoutEdit({ workout, onClose, onSaved }) {
               {selectedExercises.length === 0 ? (
                 <p>No exercises found.</p>
               ) : (
-                selectedExercises.map((exercise, index) => (
-                  <div
-                    key={exercise.id ?? `new-${exercise.exercise_id}`}
-                    className="workout-edit-exercise"
+                <DndContext
+                  collisionDetection={closestCenter}
+                  onDragEnd={handleDragEnd}
+                >
+                  <SortableContext
+                    items={selectedExercises.map(
+                      (exercise) => exercise.exercise_id,
+                    )}
+                    strategy={verticalListSortingStrategy}
                   >
-                    <div className="workout-edit-exercise-header">
-                      <h4>
-                        {index + 1}. {exercise.name}
-                      </h4>
-
-                      <button
-                        type="button"
-                        className="workout-edit-remove"
-                        onClick={() => removeExercise(exercise.exercise_id)}
-                      >
-                        🗑️ Remove
-                      </button>
-                    </div>
-
-                    <div className="workout-edit-sets">
-                      <span>Sets</span>
-
-                      <button
-                        type="button"
-                        onClick={() => changeSets(exercise.exercise_id, -1)}
-                        disabled={Number(exercise.target_sets) <= 1}
-                      >
-                        −
-                      </button>
-
-                      <strong>{exercise.target_sets}</strong>
-
-                      <button
-                        type="button"
-                        onClick={() => changeSets(exercise.exercise_id, 1)}
-                      >
-                        +
-                      </button>
-                    </div>
-                  </div>
-                ))
+                    {selectedExercises.map((exercise, index) => (
+                      <SortableExercise
+                        key={exercise.exercise_id}
+                        exercise={exercise}
+                        index={index}
+                        changeSets={changeSets}
+                        removeExercise={removeExercise}
+                      />
+                    ))}
+                  </SortableContext>
+                </DndContext>
               )}
             </>
           )}

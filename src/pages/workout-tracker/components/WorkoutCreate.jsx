@@ -1,5 +1,15 @@
 import "./workoutCreate.css";
 import { useState, useEffect } from "react";
+import { DndContext, closestCenter } from "@dnd-kit/core";
+
+import {
+  SortableContext,
+  verticalListSortingStrategy,
+  arrayMove,
+  useSortable,
+} from "@dnd-kit/sortable";
+
+import { CSS } from "@dnd-kit/utilities";
 
 function WorkoutCreate({ onClose }) {
   const [workoutName, setWorkoutName] = useState("");
@@ -81,6 +91,22 @@ function WorkoutCreate({ onClose }) {
     return matchesMuscle && matchesSearch;
   });
 
+  const handleDragEnd = (event) => {
+    const { active, over } = event;
+
+    if (!over || active.id === over.id) return;
+
+    setSelectedExercises((prev) => {
+      const oldIndex = prev.findIndex((exercise) => exercise.id === active.id);
+
+      const newIndex = prev.findIndex((exercise) => exercise.id === over.id);
+
+      if (oldIndex === -1 || newIndex === -1) return prev;
+
+      return arrayMove(prev, oldIndex, newIndex);
+    });
+  };
+
   async function handleSaveWorkout() {
     const workoutData = {
       name: workoutName,
@@ -108,9 +134,64 @@ function WorkoutCreate({ onClose }) {
 
       const result = await response.json();
       console.log("Backend-Antwort:", result);
+
+      alert("Workout successfully created! 💪");
+      onClose();
     } catch (error) {
       console.error("Fehler beim Senden:", error);
     }
+  }
+
+  function SortableCreateExercise({ exercise, onChangeSets, onRemove }) {
+    const { attributes, listeners, setNodeRef, transform, transition } =
+      useSortable({
+        id: exercise.id,
+      });
+
+    const style = {
+      transform: CSS.Transform.toString(transform),
+      transition,
+    };
+
+    return (
+      <div ref={setNodeRef} style={style} className="workout-selected-item">
+        <div className="workout-selected-header">
+          <span>{exercise.name}</span>
+
+          <div className="workout-selected-header-actions">
+            <button
+              type="button"
+              className="workout-edit-drag-handle"
+              {...attributes}
+              {...listeners}
+              style={{ touchAction: "none" }}
+              aria-label={`Move ${exercise.name}`}
+            >
+              ⠿
+            </button>
+
+            <button
+              type="button"
+              className="workout-selected-remove"
+              onClick={onRemove}
+            >
+              ✕
+            </button>
+          </div>
+        </div>
+
+        <div className="workout-selected-sets">
+          <label>Sets</label>
+
+          <input
+            type="number"
+            min="1"
+            value={exercise.target_sets ?? 3}
+            onChange={(e) => onChangeSets(Number(e.target.value))}
+          />
+        </div>
+      </div>
+    );
   }
 
   return (
@@ -269,19 +350,19 @@ function WorkoutCreate({ onClose }) {
           <div className="workout-selected-exercises">
             <h3>Selected Exercises ({selectedExercises.length})</h3>
 
-            {selectedExercises.map((exercise) => (
-              <div className="workout-selected-item" key={exercise.id}>
-                <span>{exercise.name}</span>
-                <div className="workout-selected-sets">
-                  <label>Sets</label>
-
-                  <input
-                    type="number"
-                    min="1"
-                    value={exercise.target_sets ?? 3}
-                    onChange={(e) => {
-                      const sets = Number(e.target.value);
-
+            <DndContext
+              collisionDetection={closestCenter}
+              onDragEnd={handleDragEnd}
+            >
+              <SortableContext
+                items={selectedExercises.map((exercise) => exercise.id)}
+                strategy={verticalListSortingStrategy}
+              >
+                {selectedExercises.map((exercise) => (
+                  <SortableCreateExercise
+                    key={exercise.id}
+                    exercise={exercise}
+                    onChangeSets={(sets) => {
                       setSelectedExercises((prev) =>
                         prev.map((item) =>
                           item.id === exercise.id
@@ -290,21 +371,15 @@ function WorkoutCreate({ onClose }) {
                         ),
                       );
                     }}
+                    onRemove={() => {
+                      setSelectedExercises((prev) =>
+                        prev.filter((item) => item.id !== exercise.id),
+                      );
+                    }}
                   />
-                </div>
-                <button
-                  type="button"
-                  className="workout-selected-remove"
-                  onClick={() => {
-                    setSelectedExercises((prev) =>
-                      prev.filter((item) => item.id !== exercise.id),
-                    );
-                  }}
-                >
-                  ✕
-                </button>
-              </div>
-            ))}
+                ))}
+              </SortableContext>
+            </DndContext>
           </div>
         )}
         <button

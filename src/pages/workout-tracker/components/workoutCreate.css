@@ -309,23 +309,6 @@
   font-size: 16px;
 }
 
-.workout-selected-item {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 12px;
-
-  padding: 12px 14px;
-  margin-bottom: 8px;
-
-  background-color: #303030;
-  border: 1px solid #404040;
-  border-radius: 8px;
-
-  color: #f5f5f5;
-  font-size: 14px;
-}
-
 .workout-selected-item:last-child {
   margin-bottom: 0;
 }
@@ -350,34 +333,6 @@
   background-color: #444;
   color: #fff;
   border-color: #888;
-}
-
-.workout-selected-sets {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin-left: auto;
-}
-
-.workout-selected-sets label {
-  color: #aaa;
-  font-size: 13px;
-  font-weight: 500;
-}
-
-.workout-selected-sets input {
-  width: 55px;
-  padding: 8px;
-
-  background-color: #242424;
-  color: #fff;
-
-  border: 1px solid #555;
-  border-radius: 8px;
-
-  font-size: 14px;
-  text-align: center;
-  outline: none;
 }
 
 .workout-selected-sets input:focus {
@@ -483,4 +438,164 @@
   background-color: #fff;
   color: #111;
   border-color: #fff;
+}
+
+/* Create Workout – Drag Handle */
+
+.workout-selected-item .workout-edit-drag-handle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 36px;
+  height: 36px;
+  padding: 0;
+
+  background: #2b2b2b;
+  color: #bcbcbc;
+
+  border: 1px solid #444;
+  border-radius: 8px;
+
+  font-size: 20px;
+  cursor: grab;
+  user-select: none;
+  touch-action: none;
+
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease,
+    color 0.2s ease;
+}
+
+.workout-selected-item .workout-edit-drag-handle:hover {
+  background: #383838;
+  border-color: #777;
+  color: #fff;
+}
+
+.workout-selected-item .workout-edit-drag-handle:active {
+  cursor: grabbing;
+  background: #444;
+}
+
+/* ==================================
+   CREATE WORKOUT – SELECTED EXERCISES
+   ================================== */
+
+.workout-selected-item {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 14px;
+
+  padding: 16px;
+  background: #292929;
+  border: 1px solid #404040;
+  border-radius: 10px;
+  margin-bottom: 12px;
+}
+
+/* Exercise name + action buttons */
+.workout-selected-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.workout-selected-header > span {
+  flex: 1;
+  min-width: 0;
+  color: #fff;
+  font-size: 15px;
+  font-weight: 600;
+  overflow-wrap: anywhere;
+}
+
+/* Drag and remove next to each other */
+.workout-selected-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+/* Drag handle */
+.workout-selected-header-actions .workout-edit-drag-handle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 36px;
+  height: 36px;
+  margin: 0;
+  padding: 0;
+
+  background: #333;
+  color: #ccc;
+  border: 1px solid #555;
+  border-radius: 8px;
+
+  font-size: 20px;
+  cursor: grab;
+  touch-action: none;
+}
+
+.workout-selected-header-actions .workout-edit-drag-handle:hover {
+  background: #444;
+  color: #fff;
+  border-color: #777;
+}
+
+/* Remove button */
+.workout-selected-header-actions .workout-selected-remove {
+  position: static;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 36px;
+  height: 36px;
+  margin: 0;
+  padding: 0;
+
+  background: #333;
+  color: #ccc;
+  border: 1px solid #555;
+  border-radius: 8px;
+
+  cursor: pointer;
+}
+
+.workout-selected-header-actions .workout-selected-remove:hover {
+  background: #4a3030;
+  color: #fff;
+  border-color: #a55;
+}
+
+/* Sets below the header */
+.workout-selected-sets {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  width: 100%;
+}
+
+.workout-selected-sets label {
+  color: #bbb;
+  font-size: 14px;
+}
+
+.workout-selected-sets input {
+  width: 60px;
+  padding: 8px;
+  background: #222;
+  color: #fff;
+  border: 1px solid #555;
+  border-radius: 8px;
+  text-align: center;
+  font-size: 14px;
+  box-sizing: border-box;
 }
