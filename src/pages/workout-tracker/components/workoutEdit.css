@@ -459,6 +459,38 @@
   margin-top: 14px;
 }
 
+.workout-edit-info {
+  position: static;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  margin: 0;
+  padding: 0;
+  background: #333;
+  color: #ccc;
+  border: 1px solid #555;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.workout-edit-info:hover {
+  background: #333;
+  border-color: #aaa;
+  color: #fff;
+  transform: scale(1.08);
+}
+
+.workout-edit-info:active {
+  transform: scale(0.95);
+}
+
+.workout-edit-info:focus-visible {
+  outline: 2px solid #aaa;
+  outline-offset: 3px;
+}
+
 @media (max-width: 480px) {
   .workout-edit-popup {
     padding: 20px;

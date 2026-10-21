@@ -3,9 +3,43 @@ import { useState } from "react";
 import WorkoutShow from "./WorkoutShow";
 import WorkoutEdit from "./WorkoutEdit";
 
-function WorkoutAll({ savedWorkouts, onClose, onWorkoutUpdated }) {
+function WorkoutAll({
+  savedWorkouts,
+  onClose,
+  onWorkoutUpdated,
+  onWorkoutDeleted,
+}) {
   const [selectedWorkout, setSelectedWorkout] = useState(null);
   const [editingWorkout, setEditingWorkout] = useState(null);
+
+  const handleDeleteWorkout = async (workout) => {
+    const confirmed = window.confirm(
+      `Möchtest du "${workout.name}" wirklich löschen?`,
+    );
+
+    if (!confirmed) return;
+
+    try {
+      const response = await fetch(
+        `http://localhost:3000/api/workouts/${workout.id}`,
+        {
+          method: "DELETE",
+          credentials: "include",
+        },
+      );
+
+      if (!response.ok) {
+        throw new Error("Workout konnte nicht gelöscht werden");
+      }
+
+      onWorkoutDeleted(workout.id);
+    } catch (error) {
+      console.error("Error deleting workout:", error);
+      alert("Fehler beim Löschen des Workouts");
+    }
+  };
+
+  console.log("Anzahl geladener Workouts:", savedWorkouts.length);
   return (
     <div className="all-workouts-overlay">
       <div className="saved-workouts">
@@ -37,7 +71,11 @@ function WorkoutAll({ savedWorkouts, onClose, onWorkoutUpdated }) {
                 ✏️ Edit
               </button>
 
-              <button type="button" className="saved-workout-delete">
+              <button
+                type="button"
+                className="saved-workout-delete"
+                onClick={() => handleDeleteWorkout(workout)}
+              >
                 🗑️ Delete
               </button>
             </div>

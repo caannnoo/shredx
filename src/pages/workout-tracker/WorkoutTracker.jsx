@@ -49,7 +49,30 @@ function WorkoutTracker() {
         onCreateWorkout={handleCreateWorkout}
         onShowAllWorkouts={() => setShowAllWorkouts((prev) => !prev)}
       />
-      {isCreatingWorkout && <WorkoutCreate onClose={handleCloseWorkout} />}
+      {isCreatingWorkout && (
+        <WorkoutCreate
+          onClose={handleCloseWorkout}
+          onCreated={async () => {
+            try {
+              const response = await fetch(
+                "http://localhost:3000/api/workouts",
+                {
+                  credentials: "include",
+                },
+              );
+
+              if (!response.ok) {
+                throw new Error("Workouts konnten nicht aktualisiert werden");
+              }
+
+              const data = await response.json();
+              setSavedWorkouts(data);
+            } catch (error) {
+              console.error("Fehler beim Aktualisieren der Workouts:", error);
+            }
+          }}
+        />
+      )}
       {showAllWorkouts && (
         <WorkoutAll
           savedWorkouts={savedWorkouts}
@@ -60,6 +83,13 @@ function WorkoutTracker() {
                 workout.id === updatedWorkout.id
                   ? { ...workout, ...updatedWorkout }
                   : workout,
+              ),
+            );
+          }}
+          onWorkoutDeleted={(deletedWorkoutId) => {
+            setSavedWorkouts((previousWorkouts) =>
+              previousWorkouts.filter(
+                (workout) => workout.id !== deletedWorkoutId,
               ),
             );
           }}

@@ -11,7 +11,7 @@ import {
 
 import { CSS } from "@dnd-kit/utilities";
 
-function WorkoutCreate({ onClose }) {
+function WorkoutCreate({ onClose, onCreated }) {
   const [workoutName, setWorkoutName] = useState("");
   const [exercises, setExercises] = useState([]);
   const [selectedMuscle, setSelectedMuscle] = useState("all");
@@ -135,6 +135,8 @@ function WorkoutCreate({ onClose }) {
       const result = await response.json();
       console.log("Backend-Antwort:", result);
 
+      await onCreated();
+
       alert("Workout successfully created! 💪");
       onClose();
     } catch (error) {
@@ -142,7 +144,12 @@ function WorkoutCreate({ onClose }) {
     }
   }
 
-  function SortableCreateExercise({ exercise, onChangeSets, onRemove }) {
+  function SortableCreateExercise({
+    exercise,
+    onChangeSets,
+    onRemove,
+    onShowDetails,
+  }) {
     const { attributes, listeners, setNodeRef, transform, transition } =
       useSortable({
         id: exercise.id,
@@ -168,6 +175,16 @@ function WorkoutCreate({ onClose }) {
               aria-label={`Move ${exercise.name}`}
             >
               ⠿
+            </button>
+
+            <button
+              type="button"
+              className="workout-edit-info"
+              onClick={onShowDetails}
+              aria-label={`Show details for ${exercise.name}`}
+              title="Exercise details"
+            >
+              ⓘ
             </button>
 
             <button
@@ -362,6 +379,7 @@ function WorkoutCreate({ onClose }) {
                   <SortableCreateExercise
                     key={exercise.id}
                     exercise={exercise}
+                    onShowDetails={() => setSelectedExercise(exercise)}
                     onChangeSets={(sets) => {
                       setSelectedExercises((prev) =>
                         prev.map((item) =>

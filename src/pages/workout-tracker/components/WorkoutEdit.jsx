@@ -1,26 +1,24 @@
 import "./workoutEdit.css";
+import "./workoutCreate.css";
 import { useEffect, useState } from "react";
-import {
-  DndContext,
-  closestCenter,
-  PointerSensor,
-  TouchSensor,
-  KeyboardSensor,
-  useSensor,
-  useSensors,
-} from "@dnd-kit/core";
+import { DndContext, closestCenter } from "@dnd-kit/core";
 
 import {
   SortableContext,
   verticalListSortingStrategy,
   arrayMove,
-  sortableKeyboardCoordinates,
 } from "@dnd-kit/sortable";
 
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 
-function SortableExercise({ exercise, index, changeSets, removeExercise }) {
+function SortableExercise({
+  exercise,
+  index,
+  changeSets,
+  removeExercise,
+  onShowDetails,
+}) {
   const { attributes, listeners, setNodeRef, transform, transition } =
     useSortable({
       id: exercise.exercise_id,
@@ -48,6 +46,16 @@ function SortableExercise({ exercise, index, changeSets, removeExercise }) {
             aria-label={`Move ${exercise.name}`}
           >
             ⠿
+          </button>
+
+          <button
+            type="button"
+            className="workout-edit-info"
+            onClick={() => onShowDetails(exercise)}
+            aria-label={`Show details for ${exercise.name}`}
+            title="Exercise details"
+          >
+            ⓘ
           </button>
 
           <button
@@ -438,6 +446,13 @@ function WorkoutEdit({ workout, onClose, onSaved }) {
                         index={index}
                         changeSets={changeSets}
                         removeExercise={removeExercise}
+                        onShowDetails={(exercise) => {
+                          const fullExercise = exercises.find(
+                            (item) => item.id === exercise.exercise_id,
+                          );
+
+                          setSelectedExercise(fullExercise || exercise);
+                        }}
                       />
                     ))}
                   </SortableContext>
@@ -457,6 +472,43 @@ function WorkoutEdit({ workout, onClose, onSaved }) {
             💾 Save Changes
           </button>
         </div>
+        {selectedExercise && (
+          <div className="workout-exercise-detail-overlay">
+            <div className="workout-exercise-detail-content">
+              <button
+                type="button"
+                className="workout-exercise-detail-close"
+                onClick={() => setSelectedExercise(null)}
+              >
+                ✕
+              </button>
+
+              <h2>{selectedExercise.name}</h2>
+
+              <div className="workout-exercise-detail-images">
+                {selectedExercise.images?.map((image, index) => (
+                  <img
+                    key={index}
+                    src={`https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/${image}`}
+                    alt={`${selectedExercise.name} - Bild ${index + 1}`}
+                    className="workout-exercise-detail-image"
+                    loading="lazy"
+                  />
+                ))}
+              </div>
+
+              <div className="workout-exercise-instructions">
+                <h3>How to perform</h3>
+
+                <ol>
+                  {selectedExercise.instructions?.map((instruction, index) => (
+                    <li key={index}>{instruction}</li>
+                  ))}
+                </ol>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

@@ -1274,6 +1274,74 @@ app.put("/api/workouts/:id", async (req, res) => {
   }
 });
 
+app.delete("/api/workouts/:id", async (req, res) => {
+  const userId = req.session.userId;
+
+  if (!userId) {
+    return res.status(401).json({
+      error: "Not authenticated",
+    });
+  }
+
+  const workoutId = Number(req.params.id);
+
+  if (!Number.isSafeInteger(workoutId) || workoutId <= 0) {
+    return res.status(400).json({
+      error: "Invalid workout ID",
+    });
+  }
+
+  const client = await pool.connect();
+
+  try {
+    await client.query("BEGIN");
+
+    // Zuerst die zugehörigen Übungen entfernen
+    await client.query(
+      `DELETE FROM public.workout_exercises
+       WHERE workout_id = $1
+         AND EXISTS (
+           SELECT 1
+           FROM public.workouts
+           WHERE id = $1 AND user_id = $2
+         )`,
+      [workoutId, userId],
+    );
+
+    // Danach das Workout selbst löschen
+    const result = await client.query(
+      `DELETE FROM public.workouts
+       WHERE id = $1 AND user_id = $2
+       RETURNING id`,
+      [workoutId, userId],
+    );
+
+    if (result.rows.length === 0) {
+      await client.query("ROLLBACK");
+
+      return res.status(404).json({
+        error: "Workout not found",
+      });
+    }
+
+    await client.query("COMMIT");
+
+    res.json({
+      message: "Workout deleted successfully",
+    });
+  } catch (error) {
+    await client.query("ROLLBACK");
+
+    console.error("Error deleting workout:", error);
+
+    res.status(500).json({
+      error: "Failed to delete workout",
+    });
+  } finally {
+    client.release();
+  }
+});
+
 app.listen(PORT, () => {
   console.log(`Läuft auf Port ${PORT}`);
 });
