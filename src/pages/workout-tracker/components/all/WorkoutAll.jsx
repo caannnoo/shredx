@@ -1,7 +1,7 @@
 import "./workoutAll.css";
 import { useState } from "react";
-import WorkoutShow from "./WorkoutShow";
-import WorkoutEdit from "./WorkoutEdit";
+import WorkoutShow from "../show/WorkoutShow";
+import WorkoutEdit from "../edit/WorkoutEdit";
 
 function WorkoutAll({
   savedWorkouts,

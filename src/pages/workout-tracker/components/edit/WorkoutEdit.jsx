@@ -1,5 +1,5 @@
 import "./workoutEdit.css";
-import "./workoutCreate.css";
+import "../create/workoutCreate.css";
 import { useEffect, useState } from "react";
 import { DndContext, closestCenter } from "@dnd-kit/core";
 

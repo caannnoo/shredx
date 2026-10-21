@@ -1,10 +1,10 @@
 import { useState, useEffect } from "react";
-import WorkoutHeader from "./components/WorkoutHeader";
-import WorkoutToday from "./components/WorkoutToday";
-import WorkoutActive from "./components/WorkoutActive";
-import WorkoutFooter from "./components/WorkoutFooter";
-import WorkoutCreate from "./components/WorkoutCreate";
-import WorkoutAll from "./components/WorkoutAll";
+import WorkoutHeader from "./components/header/WorkoutHeader";
+import WorkoutToday from "./components/today/WorkoutToday";
+import WorkoutActive from "./components/active/WorkoutActive";
+import WorkoutFooter from "./components/footer/WorkoutFooter";
+import WorkoutCreate from "./components/create/WorkoutCreate";
+import WorkoutAll from "./components/all/WorkoutAll";
 
 function WorkoutTracker() {
   const [isCreatingWorkout, setIsCreatingWorkout] = useState(false);

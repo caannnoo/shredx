@@ -1,8 +1,8 @@
 import { useState } from "react";
 
-import CalorieOverview from "./components/CalorieOverview";
-import Meals from "./components/Meals";
-import DailyHealth from "./components/DailyHealth";
+import CalorieOverview from "./components/overview/CalorieOverview";
+import Meals from "./components/meals/Meals";
+import DailyHealth from "./components/dailyhealth/DailyHealth";
 
 function CalorieTracker() {
   const [totalCalories, setTotalCalories] = useState(0);
