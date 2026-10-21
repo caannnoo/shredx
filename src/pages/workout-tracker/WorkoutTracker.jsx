@@ -10,6 +10,7 @@ function WorkoutTracker() {
   const [isCreatingWorkout, setIsCreatingWorkout] = useState(false);
   const [savedWorkouts, setSavedWorkouts] = useState([]);
   const [showAllWorkouts, setShowAllWorkouts] = useState(false);
+  const [activeWorkout, setActiveWorkout] = useState(null);
 
   function handleCreateWorkout() {
     setIsCreatingWorkout(true);
@@ -95,8 +96,14 @@ function WorkoutTracker() {
           }}
         />
       )}
-      <WorkoutToday />
-      <WorkoutActive />
+      <WorkoutToday
+        savedWorkouts={savedWorkouts}
+        onStartWorkout={setActiveWorkout}
+        activeWorkout={activeWorkout}
+        onCancelWorkout={() => setActiveWorkout(null)}
+        onFinishWorkout={() => setActiveWorkout(null)}
+      />
+      {activeWorkout && <WorkoutActive workout={activeWorkout} />}
       <WorkoutFooter />
     </div>
   );

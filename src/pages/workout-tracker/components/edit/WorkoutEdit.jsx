@@ -16,6 +16,7 @@ function SortableExercise({
   exercise,
   index,
   changeSets,
+  changeReps,
   removeExercise,
   onShowDetails,
 }) {
@@ -69,22 +70,54 @@ function SortableExercise({
         </div>
       </div>
 
-      <div className="workout-edit-sets">
-        <label htmlFor={`edit-sets-${exercise.exercise_id}`}>Sets</label>
+      <div className="workout-selected-values">
+        <div className="workout-edit-sets">
+          <label htmlFor={`edit-sets-${exercise.exercise_id}`}>Sets</label>
 
-        <input
-          id={`edit-sets-${exercise.exercise_id}`}
-          type="number"
-          min="1"
-          value={exercise.target_sets}
-          onChange={(e) => {
-            const sets = Number(e.target.value);
+          <input
+            id={`edit-sets-${exercise.exercise_id}`}
+            type="number"
+            min="1"
+            value={exercise.target_sets}
+            onChange={(e) => {
+              const value = e.target.value;
 
-            if (Number.isInteger(sets) && sets >= 1) {
-              changeSets(exercise.exercise_id, sets, true);
-            }
-          }}
-        />
+              if (value === "") {
+                changeSets(exercise.exercise_id, "", true);
+              } else {
+                const sets = Number(value);
+
+                if (Number.isInteger(sets) && sets >= 1) {
+                  changeSets(exercise.exercise_id, sets, true);
+                }
+              }
+            }}
+          />
+        </div>
+
+        <div className="workout-edit-sets">
+          <label htmlFor={`edit-reps-${exercise.exercise_id}`}>Reps</label>
+
+          <input
+            id={`edit-reps-${exercise.exercise_id}`}
+            type="number"
+            min="1"
+            value={exercise.target_reps ?? 10}
+            onChange={(e) => {
+              const value = e.target.value;
+
+              if (value === "") {
+                changeReps(exercise.exercise_id, "");
+              } else {
+                const reps = Number(value);
+
+                if (Number.isInteger(reps) && reps >= 1) {
+                  changeReps(exercise.exercise_id, reps);
+                }
+              }
+            }}
+          />
+        </div>
       </div>
     </div>
   );
@@ -122,6 +155,16 @@ function WorkoutEdit({ workout, onClose, onSaved }) {
                 ? value
                 : Math.max(1, Number(exercise.target_sets) + value),
             }
+          : exercise,
+      ),
+    );
+  };
+
+  const changeReps = (exerciseId, reps) => {
+    setSelectedExercises((prev) =>
+      prev.map((exercise) =>
+        exercise.exercise_id === exerciseId
+          ? { ...exercise, target_reps: reps }
           : exercise,
       ),
     );
@@ -278,6 +321,7 @@ function WorkoutEdit({ workout, onClose, onSaved }) {
               id: exercise.id ?? null,
               exercise_id: exercise.exercise_id,
               target_sets: Number(exercise.target_sets),
+              target_reps: Number(exercise.target_reps ?? 10),
             })),
           }),
         },
@@ -406,6 +450,7 @@ function WorkoutEdit({ workout, onClose, onSaved }) {
                                 exercise_id: exercise.id,
                                 name: exercise.name,
                                 target_sets: 3,
+                                target_reps: 10,
                               },
                             ];
                           });
@@ -445,6 +490,7 @@ function WorkoutEdit({ workout, onClose, onSaved }) {
                         exercise={exercise}
                         index={index}
                         changeSets={changeSets}
+                        changeReps={changeReps}
                         removeExercise={removeExercise}
                         onShowDetails={(exercise) => {
                           const fullExercise = exercises.find(

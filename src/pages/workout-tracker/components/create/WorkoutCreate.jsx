@@ -115,6 +115,7 @@ function WorkoutCreate({ onClose, onCreated }) {
         exerciseId: exercise.id,
         position: index + 1,
         targetSets: exercise.target_sets ?? 3,
+        targetReps: exercise.target_reps ?? 10,
       })),
     };
 
@@ -147,6 +148,7 @@ function WorkoutCreate({ onClose, onCreated }) {
   function SortableCreateExercise({
     exercise,
     onChangeSets,
+    onChangeReps,
     onRemove,
     onShowDetails,
   }) {
@@ -197,15 +199,26 @@ function WorkoutCreate({ onClose, onCreated }) {
           </div>
         </div>
 
-        <div className="workout-selected-sets">
-          <label>Sets</label>
+        <div className="workout-selected-values">
+          <div className="workout-selected-sets">
+            <label>Sets</label>
+            <input
+              type="number"
+              min="1"
+              value={exercise.target_sets ?? 3}
+              onChange={(e) => onChangeSets(Number(e.target.value))}
+            />
+          </div>
 
-          <input
-            type="number"
-            min="1"
-            value={exercise.target_sets ?? 3}
-            onChange={(e) => onChangeSets(Number(e.target.value))}
-          />
+          <div className="workout-selected-sets">
+            <label>Reps</label>
+            <input
+              type="number"
+              min="1"
+              value={exercise.target_reps ?? 10}
+              onChange={(e) => onChangeReps(Number(e.target.value))}
+            />
+          </div>
         </div>
       </div>
     );
@@ -385,6 +398,15 @@ function WorkoutCreate({ onClose, onCreated }) {
                         prev.map((item) =>
                           item.id === exercise.id
                             ? { ...item, target_sets: sets }
+                            : item,
+                        ),
+                      );
+                    }}
+                    onChangeReps={(reps) => {
+                      setSelectedExercises((prev) =>
+                        prev.map((item) =>
+                          item.id === exercise.id
+                            ? { ...item, target_reps: reps }
                             : item,
                         ),
                       );

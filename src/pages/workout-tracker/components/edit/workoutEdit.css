@@ -491,6 +491,33 @@
   outline-offset: 3px;
 }
 
+.workout-edit-exercise .workout-selected-values {
+  display: flex;
+  gap: 20px;
+}
+
+.workout-edit-exercise .workout-edit-sets {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.workout-edit-exercise .workout-edit-sets input {
+  width: 100%;
+  box-sizing: border-box;
+  text-align: center;
+  appearance: textfield;
+  -moz-appearance: textfield;
+}
+
+.workout-edit-exercise .workout-edit-sets input::-webkit-inner-spin-button,
+.workout-edit-exercise .workout-edit-sets input::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
 @media (max-width: 480px) {
   .workout-edit-popup {
     padding: 20px;

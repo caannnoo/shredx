@@ -990,13 +990,14 @@ app.post("/api/workouts", async (req, res) => {
     for (const exercise of exercises) {
       await client.query(
         `INSERT INTO public.workout_exercises
-      (workout_id, exercise_id, position, target_sets)
-     VALUES ($1, $2, $3, $4)`,
+    (workout_id, exercise_id, position, target_sets, target_reps)
+    VALUES ($1, $2, $3, $4, $5)`,
         [
           workoutId,
           exercise.exerciseId,
           exercise.position,
           exercise.targetSets,
+          exercise.targetReps,
         ],
       );
     }
@@ -1161,6 +1162,9 @@ app.put("/api/workouts/:id", async (req, res) => {
       const validSets =
         Number.isSafeInteger(exercise.target_sets) && exercise.target_sets >= 1;
 
+      const validReps =
+        Number.isSafeInteger(exercise.target_reps) && exercise.target_reps >= 1;
+
       const validExistingExercise =
         Number.isSafeInteger(exercise.id) && exercise.id > 0;
 
@@ -1169,7 +1173,11 @@ app.put("/api/workouts/:id", async (req, res) => {
         Number.isSafeInteger(exercise.exercise_id) &&
         exercise.exercise_id > 0;
 
-      return !validSets || (!validExistingExercise && !validNewExercise);
+      return (
+        !validSets ||
+        !validReps ||
+        (!validExistingExercise && !validNewExercise)
+      );
     })
   ) {
     return res.status(400).json({
@@ -1216,26 +1224,29 @@ app.put("/api/workouts/:id", async (req, res) => {
         // Neue Übung zum Workout hinzufügen
         await client.query(
           `INSERT INTO public.workout_exercises
-       (workout_id, exercise_id, position, target_sets)
-       VALUES ($1, $2, $3, $4)`,
+   (workout_id, exercise_id, position, target_sets, target_reps)
+   VALUES ($1, $2, $3, $4, $5)`,
           [
             workoutId,
             exercise.exercise_id,
             exercises.indexOf(exercise) + 1,
             exercise.target_sets,
+            exercise.target_reps,
           ],
         );
       } else {
         // Bereits vorhandene Übung aktualisieren
         const result = await client.query(
           `UPDATE public.workout_exercises
-       SET target_sets = $1,
-           position = $2
-       WHERE id = $3
-         AND workout_id = $4
-       RETURNING id`,
+   SET target_sets = $1,
+       target_reps = $2,
+       position = $3
+   WHERE id = $4
+     AND workout_id = $5
+   RETURNING id`,
           [
             exercise.target_sets,
+            exercise.target_reps,
             exercises.indexOf(exercise) + 1,
             exercise.id,
             workoutId,

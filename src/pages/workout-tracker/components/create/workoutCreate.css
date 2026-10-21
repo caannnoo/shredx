@@ -599,3 +599,33 @@
   font-size: 14px;
   box-sizing: border-box;
 }
+
+.workout-selected-values {
+  display: flex;
+  gap: 20px;
+}
+
+.workout-selected-values .workout-selected-sets {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.workout-selected-values input {
+  width: 100%;
+  box-sizing: border-box;
+  text-align: center;
+}
+
+.workout-selected-values input::-webkit-inner-spin-button,
+.workout-selected-values input::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.workout-selected-values input[type="number"] {
+  appearance: textfield;
+  -moz-appearance: textfield;
+}
