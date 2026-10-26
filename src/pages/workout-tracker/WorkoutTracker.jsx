@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import "./workoutTracker.css";
 import WorkoutHeader from "./components/header/WorkoutHeader";
 import WorkoutToday from "./components/today/WorkoutToday";
 import WorkoutActive from "./components/active/WorkoutActive";
@@ -11,6 +12,45 @@ function WorkoutTracker() {
   const [savedWorkouts, setSavedWorkouts] = useState([]);
   const [showAllWorkouts, setShowAllWorkouts] = useState(false);
   const [activeWorkout, setActiveWorkout] = useState(null);
+  const [completedWorkout, setCompletedWorkout] = useState(null);
+  const [isLoadingCompletedWorkout, setIsLoadingCompletedWorkout] =
+    useState(true);
+  const [selectedDate, setSelectedDate] = useState(new Date());
+
+  function changeSelectedDate(days) {
+    setSelectedDate((previousDate) => {
+      const newDate = new Date(previousDate);
+      newDate.setDate(newDate.getDate() + days);
+      return newDate;
+    });
+  }
+
+  async function loadCompletedWorkout() {
+    try {
+      const response = await fetch(
+        "http://localhost:3000/api/workouts/completed/today",
+        {
+          credentials: "include",
+        },
+      );
+      if (!response.ok)
+        throw new Error("Workout-Status konnte nicht geladen werden");
+      const data = await response.json();
+      setCompletedWorkout(data.completedWorkout);
+    } catch (error) {
+      console.error("Fehler beim Laden des Workout-Status:", error);
+    } finally {
+      setIsLoadingCompletedWorkout(false);
+    }
+  }
+
+  useEffect(() => {
+    async function load() {
+      await loadCompletedWorkout();
+    }
+
+    load();
+  }, []);
 
   function handleCreateWorkout() {
     setIsCreatingWorkout(true);
@@ -47,6 +87,8 @@ function WorkoutTracker() {
   return (
     <div>
       <WorkoutHeader
+        selectedDate={selectedDate}
+        onChangeDate={changeSelectedDate}
         onCreateWorkout={handleCreateWorkout}
         onShowAllWorkouts={() => setShowAllWorkouts((prev) => !prev)}
       />
@@ -98,12 +140,23 @@ function WorkoutTracker() {
       )}
       <WorkoutToday
         savedWorkouts={savedWorkouts}
+        selectedDate={selectedDate}
+        completedWorkout={completedWorkout}
+        isLoadingCompletedWorkout={isLoadingCompletedWorkout}
         onStartWorkout={setActiveWorkout}
         activeWorkout={activeWorkout}
         onCancelWorkout={() => setActiveWorkout(null)}
-        onFinishWorkout={() => setActiveWorkout(null)}
+        onFinishWorkout={() => {
+          setCompletedWorkout(activeWorkout);
+          setActiveWorkout(null);
+        }}
       />
-      {activeWorkout && <WorkoutActive workout={activeWorkout} />}
+      {activeWorkout && (
+        <WorkoutActive
+          workout={activeWorkout}
+          onFinishWorkout={() => setActiveWorkout(null)}
+        />
+      )}
       <WorkoutFooter />
     </div>
   );

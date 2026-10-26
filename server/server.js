@@ -1100,14 +1100,14 @@ app.get("/api/workouts/:id", async (req, res) => {
       [workoutId],
     );
 
-    res.json({
+    return res.json({
       ...workoutResult.rows[0],
       exercises: exercisesResult.rows,
     });
   } catch (error) {
     console.error("Error loading workout details:", error);
 
-    res.status(500).json({
+    return res.status(500).json({
       error: "Failed to load workout details",
     });
   }
@@ -1350,6 +1350,187 @@ app.delete("/api/workouts/:id", async (req, res) => {
     });
   } finally {
     client.release();
+  }
+});
+
+app.get("/api/workouts/completed/today", async (req, res) => {
+  const userId = req.session?.userId;
+
+  if (!userId) {
+    return res.status(401).json({
+      error: "Nicht eingeloggt",
+    });
+  }
+
+  try {
+    const result = await pool.query(
+      `
+  SELECT id, workout_id, finished_at
+  FROM public.workout_sessions
+  WHERE user_id = $1
+    AND status = 'completed'
+    AND finished_at >= CURRENT_DATE
+    AND finished_at < CURRENT_DATE + INTERVAL '1 day'
+  ORDER BY finished_at DESC
+  LIMIT 1
+  `,
+      [userId],
+    );
+    return res.json({
+      completedWorkout: result.rows[0] || null,
+    });
+  } catch (error) {
+    console.error("Fehler beim Laden des abgeschlossenen Workouts:", error);
+
+    return res.status(500).json({
+      error: "Workout-Status konnte nicht geladen werden",
+    });
+  }
+});
+
+app.post("/api/workouts/:id/finish", async (req, res) => {
+  const userId = req.session.userId;
+  const workoutId = Number(req.params.id);
+  const { sets } = req.body;
+
+  if (!userId) {
+    return res.status(401).json({
+      error: "Not authenticated",
+    });
+  }
+
+  if (!Number.isSafeInteger(workoutId) || workoutId <= 0) {
+    return res.status(400).json({
+      error: "Invalid workout ID",
+    });
+  }
+
+  if (
+    !Array.isArray(sets) ||
+    sets.length > 500 ||
+    !sets.every(
+      (set) =>
+        set !== null &&
+        typeof set === "object" &&
+        !Array.isArray(set) &&
+        Number.isSafeInteger(set.workout_exercise_id) &&
+        set.workout_exercise_id > 0 &&
+        Number.isSafeInteger(set.set_number) &&
+        set.set_number > 0 &&
+        (set.weight_kg === null ||
+          (typeof set.weight_kg === "number" &&
+            Number.isFinite(set.weight_kg) &&
+            set.weight_kg >= 0)) &&
+        (set.reps === null ||
+          (Number.isSafeInteger(set.reps) && set.reps >= 0)) &&
+        (set.weight_kg !== null || set.reps !== null),
+    )
+  ) {
+    return res.status(400).json({
+      error: "Invalid workout sets",
+    });
+  }
+
+  const uniqueSets = new Set(
+    sets.map((set) => `${set.workout_exercise_id}-${set.set_number}`),
+  );
+
+  if (uniqueSets.size !== sets.length) {
+    return res.status(400).json({
+      error: "Duplicate workout sets",
+    });
+  }
+
+  let client;
+
+  try {
+    client = await pool.connect();
+
+    await client.query("BEGIN");
+
+    const workoutResult = await client.query(
+      `SELECT id
+   FROM public.workouts
+   WHERE id = $1 AND user_id = $2`,
+      [workoutId, userId],
+    );
+
+    if (workoutResult.rows.length === 0) {
+      await client.query("ROLLBACK");
+
+      return res.status(404).json({
+        error: "Workout not found",
+      });
+    }
+
+    const exerciseResult = await client.query(
+      `SELECT id
+   FROM public.workout_exercises
+   WHERE workout_id = $1`,
+      [workoutId],
+    );
+
+    const validExerciseIds = new Set(
+      exerciseResult.rows.map((exercise) => exercise.id),
+    );
+
+    const allExercisesValid = sets.every((set) =>
+      validExerciseIds.has(set.workout_exercise_id),
+    );
+
+    if (!allExercisesValid) {
+      await client.query("ROLLBACK");
+
+      return res.status(400).json({
+        error: "Exercise does not belong to this workout",
+      });
+    }
+
+    const sessionResult = await client.query(
+      `INSERT INTO public.workout_sessions
+     (user_id, workout_id, started_at, finished_at, status)
+   VALUES ($1, $2, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 'completed')
+   RETURNING id`,
+      [userId, workoutId],
+    );
+
+    const sessionId = sessionResult.rows[0].id;
+
+    for (const set of sets) {
+      await client.query(
+        `INSERT INTO public.workout_sets
+       (session_id, workout_exercise_id, set_number, weight_kg, reps, completed_at)
+     VALUES ($1, $2, $3, $4, $5, CURRENT_TIMESTAMP)`,
+        [
+          sessionId,
+          set.workout_exercise_id,
+          set.set_number,
+          set.weight_kg,
+          set.reps,
+        ],
+      );
+    }
+
+    await client.query("COMMIT");
+
+    return res.status(200).json({
+      message: "Workout finished successfully",
+      sessionId,
+    });
+  } catch (error) {
+    if (client) {
+      await client.query("ROLLBACK").catch(console.error);
+    }
+
+    console.error("Error finishing workout:", error);
+
+    res.status(500).json({
+      error: "Failed to finish workout",
+    });
+  } finally {
+    if (client) {
+      client.release();
+    }
   }
 });
 

@@ -1,6 +1,12 @@
 import "./workoutHeader.css";
+import { CaretLeftIcon, CaretRightIcon } from "@phosphor-icons/react";
 
-function WorkoutHeader({ onCreateWorkout, onShowAllWorkouts }) {
+function WorkoutHeader({
+  selectedDate,
+  onChangeDate,
+  onCreateWorkout,
+  onShowAllWorkouts,
+}) {
   return (
     <div className="workoutheader">
       <div className="workoutheader-section">
@@ -27,6 +33,24 @@ function WorkoutHeader({ onCreateWorkout, onShowAllWorkouts }) {
               All Workouts
             </button>
           </div>
+        </div>
+
+        <div className="workout-date-navigation">
+          <button type="button" onClick={() => onChangeDate(-1)}>
+            <CaretLeftIcon size={18} />
+            Previous
+          </button>
+          <span>
+            {selectedDate.toLocaleDateString("en-US", {
+              month: "long",
+              day: "numeric",
+              year: "numeric",
+            })}
+          </span>
+          <button type="button" onClick={() => onChangeDate(1)}>
+            Next
+            <CaretRightIcon size={18} />
+          </button>
         </div>
       </div>
     </div>

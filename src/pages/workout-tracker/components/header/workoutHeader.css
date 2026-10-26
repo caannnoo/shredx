@@ -100,3 +100,18 @@
   border-color: #999;
   transform: translateY(-2px);
 }
+
+.workout-date-navigation button {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+}
+
+.workout-date-navigation {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-top: 24px;
+}

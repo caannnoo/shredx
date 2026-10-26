@@ -74,3 +74,31 @@
   color: #c2cbc7;
   margin-bottom: 0;
 }
+
+.workouttoday-actions {
+  position: absolute;
+  right: 30px;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.cancel-workout-btn {
+  background: rgba(239, 68, 68, 0.1);
+  color: #ef4444;
+  border: 1px solid #ef4444;
+  border-radius: 10px;
+  padding: 12px 20px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.cancel-workout-btn:hover {
+  background: #ef4444;
+  color: #ffffff;
+}
+
+.cancel-workout-btn:active {
+  transform: scale(0.97);
+}

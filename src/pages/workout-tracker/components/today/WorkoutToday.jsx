@@ -2,10 +2,11 @@ import "./workoutToday.css";
 
 function WorkoutToday({
   savedWorkouts = [],
+  selectedDate,
+  completedWorkout,
   onStartWorkout,
   activeWorkout,
   onCancelWorkout,
-  onFinishWorkout,
 }) {
   const weekDays = [
     "sunday",
@@ -17,7 +18,11 @@ function WorkoutToday({
     "saturday",
   ];
 
-  const today = weekDays[new Date().getDay()];
+  const today = weekDays[selectedDate.getDay()];
+
+  const isToday = selectedDate.toDateString() === new Date().toDateString();
+
+  const completedWorkoutForDate = isToday ? completedWorkout : null;
 
   const todaysWorkout = savedWorkouts.find((workout) =>
     workout.training_days?.includes(today),
@@ -27,8 +32,23 @@ function WorkoutToday({
     <div className="workouttoday">
       <div className="workouttoday-section">
         <div className="workouttoday-info">
-          <h4 style={{ color: activeWorkout ? "#4ade80" : "" }}>
-            {activeWorkout ? "🟢 Active Workout" : "Today's Workout"}
+          <h4
+            style={{
+              color:
+                (isToday && activeWorkout) || completedWorkoutForDate
+                  ? "#4ade80"
+                  : "",
+            }}
+          >
+            {isToday && activeWorkout
+              ? "🟢 Active Workout"
+              : completedWorkoutForDate
+                ? isToday
+                  ? "✅ Today's Workout Completed!"
+                  : "✅ Workout Completed!"
+                : isToday
+                  ? "Today's Workout"
+                  : "Planned Workout"}
           </h4>
 
           <h2>{todaysWorkout ? todaysWorkout.name : "Rest Day 💤"}</h2>
@@ -36,7 +56,9 @@ function WorkoutToday({
           <p>
             {todaysWorkout
               ? `${todaysWorkout.exercise_count} exercises`
-              : "No workout scheduled for today"}
+              : isToday
+                ? "No workout scheduled for today"
+                : "No workout scheduled for this day"}
           </p>
 
           {todaysWorkout &&
@@ -49,23 +71,18 @@ function WorkoutToday({
                 >
                   Cancel Workout
                 </button>
-
-                <button
-                  type="button"
-                  className="finish-workout-btn"
-                  onClick={onFinishWorkout}
-                >
-                  Finish Workout
-                </button>
               </div>
             ) : (
-              <button
-                type="button"
-                className="start-workout-btn"
-                onClick={() => onStartWorkout(todaysWorkout)}
-              >
-                Start Workout
-              </button>
+              isToday &&
+              !completedWorkoutForDate && (
+                <button
+                  type="button"
+                  className="start-workout-btn"
+                  onClick={() => onStartWorkout(todaysWorkout)}
+                >
+                  Start Workout
+                </button>
+              )
             ))}
         </div>
       </div>
