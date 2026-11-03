@@ -52,37 +52,42 @@
 .calorieoverview-date {
   width: 100%;
   max-width: 120rem;
-  margin: 0 auto;
+  margin: 24px auto 24px;
 
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: 16px;
 
-  padding: 10px 14px;
-  margin-bottom: 24px;
+  padding: 12px 16px;
 
-  border: 1px solid #e1e8e4;
-  border-radius: 10px;
-  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  background-color: #ffffff;
 }
 
 .calorieoverview-date p {
+  flex: 1;
   margin: 0;
-  font-size: 14px;
+  text-align: center;
+  font-size: 15px;
   font-weight: 600;
-  color: #6f7b77;
+  color: #111827;
 }
 
 .calorieoverview-date button {
-  display: flex;
+  display: inline-flex;
   align-items: center;
-  gap: 4px;
-
-  border: none;
-  background: none;
-  color: #6f7b77;
-  font-weight: 600;
+  gap: 8px;
   cursor: pointer;
+
+  background: transparent;
+  border: none;
+  color: #6b7280;
+  font-size: 14px;
+  font-weight: 500;
+  padding: 6px 8px;
+  border-radius: 8px;
 }
 
 /* =========================
