@@ -20,7 +20,7 @@ function MobileNavbar({ isLoggedIn }) {
         <span>Calories</span>
       </Link>
 
-      <Link to={isLoggedIn ? "/workouttracker" : "/login"}>
+      <Link to={isLoggedIn ? "/workout-tracker" : "/login"}>
         <BarbellIcon size={24} />
         <span>Workouts</span>
       </Link>

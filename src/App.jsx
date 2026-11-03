@@ -9,6 +9,7 @@ import Home from "./pages/home/Home";
 import Auth from "./pages/auth/Auth";
 import Profile from "./pages/profile/Profile";
 import CalorieTracker from "./pages/calorie-tracker/CalorieTracker";
+import WorkoutTracker from "./pages/workout-tracker/WorkoutTracker";
 
 // Wiederverwendbare Komponenten
 import Navbar from "./components/Navbar";
@@ -59,6 +60,7 @@ function App() {
           />
           {/* Kalorietracker Seite */}
           <Route path="/calorie-tracker" element={<CalorieTracker />} />
+          <Route path="/workout-tracker" element={<WorkoutTracker />} />
         </Routes>
       </main>
       {/* Footer der Anwendung */}

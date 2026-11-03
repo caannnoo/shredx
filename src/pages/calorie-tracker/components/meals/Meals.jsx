@@ -5,8 +5,8 @@ import {
   PencilSimpleIcon,
   TrashIcon,
 } from "@phosphor-icons/react";
-import FoodSearch from "./FoodSearch";
-import ManualFoodEntry from "./ManualFoodEntry";
+import FoodSearch from "../foodsearch/FoodSearch";
+import ManualFoodEntry from "../manualfoodentry/ManualFoodEntry";
 
 function Meals({
   setTotalCalories,
