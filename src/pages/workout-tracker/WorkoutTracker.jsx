@@ -54,7 +54,7 @@ function WorkoutTracker() {
 
   useEffect(() => {
     const controller = new AbortController();
-    setIsLoadingCompletedWorkout(true);
+
     async function load() {
       await loadCompletedWorkout(controller.signal);
     }
@@ -163,7 +163,6 @@ function WorkoutTracker() {
           setCompletedWorkout(activeWorkout);
           setActiveWorkout(null);
         }}
-        isLoadingCompletedWorkout={isLoadingCompletedWorkout}
       />
       {activeWorkout && (
         <WorkoutActive
