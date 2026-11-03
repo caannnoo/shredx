@@ -14,6 +14,7 @@ import { CSS } from "@dnd-kit/utilities";
 function WorkoutCreate({ onClose, onCreated }) {
   const [workoutName, setWorkoutName] = useState("");
   const [exercises, setExercises] = useState([]);
+  const [exercisesLoading, setExercisesLoading] = useState(true);
   const [selectedMuscle, setSelectedMuscle] = useState("all");
   const [selectedExercise, setSelectedExercise] = useState(null);
   const [selectedExercises, setSelectedExercises] = useState([]);
@@ -53,14 +54,35 @@ function WorkoutCreate({ onClose, onCreated }) {
         }
 
         const data = await response.json();
+        console.log("SHREDX Exercises API:", data);
         setExercises(data);
       } catch (error) {
         console.error("Fehler beim Laden der Übungen:", error);
+      } finally {
+        setExercisesLoading(false);
       }
     }
 
     loadExercises();
   }, []);
+
+  const handleExerciseDetails = async (exercise) => {
+    try {
+      const response = await fetch(
+        `http://localhost:3000/api/exercises/${exercise.id}`,
+      );
+
+      if (!response.ok) {
+        throw new Error("Übungsdetails konnten nicht geladen werden");
+      }
+
+      const fullExercise = await response.json();
+
+      setSelectedExercise(fullExercise);
+    } catch (error) {
+      console.error("Fehler beim Laden der Übungsdetails:", error);
+    }
+  };
 
   const filteredExercises = exercises.filter((exercise) => {
     const muscleMap = {
@@ -303,43 +325,47 @@ function WorkoutCreate({ onClose, onCreated }) {
           </div>
         </div>
         <div className="workout-exercise-list">
-          {filteredExercises.map((exercise) => (
-            <div className="workout-exercise-item" key={exercise.id}>
-              <div className="workout-exercise-info">
-                <span>{exercise.name}</span>
+          {exercisesLoading ? (
+            <p className="workout-exercises-loading">⏳ Loading exercises...</p>
+          ) : (
+            filteredExercises.map((exercise) => (
+              <div className="workout-exercise-item" key={exercise.id}>
+                <div className="workout-exercise-info">
+                  <span>{exercise.name}</span>
+                </div>
+
+                <div className="workout-exercise-actions">
+                  <button
+                    type="button"
+                    className="workout-exercise-details"
+                    onClick={() => handleExerciseDetails(exercise)}
+                  >
+                    Details
+                  </button>
+
+                  <button
+                    type="button"
+                    className="workout-exercise-add"
+                    onClick={() => {
+                      setSelectedExercises((prev) => {
+                        const alreadyAdded = prev.some(
+                          (item) => item.id === exercise.id,
+                        );
+
+                        if (alreadyAdded) {
+                          return prev;
+                        }
+
+                        return [...prev, exercise];
+                      });
+                    }}
+                  >
+                    + Add
+                  </button>
+                </div>
               </div>
-
-              <div className="workout-exercise-actions">
-                <button
-                  type="button"
-                  className="workout-exercise-details"
-                  onClick={() => setSelectedExercise(exercise)}
-                >
-                  Details
-                </button>
-
-                <button
-                  type="button"
-                  className="workout-exercise-add"
-                  onClick={() => {
-                    setSelectedExercises((prev) => {
-                      const alreadyAdded = prev.some(
-                        (item) => item.id === exercise.id,
-                      );
-
-                      if (alreadyAdded) {
-                        return prev;
-                      }
-
-                      return [...prev, exercise];
-                    });
-                  }}
-                >
-                  + Add
-                </button>
-              </div>
-            </div>
-          ))}
+            ))
+          )}
         </div>
         {selectedExercise && (
           <div className="workout-exercise-detail-overlay">

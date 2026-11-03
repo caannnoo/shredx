@@ -4,6 +4,7 @@ function WorkoutToday({
   savedWorkouts = [],
   selectedDate,
   completedWorkout,
+  isLoadingCompletedWorkout,
   onStartWorkout,
   activeWorkout,
   onCancelWorkout,
@@ -22,7 +23,7 @@ function WorkoutToday({
 
   const isToday = selectedDate.toDateString() === new Date().toDateString();
 
-  const completedWorkoutForDate = isToday ? completedWorkout : null;
+  const completedWorkoutForDate = completedWorkout;
 
   const todaysWorkout = savedWorkouts.find((workout) =>
     workout.training_days?.includes(today),
@@ -40,15 +41,17 @@ function WorkoutToday({
                   : "",
             }}
           >
-            {isToday && activeWorkout
-              ? "🟢 Active Workout"
-              : completedWorkoutForDate
-                ? isToday
-                  ? "✅ Today's Workout Completed!"
-                  : "✅ Workout Completed!"
-                : isToday
-                  ? "Today's Workout"
-                  : "Planned Workout"}
+            {isLoadingCompletedWorkout
+              ? "⏳ Loading..."
+              : isToday && activeWorkout
+                ? "🟢 Active Workout"
+                : completedWorkoutForDate
+                  ? isToday
+                    ? "✅ Today's Workout Completed!"
+                    : "✅ Workout Completed!"
+                  : isToday
+                    ? "Today's Workout"
+                    : "Planned Workout"}
           </h4>
 
           <h2>{todaysWorkout ? todaysWorkout.name : "Rest Day 💤"}</h2>

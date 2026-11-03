@@ -934,18 +934,57 @@ app.delete("/api/activity-entries/:id", async (req, res) => {
 app.get("/api/exercises", async (req, res) => {
   try {
     const searchTerm = req.query.search || "";
-    const result = await pool.query(
-      `SELECT * FROM public.exercises
-   WHERE name ILIKE $1
-   ORDER BY name ASC`,
-      [`%${searchTerm}%`],
-    );
+
+    const client = await pool.connect();
+
+    let result;
+
+    try {
+      result = await client.query(
+        `SELECT
+  id,
+  name,
+  primary_muscles,
+  secondary_muscles,
+  equipment,
+  category
+FROM public.exercises
+WHERE name ILIKE $1
+ORDER BY name ASC`,
+        [`%${searchTerm}%`],
+      );
+    } finally {
+      client.release();
+    }
 
     res.json(result.rows);
   } catch (error) {
     console.error("Fehler beim Laden der Übungen:", error);
     res.status(500).json({
       error: "Übungen konnten nicht geladen werden",
+    });
+  }
+});
+
+app.get("/api/exercises/:id", async (req, res) => {
+  try {
+    const result = await pool.query(
+      "SELECT * FROM public.exercises WHERE id = $1",
+      [req.params.id],
+    );
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({
+        error: "Übung nicht gefunden",
+      });
+    }
+
+    res.json(result.rows[0]);
+  } catch (error) {
+    console.error("Fehler beim Laden der Übung:", error);
+
+    res.status(500).json({
+      error: "Übung konnte nicht geladen werden",
     });
   }
 });
@@ -1050,6 +1089,134 @@ ORDER BY w.created_at DESC, w.id DESC`,
 
     res.status(500).json({
       error: "Workouts konnten nicht geladen werden.",
+    });
+  }
+});
+
+app.get("/api/workouts/records", async (req, res) => {
+  const userId = req.session?.userId;
+
+  if (!userId) {
+    return res.status(401).json({
+      error: "Du musst angemeldet sein.",
+    });
+  }
+
+  try {
+    const result = await pool.query(
+      `SELECT
+         e.id AS exercise_id,
+         e.name AS exercise_name,
+         MAX(s.weight_kg) AS max_weight_kg
+       FROM public.workout_sets s
+       JOIN public.workout_sessions ws
+         ON ws.id = s.session_id
+       JOIN public.workout_exercises we
+         ON we.id = s.workout_exercise_id
+        AND we.workout_id = ws.workout_id
+       JOIN public.exercises e
+         ON e.id = we.exercise_id
+       WHERE ws.user_id = $1
+         AND ws.status = 'completed'
+         AND s.weight_kg IS NOT NULL
+       GROUP BY e.id, e.name
+       ORDER BY max_weight_kg DESC, e.name ASC`,
+      [userId],
+    );
+
+    res.json(result.rows);
+  } catch (error) {
+    console.error("Fehler beim Laden der Personal Records:", error);
+
+    res.status(500).json({
+      error: "Personal Records konnten nicht geladen werden.",
+    });
+  }
+});
+
+app.get("/api/workouts/history", async (req, res) => {
+  const userId = req.session?.userId;
+
+  if (!userId) {
+    return res.status(401).json({
+      error: "Du musst angemeldet sein.",
+    });
+  }
+
+  try {
+    const result = await pool.query(
+      `SELECT
+        ws.id AS session_id,
+        ws.workout_id,
+        w.name AS workout_name,
+        ws.finished_at
+       FROM public.workout_sessions ws
+       JOIN public.workouts w
+         ON w.id = ws.workout_id
+       WHERE ws.user_id = $1
+         AND w.user_id = $1
+         AND ws.status = 'completed'
+       ORDER BY ws.finished_at DESC, ws.id DESC`,
+      [userId],
+    );
+
+    res.json(result.rows);
+  } catch (error) {
+    console.error("Fehler beim Laden der Workout History:", error);
+
+    res.status(500).json({
+      error: "Workout History konnte nicht geladen werden.",
+    });
+  }
+});
+
+app.get("/api/workouts/history/:sessionId", async (req, res) => {
+  const userId = req.session?.userId;
+  const sessionId = Number(req.params.sessionId);
+
+  if (!userId) {
+    return res.status(401).json({
+      error: "Du musst angemeldet sein.",
+    });
+  }
+
+  if (!Number.isSafeInteger(sessionId) || sessionId <= 0) {
+    return res.status(400).json({
+      error: "Invalid session ID",
+    });
+  }
+
+  try {
+    const result = await pool.query(
+      `SELECT
+         e.name AS exercise_name,
+         ws.set_number,
+         ws.weight_kg,
+         ws.reps
+       FROM public.workout_sets ws
+       JOIN public.workout_sessions s
+         ON s.id = ws.session_id
+       JOIN public.workouts w
+         ON w.id = s.workout_id
+       JOIN public.workout_exercises we
+         ON we.id = ws.workout_exercise_id
+        AND we.workout_id = s.workout_id
+       JOIN public.exercises e
+         ON e.id = we.exercise_id
+       WHERE s.id = $1
+         AND s.user_id = $2
+         AND w.user_id = $2
+         AND s.status = 'completed'
+       ORDER BY we.position ASC, ws.set_number ASC`,
+      [sessionId, userId],
+    );
+
+    res.json(result.rows);
+  } catch (error) {
+    console.error("Fehler beim Laden der Workout-Details:", error);
+
+    res.status(500).json({
+      error: "Workout-Details konnten nicht geladen werden.",
     });
   }
 });
@@ -1369,8 +1536,14 @@ app.get("/api/workouts/completed/today", async (req, res) => {
   FROM public.workout_sessions
   WHERE user_id = $1
     AND status = 'completed'
-    AND finished_at >= CURRENT_DATE
-    AND finished_at < CURRENT_DATE + INTERVAL '1 day'
+    AND finished_at >= (
+  (CURRENT_TIMESTAMP AT TIME ZONE 'Europe/Berlin')::date
+  AT TIME ZONE 'Europe/Berlin'
+)
+AND finished_at < (
+  ((CURRENT_TIMESTAMP AT TIME ZONE 'Europe/Berlin')::date + INTERVAL '1 day')
+  AT TIME ZONE 'Europe/Berlin'
+)
   ORDER BY finished_at DESC
   LIMIT 1
   `,
@@ -1381,6 +1554,53 @@ app.get("/api/workouts/completed/today", async (req, res) => {
     });
   } catch (error) {
     console.error("Fehler beim Laden des abgeschlossenen Workouts:", error);
+
+    return res.status(500).json({
+      error: "Workout-Status konnte nicht geladen werden",
+    });
+  }
+});
+
+app.get("/api/workouts/completed/date/:date", async (req, res) => {
+  const userId = req.session?.userId;
+  const { date } = req.params;
+
+  if (!userId) {
+    return res.status(401).json({
+      error: "Nicht eingeloggt",
+    });
+  }
+
+  if (
+    !/^\d{4}-\d{2}-\d{2}$/.test(date) ||
+    Number.isNaN(Date.parse(`${date}T00:00:00Z`)) ||
+    new Date(`${date}T00:00:00Z`).toISOString().slice(0, 10) !== date
+  ) {
+    return res.status(400).json({
+      error: "Ungültiges Datum",
+    });
+  }
+
+  try {
+    const result = await pool.query(
+      `
+      SELECT id, workout_id, finished_at
+      FROM public.workout_sessions
+      WHERE user_id = $1
+        AND status = 'completed'
+        AND finished_at >= ($2::date::timestamp AT TIME ZONE 'Europe/Berlin')
+        AND finished_at < (($2::date + 1)::timestamp AT TIME ZONE 'Europe/Berlin')
+      ORDER BY finished_at DESC
+      LIMIT 1
+      `,
+      [userId, date],
+    );
+
+    return res.json({
+      completedWorkout: result.rows[0] || null,
+    });
+  } catch (error) {
+    console.error("Fehler beim Laden des Workouts:", error);
 
     return res.status(500).json({
       error: "Workout-Status konnte nicht geladen werden",

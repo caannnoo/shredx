@@ -184,6 +184,27 @@ function WorkoutEdit({ workout, onClose, onSaved }) {
     );
   };
 
+  const handleExerciseDetails = async (exercise) => {
+    try {
+      const response = await fetch(
+        `http://localhost:3000/api/exercises/${exercise.exercise_id ?? exercise.id}`,
+        {
+          credentials: "include",
+        },
+      );
+
+      if (!response.ok) {
+        throw new Error("Exercise details could not be loaded.");
+      }
+
+      const fullExercise = await response.json();
+
+      setSelectedExercise(fullExercise);
+    } catch (error) {
+      console.error("Error loading exercise details:", error);
+    }
+  };
+
   const muscleGroups = [
     { label: "All", value: "all" },
     { label: "Chest", value: "chest" },
@@ -271,7 +292,8 @@ function WorkoutEdit({ workout, onClose, onSaved }) {
         const response = await fetch("http://localhost:3000/api/exercises");
 
         if (!response.ok) {
-          throw new Error("Exercises could not be loaded");
+          console.error("SHREDX Edit Workout API:", response.status);
+          throw new Error("Exercises could not be loaded.");
         }
 
         const data = await response.json();
@@ -429,7 +451,7 @@ function WorkoutEdit({ workout, onClose, onSaved }) {
                     <div className="workout-edit-available-actions">
                       <button
                         type="button"
-                        onClick={() => setSelectedExercise(exercise)}
+                        onClick={() => handleExerciseDetails(exercise)}
                       >
                         Details
                       </button>
@@ -492,13 +514,7 @@ function WorkoutEdit({ workout, onClose, onSaved }) {
                         changeSets={changeSets}
                         changeReps={changeReps}
                         removeExercise={removeExercise}
-                        onShowDetails={(exercise) => {
-                          const fullExercise = exercises.find(
-                            (item) => item.id === exercise.exercise_id,
-                          );
-
-                          setSelectedExercise(fullExercise || exercise);
-                        }}
+                        onShowDetails={handleExerciseDetails}
                       />
                     ))}
                   </SortableContext>

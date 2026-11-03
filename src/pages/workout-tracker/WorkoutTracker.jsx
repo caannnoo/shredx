@@ -17,6 +17,12 @@ function WorkoutTracker() {
     useState(true);
   const [selectedDate, setSelectedDate] = useState(new Date());
 
+  const formattedSelectedDate = [
+    selectedDate.getFullYear(),
+    String(selectedDate.getMonth() + 1).padStart(2, "0"),
+    String(selectedDate.getDate()).padStart(2, "0"),
+  ].join("-");
+
   function changeSelectedDate(days) {
     setSelectedDate((previousDate) => {
       const newDate = new Date(previousDate);
@@ -25,17 +31,19 @@ function WorkoutTracker() {
     });
   }
 
-  async function loadCompletedWorkout() {
+  async function loadCompletedWorkout(signal) {
     try {
       const response = await fetch(
-        "http://localhost:3000/api/workouts/completed/today",
+        `http://localhost:3000/api/workouts/completed/date/${formattedSelectedDate}`,
         {
           credentials: "include",
+          signal,
         },
       );
       if (!response.ok)
         throw new Error("Workout-Status konnte nicht geladen werden");
       const data = await response.json();
+
       setCompletedWorkout(data.completedWorkout);
     } catch (error) {
       console.error("Fehler beim Laden des Workout-Status:", error);
@@ -45,12 +53,17 @@ function WorkoutTracker() {
   }
 
   useEffect(() => {
+    const controller = new AbortController();
+    setIsLoadingCompletedWorkout(true);
     async function load() {
-      await loadCompletedWorkout();
+      await loadCompletedWorkout(controller.signal);
     }
 
     load();
-  }, []);
+    return () => {
+      controller.abort();
+    };
+  }, [formattedSelectedDate]);
 
   function handleCreateWorkout() {
     setIsCreatingWorkout(true);
@@ -150,6 +163,7 @@ function WorkoutTracker() {
           setCompletedWorkout(activeWorkout);
           setActiveWorkout(null);
         }}
+        isLoadingCompletedWorkout={isLoadingCompletedWorkout}
       />
       {activeWorkout && (
         <WorkoutActive
@@ -157,7 +171,7 @@ function WorkoutTracker() {
           onFinishWorkout={() => setActiveWorkout(null)}
         />
       )}
-      <WorkoutFooter />
+      <WorkoutFooter savedWorkouts={savedWorkouts} />
     </div>
   );
 }
