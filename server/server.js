@@ -638,6 +638,109 @@ app.patch("/api/food-entries/:id", async (req, res) => {
   }
 });
 
+app.get("/api/dashboard/calories", async (req, res) => {
+  const userId = req.session?.userId;
+
+  if (!userId) {
+    return res.status(401).json({
+      message: "Bitte zuerst einloggen.",
+    });
+  }
+
+  const { startDate, endDate } = req.query;
+
+  if (
+    !/^\d{4}-\d{2}-\d{2}$/.test(startDate ?? "") ||
+    !/^\d{4}-\d{2}-\d{2}$/.test(endDate ?? "") ||
+    startDate > endDate
+  ) {
+    return res.status(400).json({
+      message: "Bitte einen gültigen Zeitraum angeben.",
+    });
+  }
+
+  try {
+    const result = await pool.query(
+      `SELECT
+       fe.tracking_date::text AS date,
+       COALESCE(
+         ROUND(SUM(f.calories_per_100g * fe.amount_g / 100), 1),
+         0
+       ) AS calories
+     FROM food_entries fe
+     JOIN foods f ON fe.food_id = f.id
+     WHERE fe.user_id = $1
+       AND fe.tracking_date BETWEEN $2::date AND $3::date
+     GROUP BY fe.tracking_date
+     ORDER BY fe.tracking_date ASC`,
+      [userId, startDate, endDate],
+    );
+
+    res.json({ calorieData: result.rows });
+  } catch (error) {
+    console.error("Error loading dashboard calories:", error);
+
+    res.status(500).json({
+      message: "Kaloriendaten konnten nicht geladen werden.",
+    });
+  }
+});
+
+app.get("/api/dashboard/macros", async (req, res) => {
+  const userId = req.session?.userId;
+
+  if (!userId) {
+    return res.status(401).json({
+      message: "Bitte zuerst einloggen.",
+    });
+  }
+
+  const { startDate, endDate } = req.query;
+
+  const isValidDate = (value) => {
+    if (typeof value !== "string" || !/^\d{4}-\d{2}-\d{2}$/.test(value)) {
+      return false;
+    }
+
+    const date = new Date(`${value}T00:00:00Z`);
+
+    return (
+      !Number.isNaN(date.getTime()) && date.toISOString().slice(0, 10) === value
+    );
+  };
+
+  if (!isValidDate(startDate) || !isValidDate(endDate) || startDate > endDate) {
+    return res.status(400).json({
+      message: "Bitte einen gültigen Zeitraum angeben.",
+    });
+  }
+
+  try {
+    const result = await pool.query(
+      `SELECT
+       fe.tracking_date::text AS date,
+       ROUND(SUM(f.protein_per_100g * fe.amount_g / 100), 1) AS protein,
+       ROUND(SUM(f.carbs_per_100g * fe.amount_g / 100), 1) AS carbs,
+       ROUND(SUM(f.fat_per_100g * fe.amount_g / 100), 1) AS fat
+     FROM food_entries fe
+     JOIN foods f ON fe.food_id = f.id
+     WHERE fe.user_id = $1
+       AND fe.tracking_date BETWEEN $2::date AND $3::date
+     GROUP BY fe.tracking_date
+     ORDER BY fe.tracking_date ASC`,
+      [userId, startDate, endDate],
+    );
+
+    res.json({ macroData: result.rows });
+  } catch (error) {
+    console.error("Error loading dashboard macros:", error);
+
+    res.status(500).json({
+      message: "Makrodaten konnten nicht geladen werden.",
+    });
+  }
+});
+
 app.post("/api/daily-tracking/weight", async (req, res) => {
   try {
     const userId = req.session.userId;
@@ -703,6 +806,58 @@ app.get("/api/daily-tracking/weight", async (req, res) => {
   } catch (error) {
     console.error("Error loading weight:", error);
     res.status(500).json({ error: "Server error" });
+  }
+});
+
+app.get("/api/dashboard/weight", async (req, res) => {
+  const userId = req.session?.userId;
+
+  if (!userId) {
+    return res.status(401).json({
+      error: "Not authenticated",
+    });
+  }
+
+  const { startDate, endDate } = req.query;
+
+  const isValidDate = (value) => {
+    if (typeof value !== "string" || !/^\d{4}-\d{2}-\d{2}$/.test(value)) {
+      return false;
+    }
+
+    const date = new Date(`${value}T00:00:00Z`);
+
+    return (
+      !Number.isNaN(date.getTime()) && date.toISOString().slice(0, 10) === value
+    );
+  };
+
+  if (!isValidDate(startDate) || !isValidDate(endDate) || startDate > endDate) {
+    return res.status(400).json({
+      error: "Invalid date range",
+    });
+  }
+
+  try {
+    const result = await pool.query(
+      `SELECT
+       tracking_date::text AS date,
+       weight_kg AS weight
+     FROM daily_tracking
+     WHERE user_id = $1
+       AND weight_kg IS NOT NULL
+       AND tracking_date BETWEEN $2::date AND $3::date
+     ORDER BY tracking_date ASC`,
+      [userId, startDate, endDate],
+    );
+
+    res.json({ weightData: result.rows });
+  } catch (error) {
+    console.error("Error loading dashboard weight:", error);
+
+    res.status(500).json({
+      error: "Server error",
+    });
   }
 });
 
@@ -823,6 +978,49 @@ app.get("/api/daily-tracking/steps", async (req, res) => {
     });
   } catch (error) {
     console.error("Error loading steps:", error);
+    res.status(500).json({ error: "Server error" });
+  }
+});
+
+app.get("/api/dashboard/activity-calories", async (req, res) => {
+  const userId = req.session?.userId;
+  const { startDate, endDate } = req.query;
+
+  if (!userId) {
+    return res.status(401).json({ error: "Not authenticated" });
+  }
+
+  const isValidDate = (value) => {
+    if (typeof value !== "string" || !/^\d{4}-\d{2}-\d{2}$/.test(value)) {
+      return false;
+    }
+
+    const date = new Date(`${value}T00:00:00Z`);
+    return (
+      !Number.isNaN(date.getTime()) && date.toISOString().slice(0, 10) === value
+    );
+  };
+
+  if (!isValidDate(startDate) || !isValidDate(endDate) || startDate > endDate) {
+    return res.status(400).json({ error: "Invalid date range" });
+  }
+
+  try {
+    const result = await pool.query(
+      `SELECT
+         tracking_date::text AS date,
+         COALESCE(SUM(calories_burned), 0)::integer AS calories_burned
+       FROM activity_entries
+       WHERE user_id = $1
+         AND tracking_date BETWEEN $2::date AND $3::date
+       GROUP BY tracking_date
+       ORDER BY tracking_date ASC`,
+      [userId, startDate, endDate],
+    );
+
+    res.json({ activityCalories: result.rows });
+  } catch (error) {
+    console.error("Error loading dashboard activity calories:", error);
     res.status(500).json({ error: "Server error" });
   }
 });
