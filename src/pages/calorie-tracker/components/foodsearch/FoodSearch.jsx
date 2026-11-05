@@ -1,4 +1,5 @@
 import "./foodSearch.css";
+import { API_URL } from "../../../../api";
 import { useState } from "react";
 import { PlusIcon, XIcon } from "@phosphor-icons/react";
 
@@ -12,7 +13,7 @@ function FoodSearch({ selectedMeal, onFoodAdded, selectedDate }) {
     if (!searchTerm.trim()) return;
 
     const response = await fetch(
-      `http://localhost:3000/api/foods/search?q=${encodeURIComponent(searchTerm)}`,
+      `${API_URL}/api/foods/search?q=${encodeURIComponent(searchTerm)}`,
     );
 
     const data = await response.json();
@@ -29,7 +30,7 @@ function FoodSearch({ selectedMeal, onFoodAdded, selectedDate }) {
   async function addFood() {
     if (!selectedFood || Number(amount) <= 0) return;
 
-    const response = await fetch("http://localhost:3000/api/foods/manual", {
+    const response = await fetch("${API_URL}/api/foods/manual", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -55,22 +56,19 @@ function FoodSearch({ selectedMeal, onFoodAdded, selectedDate }) {
 
     const trackingDate = selectedDate;
 
-    const entryResponse = await fetch(
-      "http://localhost:3000/api/food-entries",
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        credentials: "include",
-        body: JSON.stringify({
-          foodId: data.id,
-          trackingDate: trackingDate,
-          mealType: selectedMeal,
-          amount: Number(amount),
-        }),
+    const entryResponse = await fetch(`${API_URL}/api/food-entries`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
       },
-    );
+      credentials: "include",
+      body: JSON.stringify({
+        foodId: data.id,
+        trackingDate: trackingDate,
+        mealType: selectedMeal,
+        amount: Number(amount),
+      }),
+    });
 
     if (!entryResponse.ok) {
       console.error("Error saving food entry:", await entryResponse.text());

@@ -1,5 +1,6 @@
 import "./workoutShow.css";
 import { useEffect, useState } from "react";
+import { API_URL } from "../../../../api";
 
 function WorkoutShow({ workout, onClose }) {
   const [workoutDetails, setWorkoutDetails] = useState(null);
@@ -15,13 +16,10 @@ function WorkoutShow({ workout, onClose }) {
       setWorkoutDetails(null);
 
       try {
-        const response = await fetch(
-          `http://localhost:3000/api/workouts/${workout.id}`,
-          {
-            credentials: "include",
-            signal: controller.signal,
-          },
-        );
+        const response = await fetch(`${API_URL}/api/workouts/${workout.id}`, {
+          credentials: "include",
+          signal: controller.signal,
+        });
 
         if (!response.ok) {
           throw new Error("Workout konnte nicht geladen werden.");

@@ -1,4 +1,5 @@
 import "./meals.css";
+import { API_URL } from "../../../../api";
 import { useState, useEffect } from "react";
 import {
   ForkKnifeIcon,
@@ -59,13 +60,10 @@ function Meals({
 
   const handleDeleteFood = async (entryId) => {
     try {
-      const response = await fetch(
-        `http://localhost:3000/api/food-entries/${entryId}`,
-        {
-          method: "DELETE",
-          credentials: "include",
-        },
-      );
+      const response = await fetch(`${API_URL}/api/food-entries/${entryId}`, {
+        method: "DELETE",
+        credentials: "include",
+      });
 
       if (!response.ok) {
         throw new Error("Lebensmittel konnte nicht gelöscht werden.");
@@ -87,7 +85,7 @@ function Meals({
 
     try {
       const response = await fetch(
-        `http://localhost:3000/api/food-entries/${editingFood.id}`,
+        `${API_URL}/api/food-entries/${editingFood.id}`,
         {
           method: "PATCH",
           credentials: "include",
@@ -135,7 +133,7 @@ function Meals({
     async function loadFoodEntries() {
       try {
         const response = await fetch(
-          `http://localhost:3000/api/food-entries?date=${selectedDate}`,
+          `${API_URL}/api/food-entries?date=${selectedDate}`,
           {
             credentials: "include",
           },

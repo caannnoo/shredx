@@ -17,6 +17,8 @@ import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 import MobileNavbar from "./components/MobileNavbar";
 
+import { API_URL } from "./api";
+
 function App() {
   // Login Status für die gesamte Anwendung
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -24,7 +26,7 @@ function App() {
   // Prüft beim Laden der App, ob eine aktive Session vorhanden ist (Ist der User eingeloggt?)
   useEffect(() => {
     const checkAuth = async () => {
-      const response = await fetch("http://localhost:3000/api/me", {
+      const response = await fetch(`${API_URL}/api/me`, {
         credentials: "include",
       });
 

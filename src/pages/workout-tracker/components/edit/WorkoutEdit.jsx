@@ -1,5 +1,6 @@
 import "./workoutEdit.css";
 import "../create/workoutCreate.css";
+import { API_URL } from "../../../../api";
 import { useEffect, useState } from "react";
 import { DndContext, closestCenter } from "@dnd-kit/core";
 
@@ -187,7 +188,7 @@ function WorkoutEdit({ workout, onClose, onSaved }) {
   const handleExerciseDetails = async (exercise) => {
     try {
       const response = await fetch(
-        `http://localhost:3000/api/exercises/${exercise.exercise_id ?? exercise.id}`,
+        `${API_URL}/api/exercises/${exercise.exercise_id ?? exercise.id}`,
         {
           credentials: "include",
         },
@@ -255,13 +256,10 @@ function WorkoutEdit({ workout, onClose, onSaved }) {
       setExerciseError("");
 
       try {
-        const response = await fetch(
-          `http://localhost:3000/api/workouts/${workout.id}`,
-          {
-            credentials: "include",
-            signal: controller.signal,
-          },
-        );
+        const response = await fetch(`${API_URL}/api/workouts/${workout.id}`, {
+          credentials: "include",
+          signal: controller.signal,
+        });
 
         if (!response.ok) {
           throw new Error("Exercises could not be loaded.");
@@ -289,7 +287,7 @@ function WorkoutEdit({ workout, onClose, onSaved }) {
   useEffect(() => {
     async function loadAvailableExercises() {
       try {
-        const response = await fetch("http://localhost:3000/api/exercises");
+        const response = await fetch(`${API_URL}/api/exercises`);
 
         if (!response.ok) {
           console.error("SHREDX Edit Workout API:", response.status);
@@ -328,26 +326,23 @@ function WorkoutEdit({ workout, onClose, onSaved }) {
 
   const handleSaveChanges = async () => {
     try {
-      const response = await fetch(
-        `http://localhost:3000/api/workouts/${workout.id}`,
-        {
-          method: "PUT",
-          credentials: "include",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            name: workoutName,
-            trainingDays: trainingDays,
-            exercises: selectedExercises.map((exercise) => ({
-              id: exercise.id ?? null,
-              exercise_id: exercise.exercise_id,
-              target_sets: Number(exercise.target_sets),
-              target_reps: Number(exercise.target_reps ?? 10),
-            })),
-          }),
+      const response = await fetch(`${API_URL}/api/workouts/${workout.id}`, {
+        method: "PUT",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
         },
-      );
+        body: JSON.stringify({
+          name: workoutName,
+          trainingDays: trainingDays,
+          exercises: selectedExercises.map((exercise) => ({
+            id: exercise.id ?? null,
+            exercise_id: exercise.exercise_id,
+            target_sets: Number(exercise.target_sets),
+            target_reps: Number(exercise.target_reps ?? 10),
+          })),
+        }),
+      });
 
       const data = await response.json();
 

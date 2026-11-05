@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import "./workoutTracker.css";
+import { API_URL } from "../../api";
 import WorkoutHeader from "./components/header/WorkoutHeader";
 import WorkoutToday from "./components/today/WorkoutToday";
 import WorkoutActive from "./components/active/WorkoutActive";
@@ -34,7 +35,7 @@ function WorkoutTracker() {
   async function loadCompletedWorkout(signal) {
     try {
       const response = await fetch(
-        `http://localhost:3000/api/workouts/completed/date/${formattedSelectedDate}`,
+        `${API_URL}/api/workouts/completed/date/${formattedSelectedDate}`,
         {
           credentials: "include",
           signal,
@@ -76,7 +77,7 @@ function WorkoutTracker() {
   useEffect(() => {
     async function loadWorkouts() {
       try {
-        const response = await fetch("http://localhost:3000/api/workouts", {
+        const response = await fetch(`${API_URL}/api/workouts`, {
           credentials: "include",
         });
 
@@ -110,12 +111,9 @@ function WorkoutTracker() {
           onClose={handleCloseWorkout}
           onCreated={async () => {
             try {
-              const response = await fetch(
-                "http://localhost:3000/api/workouts",
-                {
-                  credentials: "include",
-                },
-              );
+              const response = await fetch(`${API_URL}/api/workouts`, {
+                credentials: "include",
+              });
 
               if (!response.ok) {
                 throw new Error("Workouts konnten nicht aktualisiert werden");

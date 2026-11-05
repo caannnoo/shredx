@@ -1,4 +1,5 @@
 import "./dailyHealth.css";
+import { API_URL } from "../../../../api";
 import { useState, useEffect } from "react";
 
 function DailyHealth({ setBurnedCalories, selectedDate }) {
@@ -68,7 +69,7 @@ function DailyHealth({ setBurnedCalories, selectedDate }) {
     async function loadWeight() {
       try {
         const response = await fetch(
-          `http://localhost:3000/api/daily-tracking/weight?date=${selectedDate}`,
+          `${API_URL}/api/daily-tracking/weight?date=${selectedDate}`,
           {
             credentials: "include",
           },
@@ -100,7 +101,7 @@ function DailyHealth({ setBurnedCalories, selectedDate }) {
     async function loadWater() {
       try {
         const response = await fetch(
-          `http://localhost:3000/api/daily-tracking/water?date=${selectedDate}`,
+          `${API_URL}/api/daily-tracking/water?date=${selectedDate}`,
           {
             credentials: "include",
           },
@@ -125,7 +126,7 @@ function DailyHealth({ setBurnedCalories, selectedDate }) {
     async function loadSteps() {
       try {
         const response = await fetch(
-          `http://localhost:3000/api/daily-tracking/steps?date=${selectedDate}`,
+          `${API_URL}/api/daily-tracking/steps?date=${selectedDate}`,
           {
             credentials: "include",
           },
@@ -150,7 +151,7 @@ function DailyHealth({ setBurnedCalories, selectedDate }) {
     async function loadActivities() {
       try {
         const response = await fetch(
-          `http://localhost:3000/api/activity-entries?date=${selectedDate}`,
+          `${API_URL}/api/activity-entries?date=${selectedDate}`,
           {
             credentials: "include",
           },
@@ -173,15 +174,12 @@ function DailyHealth({ setBurnedCalories, selectedDate }) {
 
   async function addWater(amount) {
     try {
-      const response = await fetch(
-        "http://localhost:3000/api/daily-tracking/water",
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          credentials: "include",
-          body: JSON.stringify({ amount, selectedDate }),
-        },
-      );
+      const response = await fetch(`${API_URL}/api/daily-tracking/water`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify({ amount, selectedDate }),
+      });
 
       if (!response.ok) {
         console.error("Failed to save water");
@@ -200,15 +198,12 @@ function DailyHealth({ setBurnedCalories, selectedDate }) {
 
   async function addSteps(amount) {
     try {
-      const response = await fetch(
-        "http://localhost:3000/api/daily-tracking/steps",
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          credentials: "include",
-          body: JSON.stringify({ amount, selectedDate }),
-        },
-      );
+      const response = await fetch(`${API_URL}/api/daily-tracking/steps`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify({ amount, selectedDate }),
+      });
 
       if (!response.ok) {
         console.error("Failed to save steps");
@@ -225,7 +220,7 @@ function DailyHealth({ setBurnedCalories, selectedDate }) {
   const deleteActivity = async (activityId) => {
     try {
       const response = await fetch(
-        `http://localhost:3000/api/activity-entries/${activityId}`,
+        `${API_URL}/api/activity-entries/${activityId}`,
         {
           method: "DELETE",
           credentials: "include",
@@ -305,7 +300,7 @@ function DailyHealth({ setBurnedCalories, selectedDate }) {
                         return;
 
                       const response = await fetch(
-                        "http://localhost:3000/api/daily-tracking/weight",
+                        `${API_URL}/api/daily-tracking/weight`,
                         {
                           method: "POST",
                           headers: { "Content-Type": "application/json" },
@@ -323,7 +318,7 @@ function DailyHealth({ setBurnedCalories, selectedDate }) {
                       }
 
                       const weightResponse = await fetch(
-                        `http://localhost:3000/api/daily-tracking/weight?date=${selectedDate}`,
+                        `${API_URL}/api/daily-tracking/weight?date=${selectedDate}`,
                         {
                           credentials: "include",
                         },
@@ -512,7 +507,7 @@ function DailyHealth({ setBurnedCalories, selectedDate }) {
                       }
 
                       const response = await fetch(
-                        "http://localhost:3000/api/activity-entries",
+                        `${API_URL}/api/activity-entries`,
                         {
                           method: "POST",
                           headers: { "Content-Type": "application/json" },

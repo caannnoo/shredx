@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import "./workoutActive.css";
+import { API_URL } from "../../../../api";
 
 function WorkoutActive({ workout, onFinishWorkout }) {
   const [exercises, setExercises] = useState([]);
@@ -13,10 +14,9 @@ function WorkoutActive({ workout, onFinishWorkout }) {
   useEffect(() => {
     async function loadExercises() {
       try {
-        const response = await fetch(
-          `http://localhost:3000/api/workouts/${workout.id}`,
-          { credentials: "include" },
-        );
+        const response = await fetch(`${API_URL}/api/workouts/${workout.id}`, {
+          credentials: "include",
+        });
 
         if (!response.ok) {
           throw new Error("Exercises konnten nicht geladen werden");
@@ -104,7 +104,7 @@ function WorkoutActive({ workout, onFinishWorkout }) {
       }
 
       const response = await fetch(
-        `http://localhost:3000/api/workouts/${workout.id}/finish`,
+        `${API_URL}/api/workouts/${workout.id}/finish`,
         {
           method: "POST",
           credentials: "include",

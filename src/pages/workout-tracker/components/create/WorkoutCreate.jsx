@@ -1,4 +1,5 @@
 import "./workoutCreate.css";
+import { API_URL } from "../../../../api";
 import { useState, useEffect } from "react";
 import { DndContext, closestCenter } from "@dnd-kit/core";
 
@@ -47,7 +48,7 @@ function WorkoutCreate({ onClose, onCreated }) {
   useEffect(() => {
     async function loadExercises() {
       try {
-        const response = await fetch("http://localhost:3000/api/exercises");
+        const response = await fetch(`${API_URL}/api/exercises`);
 
         if (!response.ok) {
           throw new Error("Übungen konnten nicht geladen werden");
@@ -68,9 +69,7 @@ function WorkoutCreate({ onClose, onCreated }) {
 
   const handleExerciseDetails = async (exercise) => {
     try {
-      const response = await fetch(
-        `http://localhost:3000/api/exercises/${exercise.id}`,
-      );
+      const response = await fetch(`${API_URL}/api/exercises/${exercise.id}`);
 
       if (!response.ok) {
         throw new Error("Übungsdetails konnten nicht geladen werden");
@@ -142,7 +141,7 @@ function WorkoutCreate({ onClose, onCreated }) {
     };
 
     try {
-      const response = await fetch("http://localhost:3000/api/workouts", {
+      const response = await fetch(`${API_URL}/api/workouts`, {
         method: "POST",
         credentials: "include",
         headers: {

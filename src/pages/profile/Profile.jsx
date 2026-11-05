@@ -1,6 +1,7 @@
 // React Hooks und Navigation importieren
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { API_URL } from "../../api";
 import "./profile.css";
 
 function Profile({ setIsLoggedIn }) {
@@ -26,7 +27,7 @@ function Profile({ setIsLoggedIn }) {
   // User- und Profildaten beim Laden der Profilseite vom Backend abrufen
   useEffect(() => {
     const loadUser = async () => {
-      const response = await fetch("http://localhost:3000/api/me", {
+      const response = await fetch(`${API_URL}/api/me`, {
         credentials: "include",
       });
 
@@ -40,7 +41,7 @@ function Profile({ setIsLoggedIn }) {
     };
 
     const loadProfile = async () => {
-      const response = await fetch("http://localhost:3000/api/profile", {
+      const response = await fetch(`${API_URL}/api/profile`, {
         credentials: "include",
       });
 
@@ -262,7 +263,7 @@ function Profile({ setIsLoggedIn }) {
     };
 
     // Profildaten als JSON an das Backend senden
-    const response = await fetch("http://localhost:3000/api/profile", {
+    const response = await fetch(`${API_URL}/api/profile`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -296,7 +297,7 @@ function Profile({ setIsLoggedIn }) {
     }
 
     // Aktuelles und neues Passwort an das Backend senden
-    const response = await fetch("http://localhost:3000/api/password", {
+    const response = await fetch(`${API_URL}/api/password`, {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",
@@ -328,7 +329,7 @@ function Profile({ setIsLoggedIn }) {
 
   // User ausloggen und bei Erfolg zur Startseite weiterleiten
   const handleLogout = async () => {
-    const response = await fetch("http://localhost:3000/api/logout", {
+    const response = await fetch(`${API_URL}/api/logout`, {
       method: "POST",
       credentials: "include",
     });

@@ -1,5 +1,6 @@
 import "./workoutAll.css";
 import { useState } from "react";
+import { API_URL } from "../../../../api";
 import WorkoutShow from "../show/WorkoutShow";
 import WorkoutEdit from "../edit/WorkoutEdit";
 
@@ -20,13 +21,10 @@ function WorkoutAll({
     if (!confirmed) return;
 
     try {
-      const response = await fetch(
-        `http://localhost:3000/api/workouts/${workout.id}`,
-        {
-          method: "DELETE",
-          credentials: "include",
-        },
-      );
+      const response = await fetch(`${API_URL}/api/workouts/${workout.id}`, {
+        method: "DELETE",
+        credentials: "include",
+      });
 
       if (!response.ok) {
         throw new Error("Workout konnte nicht gelöscht werden");

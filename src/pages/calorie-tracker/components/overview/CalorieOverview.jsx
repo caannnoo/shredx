@@ -1,4 +1,5 @@
 import "./calorieOverview.css";
+import { API_URL } from "../../../../api";
 import { CaretLeftIcon, CaretRightIcon } from "@phosphor-icons/react";
 import { useState, useEffect } from "react";
 
@@ -62,7 +63,7 @@ function CalorieOverview({
   useEffect(() => {
     async function loadDailyGoal() {
       try {
-        const response = await fetch("http://localhost:3000/api/profile", {
+        const response = await fetch(`${API_URL}/api/profile`, {
           credentials: "include",
         });
 

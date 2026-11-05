@@ -1,4 +1,5 @@
 import "./dashboard.css";
+import { API_URL } from "../../api";
 import { useEffect, useState } from "react";
 import {
   LineChart,
@@ -38,7 +39,7 @@ function Dashboard() {
 
       try {
         const response = await fetch(
-          `http://localhost:3000/api/dashboard/calories?startDate=${formatDate(startDate)}&endDate=${formatDate(endDate)}`,
+          `${API_URL}/api/dashboard/calories?startDate=${formatDate(startDate)}&endDate=${formatDate(endDate)}`,
           {
             credentials: "include",
             signal: controller.signal,
@@ -103,7 +104,7 @@ function Dashboard() {
 
       try {
         const response = await fetch(
-          `http://localhost:3000/api/dashboard/macros?startDate=${formatDate(startDate)}&endDate=${formatDate(endDate)}`,
+          `${API_URL}/api/dashboard/macros?startDate=${formatDate(startDate)}&endDate=${formatDate(endDate)}`,
           {
             credentials: "include",
             signal: controller.signal,
@@ -171,7 +172,7 @@ function Dashboard() {
 
       try {
         const response = await fetch(
-          `http://localhost:3000/api/dashboard/activity-calories?startDate=${formatDate(startDate)}&endDate=${formatDate(endDate)}`,
+          `${API_URL}/api/dashboard/activity-calories?startDate=${formatDate(startDate)}&endDate=${formatDate(endDate)}`,
           {
             credentials: "include",
             signal: controller.signal,
@@ -239,7 +240,7 @@ function Dashboard() {
 
       try {
         const response = await fetch(
-          `http://localhost:3000/api/dashboard/weight?startDate=${formatDate(startDate)}&endDate=${formatDate(endDate)}`,
+          `${API_URL}/api/dashboard/weight?startDate=${formatDate(startDate)}&endDate=${formatDate(endDate)}`,
           {
             credentials: "include",
             signal: controller.signal,

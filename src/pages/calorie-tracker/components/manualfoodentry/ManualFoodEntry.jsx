@@ -1,4 +1,5 @@
 import "./manualFoodEntry.css";
+import { API_URL } from "../../../../api";
 import { useState } from "react";
 
 function ManualFoodEntry({ mealType, onFoodAdded, selectedDate }) {
@@ -15,7 +16,7 @@ function ManualFoodEntry({ mealType, onFoodAdded, selectedDate }) {
     }
 
     try {
-      const response = await fetch("http://localhost:3000/api/foods/manual", {
+      const response = await fetch(`${API_URL}/api/foods/manual`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -46,22 +47,19 @@ function ManualFoodEntry({ mealType, onFoodAdded, selectedDate }) {
       const trackingDate = selectedDate;
 
       // Lebensmittel zur Mahlzeit hinzufügen
-      const entryResponse = await fetch(
-        "http://localhost:3000/api/food-entries",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          credentials: "include",
-          body: JSON.stringify({
-            foodId,
-            trackingDate,
-            mealType,
-            amount: Number(food.amount),
-          }),
+      const entryResponse = await fetch(`${API_URL}/api/food-entries`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
         },
-      );
+        credentials: "include",
+        body: JSON.stringify({
+          foodId,
+          trackingDate,
+          mealType,
+          amount: Number(food.amount),
+        }),
+      });
 
       const entryData = await entryResponse.json();
 

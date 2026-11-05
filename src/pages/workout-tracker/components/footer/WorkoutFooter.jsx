@@ -1,5 +1,6 @@
 import "./workoutFooter.css";
 import { useEffect, useState } from "react";
+import { API_URL } from "../../../../api";
 
 function WorkoutFooter({ savedWorkouts = [] }) {
   const [workoutHistory, setWorkoutHistory] = useState([]);
@@ -62,7 +63,7 @@ function WorkoutFooter({ savedWorkouts = [] }) {
 
     try {
       const response = await fetch(
-        `http://localhost:3000/api/workouts/history/${workout.session_id}`,
+        `${API_URL}/api/workouts/history/${workout.session_id}`,
         { credentials: "include" },
       );
 
@@ -82,10 +83,9 @@ function WorkoutFooter({ savedWorkouts = [] }) {
   useEffect(() => {
     const loadWorkoutHistory = async () => {
       try {
-        const response = await fetch(
-          "http://localhost:3000/api/workouts/history",
-          { credentials: "include" },
-        );
+        const response = await fetch(`${API_URL}/api/workouts/history`, {
+          credentials: "include",
+        });
 
         if (!response.ok) {
           throw new Error("Workout History konnte nicht geladen werden");
@@ -106,10 +106,9 @@ function WorkoutFooter({ savedWorkouts = [] }) {
   useEffect(() => {
     const loadPersonalRecords = async () => {
       try {
-        const response = await fetch(
-          "http://localhost:3000/api/workouts/records",
-          { credentials: "include" },
-        );
+        const response = await fetch(`${API_URL}/api/workouts/records`, {
+          credentials: "include",
+        });
 
         if (!response.ok) {
           throw new Error("Personal Records could not be loaded");
