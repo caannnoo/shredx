@@ -1,0 +1,9 @@
+{
+  "appId": "com.shredx.app",
+  "appName": "SHREDX",
+  "webDir": "dist",
+  "server": {
+    "androidScheme": "http",
+    "cleartext": true
+  }
+}

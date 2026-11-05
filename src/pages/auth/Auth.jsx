@@ -1,4 +1,5 @@
 import "../auth/auth.css";
+import { API_URL } from "../../api";
 import { useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 
@@ -43,7 +44,7 @@ function Auth({ setIsLoggedIn }) {
     const endpoint = isLogin ? "/api/login" : "/api/register";
 
     // Anfrage an das Backend
-    const response = await fetch(`http://localhost:3000${endpoint}`, {
+    const response = await fetch(`${API_URL}${endpoint}`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">SHREDX</string>
+    <string name="title_activity_main">SHREDX</string>
+    <string name="package_name">com.shredx.app</string>
+    <string name="custom_url_scheme">com.shredx.app</string>
+</resources>

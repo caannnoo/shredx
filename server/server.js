@@ -35,7 +35,7 @@ app.use(express.json());
 // Dieses Frontend darf dem Backend anfragen stellen
 app.use(
   cors({
-    origin: "http://localhost:5173",
+    origin: ["http://localhost:5173", "http://localhost"],
     credentials: true,
   }),
 );
